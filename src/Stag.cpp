@@ -19,6 +19,9 @@ Stag::Stag(int libraryHD, int inErrorCorrection, bool inKeepLogs)
 
 void Stag::detectMarkers(Mat inImage)
 {
+	// Clear markers vector
+	markers.clear();
+	
 	image = inImage;
 	quadDetector.detectQuads(image, &edInterface);
 
