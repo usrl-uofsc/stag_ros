@@ -1,6 +1,7 @@
 //Burak - Periodical line fits addeed to SplitSegment2Lines
 
 #include <math.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <float.h>
 
@@ -13,7 +14,7 @@
 #include "LineSegment.h"
 #include "NFA.h"
 #include "MyMath.h"
-#include "Timer.h"
+// #include "Timer.h"
 
 /** PI */
 #ifndef M_PI
@@ -231,7 +232,7 @@ void SplitSegment2Lines(double *x, double *y, int noPixels, int segmentNo, EDLin
 ///
 void ValidateLineSegments(EdgeMap *map, unsigned char *srcImg, EDLines *lines, EDLines *invalidLines){
   bool ValidateLineSegmentRect(unsigned char *srcImg, int width, int height, int *x, int *y, LineSegment *ls, NFALUT *LUT);
-  Timer timer;
+  // Timer timer;
 
   int width = map->width;
   int height = map->height;
@@ -247,12 +248,12 @@ void ValidateLineSegments(EdgeMap *map, unsigned char *srcImg, EDLines *lines, E
   double logNT = 2.0*(log10((double)width) + log10((double)height));
 
   /// Compute LUT for NFA computation
-  timer.Start();
+  // timer.Start();
   
   NFALUT *LUT = new NFALUT((width+height)/8, prob, logNT);
 
-  timer.Stop();
-  lines->LUTComputationTime = timer.ElapsedTime();
+  // timer.Stop();
+  lines->LUTComputationTime = 1;//timer.ElapsedTime();
   
   if (invalidLines) invalidLines->clear();
 
@@ -350,8 +351,8 @@ void ValidateLineSegments(EdgeMap *map, unsigned char *srcImg, EDLines *lines, E
   delete x;
   delete y;
 
-  timer.Stop();
-  lines->lineValidationTime = timer.ElapsedTime();
+  // timer.Stop();
+  lines->lineValidationTime = 1;//timer.ElapsedTime();
 } // end-ValidateLineSegments
 
 //====================================================================================
@@ -656,8 +657,8 @@ EDLines *DetectLinesByED(EdgeMap*& map, unsigned char *srcImg, int width, int he
   int ANCHOR_THRESH = 3;    // smaller values produce noise!
 
   /*----------- DETECT EDGES ----------------*/
-  Timer timer;
-  timer.Start();
+  // Timer timer;
+  // timer.Start();
 
 // Detect edges by edge drawing
   unsigned char *smoothImg = new unsigned char[width*height];
@@ -677,11 +678,11 @@ EDLines *DetectLinesByED(EdgeMap*& map, unsigned char *srcImg, int width, int he
   delete gradImg;
   delete dirImg;
 
-  timer.Stop();
-  lines->edgeDetectionTime = timer.ElapsedTime();
+  // timer.Stop();
+  lines->edgeDetectionTime = 1;//timer.ElapsedTime();
 
   /*----------- FIT LINES ----------------*/
-  timer.Start();
+  // timer.Start();
 
   // Now, go over the edge segments & fit lines
   lines->clear();
@@ -712,20 +713,20 @@ EDLines *DetectLinesByED(EdgeMap*& map, unsigned char *srcImg, int width, int he
     SplitSegment2Lines(x, y, segment->noPixels, segmentNo, lines);
   } //end-for
 
-  timer.Stop();
-  lines->lineFitTime = timer.ElapsedTime();
+  // timer.Stop();
+  lines->lineFitTime = 1;//timer.ElapsedTime();
 
 
   /*----------- JOIN COLLINEAR LINES ----------------*/
-  timer.Start();
+  // timer.Start();
 
   JoinCollinearLines(lines, 6.0, 1.30);
 
-  timer.Stop();
-  lines->joinLineSegmentsTime = timer.ElapsedTime();
+  // timer.Stop();
+  lines->joinLineSegmentsTime = 1;//timer.ElapsedTime();
 
   /*----------- VALIDATE LINES ----------------*/
-  timer.Start();
+  // timer.Start();
 
 #if 0
   // Validate with unsmoothed image
@@ -738,8 +739,8 @@ EDLines *DetectLinesByED(EdgeMap*& map, unsigned char *srcImg, int width, int he
   ValidateLineSegments(map, smoothImg, lines, invalidLines);
 #endif
 
-  timer.Stop();
-  lines->lineValidationTime = timer.ElapsedTime();
+  // timer.Stop();
+  lines->lineValidationTime = 1;//timer.ElapsedTime();
 
   delete smoothImg;
   // Burak - need to return this, don't delete
@@ -761,8 +762,8 @@ EDLines *DetectLinesByEDPF(EdgeMap*& map, unsigned char *srcImg, int width, int 
 	EDLines *lines = new EDLines(width, height);
 
   /*----------- DETECT EDGES ----------------*/
-  Timer timer;
-  timer.Start();
+  // Timer timer;
+  // timer.Start();
 
   // Detect edges by edge drawing parameter free (EDPF)
   map = DetectEdgesByEDPF(srcImg, width, height);   // Detect edges by EDPF
@@ -778,14 +779,14 @@ EDLines *DetectLinesByEDPF(EdgeMap*& map, unsigned char *srcImg, int width, int 
   }
   // Burak - find edge loops
 
-  timer.Stop();
-  lines->edgeDetectionTime = timer.ElapsedTime();
+  // timer.Stop();
+  lines->edgeDetectionTime = 1;//timer.ElapsedTime();
 
   /*----------- FIT LINES ----------------*/
-  timer.Start();
+  // timer.Start();
 
   // Now, go over the edge segments & fit lines
-  lines->clear();
+  // lines->clear();
 
   lines->MIN_LINE_LEN = ComputeMinLineLength(width, height);
 
@@ -820,26 +821,26 @@ EDLines *DetectLinesByEDPF(EdgeMap*& map, unsigned char *srcImg, int width, int 
   // Burak - added next line
   delete[] validSegments;
 
-  timer.Stop();
-  lines->lineFitTime = timer.ElapsedTime();
+  // timer.Stop();
+  lines->lineFitTime = 1;//timer.ElapsedTime();
 
 
   /*----------- JOIN COLLINEAR LINES ----------------*/
-  timer.Start();
+  // timer.Start();
 
   JoinCollinearLines(lines, 6.0, 1.50);
 
-  timer.Stop();
-  lines->joinLineSegmentsTime = timer.ElapsedTime();
+  // timer.Stop();
+  lines->joinLineSegmentsTime = 1;//timer.ElapsedTime();
 
 
   /*----------- VALIDATE LINES ----------------*/
-  timer.Start();
+  // timer.Start();
 
   ValidateLineSegments(map, srcImg, lines, invalidLines);
 
-  timer.Stop();
-  lines->lineValidationTime = timer.ElapsedTime();
+  // timer.Stop();
+  lines->lineValidationTime = 1;//timer.ElapsedTime();
 
   // Burak - need to return this
   // delete map;

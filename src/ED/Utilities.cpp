@@ -1,4 +1,4 @@
-#include <windows.h>
+// #include <windows.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -9,7 +9,7 @@
 //Burak - commented the line below
 //#include "ImageVideoLib.h"
 #include "Utilities.h"
-#include "Timer.h"
+// #include "Timer.h"
 
 //Burak - suppresses _CRT_SECURE_NO_DEPRECATE warnings
 #pragma warning(disable: 4996) 
@@ -32,7 +32,7 @@ var_R = var_R * 100
 var_G = var_G * 100
 var_B = var_B * 100
 
-//Observer. = 2°, Illuminant = D65
+//Observer. = 2ï¿½, Illuminant = D65
 X = var_R * 0.4124 + var_G * 0.3576 + var_B * 0.1805
 Y = var_R * 0.2126 + var_G * 0.7152 + var_B * 0.0722
 Z = var_R * 0.0193 + var_G * 0.1192 + var_B * 0.9505
@@ -43,7 +43,7 @@ Z = var_R * 0.0193 + var_G * 0.1192 + var_B * 0.9505
 /*
 XYZ 2 Lab
 
-var_X = X / ref_X          //ref_X =  95.047   Observer= 2°, Illuminant= D65
+var_X = X / ref_X          //ref_X =  95.047   Observer= 2ï¿½, Illuminant= D65
 var_Y = Y / ref_Y          //ref_Y = 100.000
 var_Z = Z / ref_Z          //ref_Z = 108.883
 
@@ -90,7 +90,7 @@ void MyRGB2Lab(unsigned char *redImg, unsigned char *greenImg, unsigned char *bl
     green = green*100;
     blue = blue*100;
 
-    //Observer. = 2°, Illuminant = D65
+    //Observer. = 2ï¿½, Illuminant = D65
     x = red*0.4124564 + green*0.3575761 + blue*0.1804375;
     y = red*0.2126729 + green*0.7151522 + blue*0.0721750;
     z = red*0.0193339 + green*0.1191920 + blue*0.9503041;
@@ -100,7 +100,7 @@ void MyRGB2Lab(unsigned char *redImg, unsigned char *greenImg, unsigned char *bl
     double refY = 100.000;
     double refZ = 108.883;
 
-    x = x / refX;          //ref_X =  95.047   Observer= 2°, Illuminant= D65
+    x = x / refX;          //ref_X =  95.047   Observer= 2ï¿½, Illuminant= D65
     y = y / refY;          //ref_Y = 100.000
     z = z / refZ;          //ref_Z = 108.883
 
@@ -173,9 +173,9 @@ void MyRGB2LabFast(unsigned char *redImg, unsigned char *greenImg, unsigned char
   double red, green, blue;
   double x, y, z;
 
-  Timer timer;
+  // Timer timer;
 
-  timer.Start();
+  // timer.Start();
 
   for (int i=0; i<width*height; i++){
     red = redImg[i]/255.0;
@@ -197,7 +197,7 @@ void MyRGB2LabFast(unsigned char *redImg, unsigned char *greenImg, unsigned char
     green = green*100;
     blue = blue*100;
 
-    //Observer. = 2°, Illuminant = D65
+    //Observer. = 2ï¿½, Illuminant = D65
     x = red*0.4124564 + green*0.3575761 + blue*0.1804375;
     y = red*0.2126729 + green*0.7151522 + blue*0.0721750;
     z = red*0.0193339 + green*0.1191920 + blue*0.9503041;
@@ -207,7 +207,7 @@ void MyRGB2LabFast(unsigned char *redImg, unsigned char *greenImg, unsigned char
     double refY = 100.000;
     double refZ = 108.883;
 
-    x = x / refX;          //ref_X =  95.047   Observer= 2°, Illuminant= D65
+    x = x / refX;          //ref_X =  95.047   Observer= 2ï¿½, Illuminant= D65
     y = y / refY;          //ref_Y = 100.000
     z = z / refZ;          //ref_Z = 108.883
 
@@ -225,8 +225,8 @@ void MyRGB2LabFast(unsigned char *redImg, unsigned char *greenImg, unsigned char
     bImg[i] = (unsigned char)(200*(y-z) + 128);
   } //end-for
 
-  timer.Stop();
-  printf("Loop takes: %4.2lf\n", timer.ElapsedTime());
+  // timer.Stop();
+  // printf("Loop takes: %4.2lf\n", timer.ElapsedTime());
 } //end-MyRGB2LabFast
 
 
@@ -262,7 +262,7 @@ void StdRGB2Lab(unsigned char *redImg, unsigned char *greenImg, unsigned char *b
     green = green*100;
     blue = blue*100;
 
-    //Observer. = 2°, Illuminant = D65
+    //Observer. = 2ï¿½, Illuminant = D65
     x = red*0.4124564 + green*0.3575761 + blue*0.1804375;
     y = red*0.2126729 + green*0.7151522 + blue*0.0721750;
     z = red*0.0193339 + green*0.1191920 + blue*0.9503041;
@@ -272,7 +272,7 @@ void StdRGB2Lab(unsigned char *redImg, unsigned char *greenImg, unsigned char *b
     double refY = 100.000;
     double refZ = 108.883;
 
-    x = x / refX;          //ref_X =  95.047   Observer= 2°, Illuminant= D65
+    x = x / refX;          //ref_X =  95.047   Observer= 2ï¿½, Illuminant= D65
     y = y / refY;          //ref_Y = 100.000
     z = z / refZ;          //ref_Z = 108.883
 
@@ -361,7 +361,7 @@ void RGB2Lab(IplImage *rgbImg, IplImage *labImg){
       green = green*100;
       blue = blue*100;
 
-      //Observer. = 2°, Illuminant = D65
+      //Observer. = 2ï¿½, Illuminant = D65
       x = red*0.4124 + green*0.3576 + blue*0.1805;
       y = red*0.2126 + green*0.7152 + blue*0.0722;
       z = red*0.0193 + green*0.1192 + blue*0.9505;
@@ -371,7 +371,7 @@ void RGB2Lab(IplImage *rgbImg, IplImage *labImg){
       double refY = 100.000;
       double refZ = 108.883;
 
-      x = x / refX;          //ref_X =  95.047   Observer= 2°, Illuminant= D65
+      x = x / refX;          //ref_X =  95.047   Observer= 2ï¿½, Illuminant= D65
       y = y / refY;          //ref_Y = 100.000
       z = z / refZ;          //ref_Z = 108.883
 
@@ -658,7 +658,7 @@ var_Y = Y / 100
 if ( var_Y > 0.008856 ) var_Y = var_Y ^ ( 1/3 )
 else                    var_Y = ( 7.787 * var_Y ) + ( 16 / 116 )
 
-ref_X =  95.047        //Observer= 2°, Illuminant= D65
+ref_X =  95.047        //Observer= 2ï¿½, Illuminant= D65
 ref_Y = 100.000
 ref_Z = 108.883
 
@@ -697,7 +697,7 @@ void RGB2Luv(unsigned char *redImg, unsigned char *greenImg, unsigned char *blue
     green = green*100;
     blue = blue*100;
 
-    //Observer. = 2°, Illuminant = D65
+    //Observer. = 2ï¿½, Illuminant = D65
     double X = red*0.4124 + green*0.3576 + blue*0.1805;
     double Y = red*0.2126 + green*0.7152 + blue*0.0722;
     double Z = red*0.0193 + green*0.1192 + blue*0.9505;
@@ -710,7 +710,7 @@ void RGB2Luv(unsigned char *redImg, unsigned char *greenImg, unsigned char *blue
     if (var_Y > 0.008856 ) var_Y = pow(var_Y, 1.0/3);
     else                   var_Y = ( 7.787 * var_Y ) + ( 16.0 / 116.0 );
 
-    double ref_X =  95.047;        //Observer= 2°, Illuminant= D65
+    double ref_X =  95.047;        //Observer= 2ï¿½, Illuminant= D65
     double ref_Y = 100.000;
     double ref_Z = 108.883;
 
@@ -1070,6 +1070,7 @@ void ShowJointPoints(char *file, EdgeMap *map, unsigned char *jointPoints, unsig
 /// Get all files in a directory in an array
 ///
 int GetFilenamesInDirectory(char *dirname, DirectoryEntry *items){
+  /*
   BOOL            fFinished;
   HANDLE          hList;
   TCHAR           szDir[MAX_PATH+1];
@@ -1119,6 +1120,8 @@ int GetFilenamesInDirectory(char *dirname, DirectoryEntry *items){
   FindClose(hList);
 
   return noItems;
+  */
+  return 0;
 } //end-GetFilenamesInDirectory
 
 ///-----------------------------------------------------------------------------
@@ -1427,7 +1430,7 @@ void StdRGB2LabOne(unsigned char r, unsigned char g, unsigned char bl, double *L
   green = green*100;
   blue = blue*100;
 
-  //Observer. = 2°, Illuminant = D65
+  //Observer. = 2ï¿½, Illuminant = D65
   x = red*0.4124564 + green*0.3575761 + blue*0.1804375;
   y = red*0.2126729 + green*0.7151522 + blue*0.0721750;
   z = red*0.0193339 + green*0.1191920 + blue*0.9503041;
@@ -1437,7 +1440,7 @@ void StdRGB2LabOne(unsigned char r, unsigned char g, unsigned char bl, double *L
   double refY = 100.0;
   double refZ = 108.883;
 
-  x = x / refX;          //ref_X =  95.047   Observer= 2°, Illuminant= D65
+  x = x / refX;          //ref_X =  95.047   Observer= 2ï¿½, Illuminant= D65
   y = y / refY;          //ref_Y = 100.000
   z = z / refZ;          //ref_Z = 108.883
 
@@ -1471,7 +1474,7 @@ void StdRGB2LabOne(unsigned char r, unsigned char g, unsigned char bl, double *L
   green = green*100;
   blue = blue*100;
 
-  //Observer. = 2°, Illuminant = D65
+  //Observer. = 2ï¿½, Illuminant = D65
   x = red*0.4124564 + green*0.3575761 + blue*0.1804375;
   y = red*0.2126729 + green*0.7151522 + blue*0.0721750;
   z = red*0.0193339 + green*0.1191920 + blue*0.9503041;
@@ -1481,7 +1484,7 @@ void StdRGB2LabOne(unsigned char r, unsigned char g, unsigned char bl, double *L
   double refY = 100.0;
   double refZ = 108.883;
 
-  x = x / refX;          //ref_X =  95.047   Observer= 2°, Illuminant= D65
+  x = x / refX;          //ref_X =  95.047   Observer= 2ï¿½, Illuminant= D65
   y = y / refY;          //ref_Y = 100.000
   z = z / refZ;          //ref_Z = 108.883
 

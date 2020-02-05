@@ -16,7 +16,7 @@
 #include "ValidateEdgeSegments.h"
 
 #include "Utilities.h"
-#include "Timer.h"
+// #include "Timer.h"
 
 //Burak - won't be needing this
 //#include "ImageVideoLib.h"
@@ -351,14 +351,14 @@ EdgeMap *DetectEdgesByED(unsigned char *ch1Img, unsigned char *ch2Img, unsigned 
   SmoothImage(ch3Img, smoothCh3Img, width, height, smoothingSigma);
 
   /*------------ COMPUTE GRADIENT & EDGE DIRECTION MAPS -------------------*/
-  Timer timer;
-  timer.Start();
+  // Timer timer;
+  // timer.Start();
 
   ComputeGradientMapByPrewitt(smoothCh1Img, smoothCh2Img, smoothCh3Img, gradImg, dirImg, width, height, GRADIENT_THRESH);
 //  ComputeGradientMapByPrewitt5x5(smoothCh1Img, smoothCh2Img, smoothCh3Img, gradImg, dirImg, width, height, GRADIENT_THRESH);
 //  ComputeGradientMapByDiZenzo(smoothCh1Img, smoothCh2Img, smoothCh3Img, gradImg, dirImg, width, height, GRADIENT_THRESH);
 
-  timer.Stop();
+  // timer.Stop();
 //  printf("\nComputeGradientMapByPrewitt takes %4.2lf ms\n\n", timer.ElapsedTime());
 
 #if 0
