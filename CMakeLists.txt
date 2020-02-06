@@ -9,23 +9,25 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   geometry_msgs
   image_transport
+  message_generation
   roscpp
   sensor_msgs
   std_msgs
 )
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   StagMessage.msg
-# )
+add_message_files(DIRECTORY msg
+  FILES
+  StagMarker.msg
+  StagMarkers.msg
+)
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-#   geometry_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -33,7 +35,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES stag_ros
-  CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport roscpp sensor_msgs std_msgs
+  CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport message_generation roscpp sensor_msgs std_msgs
   DEPENDS system_lib
 )
 
@@ -75,7 +77,7 @@ add_executable(stag_node
 ## Dependencies
 add_dependencies(stag_node
   ${catkin_EXPORTED_TARGETS}
-  # ${PROJECT_NAME}_generate_messages_cpp
+  ${PROJECT_NAME}_generate_messages_cpp
 )
 
 ## Links

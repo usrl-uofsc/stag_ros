@@ -119,7 +119,7 @@ void Drawer::drawQuads(const string& path, Mat image, const vector<Quad> &quads)
 }
 
 
-void Drawer::drawMarkers(const string& path, Mat image, const vector<Marker> &markers)
+cv::Mat Drawer::drawMarkers(const string& path, Mat image, const vector<Marker> &markers)
 {
 	Mat greyMat = image.clone();
 	Mat bgrMat;
@@ -145,13 +145,14 @@ void Drawer::drawMarkers(const string& path, Mat image, const vector<Marker> &ma
 		cv::putText(bgrMat, std::to_string(markers[i].id), center, cv::FONT_HERSHEY_DUPLEX, 2, cv::Scalar(255, 255, 255), 5, cv::LINE_AA);
 		cv::putText(bgrMat, std::to_string(markers[i].id), center, cv::FONT_HERSHEY_DUPLEX, 2, cv::Scalar(50, 50, 255), 2, cv::LINE_AA);
 	}
+	return bgrMat;
 	// vector<int> compressionParams = { CV_IMWRITE_PNG_COMPRESSION, 0 };
-	vector<int> compressionParams = {cv::IMWRITE_PNG_COMPRESSION, 0 };
-	cv::imwrite(path, bgrMat, compressionParams);
+	// vector<int> compressionParams = {cv::IMWRITE_PNG_COMPRESSION, 0 };
+	// cv::imwrite(path, bgrMat, compressionParams);
 }
 
 
-void Drawer::drawEllipses(const string& path, Mat image, const vector<Marker> &markers)
+cv::Mat Drawer::drawEllipses(const string& path, Mat image, const vector<Marker> &markers)
 {
 	Mat greyMat = image.clone();
 	Mat bgrMat;
@@ -284,7 +285,8 @@ void Drawer::drawEllipses(const string& path, Mat image, const vector<Marker> &m
 		}
 		
 	}
+	return bgrMat;
 	// vector<int> compressionParams = { CV_IMWRITE_PNG_COMPRESSION, 0 };
-	vector<int> compressionParams = {cv::IMWRITE_PNG_COMPRESSION, 0 };
-	cv::imwrite(path, bgrMat, compressionParams);
+	// vector<int> compressionParams = {cv::IMWRITE_PNG_COMPRESSION, 0 };
+	// cv::imwrite(path, bgrMat, compressionParams);
 }

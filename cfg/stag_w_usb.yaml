@@ -1,0 +1,10 @@
+# STag parameters
+libraryHD: 15
+errorCorrection: 7
+
+# Logitech USB configuration
+camera_info_topic: /usb_cam/camera_info
+raw_image_topic: /usb_cam/image_raw
+
+# Publish debug images
+debug_images: true

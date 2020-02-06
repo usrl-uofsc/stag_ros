@@ -47,7 +47,11 @@ void Stag::detectMarkers(Mat inImage)
 		poseRefiner.refineMarkerPose(&edInterface, markers[indMarker]);
 }
 
+cv::Mat Stag::drawMarkers() {
+	return drawer.drawMarkers("markers.png", image, markers);
+}
 
+/*
 void Stag::logResults(string path)
 {
 	drawer.drawEdgeMap(path + "1 edges.png", image, edInterface.getEdgeMap());
@@ -61,7 +65,7 @@ void Stag::logResults(string path)
 		drawer.drawQuads(path + "7 false quads.png", image, falseCandidates);
 	drawer.drawEllipses(path + "8 ellipses.png", image, markers);
 }
-
+*/
 
 Codeword Stag::readCode(const Quad &q)
 {

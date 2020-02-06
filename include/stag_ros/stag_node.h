@@ -28,7 +28,12 @@ SOFTWARE.
 
 // ROS includes
 #include "ros/ros.h"
+#include "cv_bridge/cv_bridge.h"
 #include "image_transport/image_transport.h"
+#include "camera_info_manager/camera_info_manager.h"
+
+// ROS msgs
+#include "sensor_msgs/image_encodings.h"
 
 // Stag includes
 #include "../../src/Stag.h"
@@ -41,16 +46,34 @@ public:
 private:
     // ROS Subcribers
     image_transport::Subscriber imageSub;
+    ros::Subscriber cameraInfoSub;
 
     // ROS Publishers
-    // image_transport::Publisher imageOutPub;
+    ros::Publisher markersPub;
+    image_transport::Publisher imageDebugPub;
 
     // Callbacks
     void imageCallback(const sensor_msgs::ImageConstPtr& msg);
+    void cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg);
 
     // STag handle
     Stag* stag;
 
+    // Functions
+    void loadParameters();
+
+    // Data
+    cv::Mat cameraMatrix;
+    cv::Mat distortionMat;
+    cv::Mat rectificationMat;
+    cv::Mat projectionMat;
+    std::string cameraID;
+    bool gotCamInfo;
+    bool debugI;
+    int stagLib;
+    int errorC;
+    std::string imageTopic;
+    std::string cameraInfoTopic;
 };
 
 #endif // STAG_NODE_H
