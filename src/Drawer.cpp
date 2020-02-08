@@ -135,7 +135,9 @@ cv::Mat Drawer::drawMarkers(const string& path, Mat image, const vector<Marker> 
 		for (int j = 0; j < 4; j++)
 			cv::line(bgrMat, cv::Point(corners[j].x, corners[j].y), cv::Point(corners[(j + 1) % 4].x, corners[(j + 1) % 4].y), cv::Scalar(255, 255, 255), 3, cv::LINE_AA);
 
-		cv::circle(bgrMat, cv::Point(corners[0].x, corners[0].y), 5, cv::Scalar(50, 255, 50), -1, cv::LINE_AA);
+		cv::circle(bgrMat, cv::Point(corners[0].x, corners[0].y), 5, cv::Scalar(250, 50, 50), -1, cv::LINE_AA);
+		cv::circle(bgrMat, cv::Point(corners[1].x, corners[1].y), 5, cv::Scalar(50, 250, 50), -1, cv::LINE_AA);
+		cv::circle(bgrMat, cv::Point(corners[2].x, corners[2].y), 5, cv::Scalar(50, 50, 250), -1, cv::LINE_AA);
 		for (int j = 0; j < 4; j++)
 			cv::line(bgrMat, cv::Point(corners[j].x, corners[j].y), cv::Point(corners[(j + 1) % 4].x, corners[(j + 1) % 4].y), cv::Scalar(50, 255, 50), 2, cv::LINE_AA);
 

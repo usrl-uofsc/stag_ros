@@ -58,6 +58,10 @@ private:
 
     // STag handle
     Stag* stag;
+    int stagLib;
+    int errorC;
+    double tagSize;
+    std::vector<cv::Point3d> tagCorners;
 
     // Functions
     void loadParameters();
@@ -70,8 +74,6 @@ private:
     std::string cameraID;
     bool gotCamInfo;
     bool debugI;
-    int stagLib;
-    int errorC;
     std::string imageTopic;
     std::string cameraInfoTopic;
 };

@@ -4,6 +4,8 @@ project(stag_ros)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
+find_package(OpenCV REQUIRED)
+
 find_package(catkin REQUIRED COMPONENTS
   camera_info_manager
   cv_bridge
@@ -13,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   std_msgs
+  tf
 )
 
 ## Generate messages in the 'msg' folder
@@ -47,6 +50,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Executables
@@ -83,4 +87,5 @@ add_dependencies(stag_node
 ## Links
 target_link_libraries(stag_node
   ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
 )

@@ -28,11 +28,14 @@ SOFTWARE.
 #include "stag_ros/StagMarker.h"
 #include "stag_ros/StagMarkers.h"
 
-// OpenCV includes
-#include "opencv2/imgproc/imgproc.hpp"
-
 // Stag marker handle
 #include "Marker.h"
+
+// ROS includes
+#include "tf/tf.h"
+#include <tf/transform_datatypes.h>
+
+#include <iostream>
 
 stag_node::stag_node(ros::NodeHandle& nh, image_transport::ImageTransport& imageT)
 {
@@ -44,18 +47,27 @@ stag_node::stag_node(ros::NodeHandle& nh, image_transport::ImageTransport& image
     cameraInfoSub = nh.subscribe(cameraInfoTopic, 1, &stag_node::cameraInfoCallback, this);
 
     // Set Publishers
+    markersPub = nh.advertise<stag_ros::StagMarkers>("/stag/markers", 1);
     if (debugI)
         imageDebugPub = imageT.advertise("/stag/image_markers", 1);
 
     // Initialize Stag
     stag = new Stag(stagLib, errorC, false);
 
-    // Initialize stuff
+    // Initialize camera info
     gotCamInfo = false;
-    cameraMatrix = cv::Mat::zeros(3, 3, CV_32FC2);
-    distortionMat = cv::Mat::zeros(1, 5, CV_32FC2);
-    rectificationMat = cv::Mat::zeros(3, 3, CV_32FC2);
-    projectionMat = cv::Mat::zeros(3, 4, CV_32FC2);
+    cameraMatrix = cv::Mat::zeros(3, 3, CV_64F);
+    distortionMat = cv::Mat::zeros(1, 5, CV_64F);
+    rectificationMat = cv::Mat::zeros(3, 3, CV_64F);
+    projectionMat = cv::Mat::zeros(3, 4, CV_64F);
+
+    // Initialize tag corners
+    double halfTagSize = 0.5 * tagSize;
+    tagCorners.push_back(cv::Point3f(0.0, 0.0, 0.0));
+    tagCorners.push_back(cv::Point3f(-halfTagSize, -halfTagSize, 0.0));
+    tagCorners.push_back(cv::Point3f(-halfTagSize,  halfTagSize, 0.0));
+    tagCorners.push_back(cv::Point3f( halfTagSize,  halfTagSize, 0.0));
+    tagCorners.push_back(cv::Point3f( halfTagSize, -halfTagSize, 0.0));
 }
 
 stag_node::~stag_node() {
@@ -69,6 +81,7 @@ void stag_node::loadParameters()
 
     nh_lcl.param("libraryHD", stagLib, 15);
     nh_lcl.param("errorCorrection", errorC, 7);
+    nh_lcl.param("tagSize", tagSize, 15.0);
     nh_lcl.param("raw_image_topic", imageTopic, std::string("usb_cam/image_raw"));
     nh_lcl.param("camera_info_topic", cameraInfoTopic, std::string("usb_cam/camera_info"));
     nh_lcl.param("debug_images", debugI, false);
@@ -85,7 +98,7 @@ void stag_node::imageCallback(const sensor_msgs::ImageConstPtr& msg)
 
         // Process the image to find the markers
         stag->detectMarkers(gray);
-        vector<Marker> markers = stag->getMarkerList();
+        std::vector<Marker> markers = stag->getMarkerList();
 
         // Publish debug image
         if (debugI)
@@ -101,24 +114,48 @@ void stag_node::imageCallback(const sensor_msgs::ImageConstPtr& msg)
             imageDebugPub.publish(rosImage);
         }
 
-        // // For each marker in the list
-        // if (markers.size() > 0)
-        // {
-        //     ROS_WARN("%d Markers detected", markers.size());
+        // For each marker in the list
+        if (markers.size() > 0)
+        {
+            // Create markers msg
+            stag_ros::StagMarkers markersMsg;
 
-        //     for (int i = 0; i < markers.size(); i++)
-        //     {
-        //         ROS_INFO("Marker %d :", i);
-        //         ROS_INFO("Marker id: %d", markers[i].id);
-        //         ROS_INFO("Marker corners:");
-        //         ROS_INFO("Corner 0: %f, %f", markers[i].corners[0].x, markers[i].corners[0].y);
-        //         ROS_INFO("Corner 1: %f, %f", markers[i].corners[1].x, markers[i].corners[1].y);
-        //         ROS_INFO("Corner 2: %f, %f", markers[i].corners[2].x, markers[i].corners[2].y);
-        //         ROS_INFO("Corner 3: %f, %f", markers[i].corners[3].x, markers[i].corners[3].y);
-        //     }
-        // }
-        // else
-        //     ROS_WARN("No markers detected");
+            for (int i = 0; i < markers.size(); i++)
+            {
+                // Create marker msg
+                stag_ros::StagMarker markerMsg;
+                markerMsg.id = markers[i].id;
+
+                // Solve PnP to find tag pose
+                std::vector<cv::Point2f> imageCorners;
+                imageCorners.push_back(markers[i].center);
+                imageCorners.push_back(markers[i].corners[0]);
+                imageCorners.push_back(markers[i].corners[1]);
+                imageCorners.push_back(markers[i].corners[2]);
+                imageCorners.push_back(markers[i].corners[3]);
+
+                cv::Mat rVec, rMat, tVec;
+
+                cv::solvePnP(tagCorners, imageCorners, cameraMatrix, distortionMat, rVec, tVec);
+                cv::Rodrigues(rVec, rMat);
+                tf::Matrix3x3 rotMat(rMat.at<double>(0,0), rMat.at<double>(0,1), rMat.at<double>(0,2),
+                                     rMat.at<double>(1,0), rMat.at<double>(1,1), rMat.at<double>(1,2),
+                                     rMat.at<double>(2,0), rMat.at<double>(2,1), rMat.at<double>(2,2));
+                tf::Quaternion rotQ;
+                rotMat.getRotation(rotQ);
+
+                markerMsg.pose.position.x = tVec.at<double>(0);
+                markerMsg.pose.position.y = tVec.at<double>(1);
+                markerMsg.pose.position.z = tVec.at<double>(2);
+
+                tf::quaternionTFToMsg(rotQ, markerMsg.pose.orientation);
+
+                markersMsg.markers.push_back(markerMsg);
+            }
+            markersPub.publish(markersMsg);
+        }
+        else
+            ROS_WARN("No markers detected");
     }
 }
 
@@ -129,11 +166,16 @@ void stag_node::cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg)
         // Get frame ID
         cameraID = msg->header.frame_id;
         // Get camera Matrix
+        std::cout << "Camera matrix real: \n";
+        for (int i = 0; i < 9; i++)
+            std::cout << msg->K[i] << "\n";
+        
         cameraMatrix.at<double>(0,0) = msg->K[0]; cameraMatrix.at<double>(0,1) = msg->K[1]; cameraMatrix.at<double>(0,2) = msg->K[2];
         cameraMatrix.at<double>(1,0) = msg->K[3]; cameraMatrix.at<double>(1,1) = msg->K[4]; cameraMatrix.at<double>(1,2) = msg->K[5];
         cameraMatrix.at<double>(2,0) = msg->K[6]; cameraMatrix.at<double>(2,1) = msg->K[7]; cameraMatrix.at<double>(2,2) = msg->K[8];
+
         // Get distortion Matrix
-        distortionMat.at<double>(0,0) = msg->D[0]; distortionMat.at<double>(0,1) = msg->D[1]; distortionMat.at<double>(0,2) = msg->D[2]; cameraMatrix.at<double>(1,0) = msg->D[3]; cameraMatrix.at<double>(1,1) = msg->D[4];
+        distortionMat.at<double>(0,0) = msg->D[0]; distortionMat.at<double>(0,1) = msg->D[1]; distortionMat.at<double>(0,2) = msg->D[2]; distortionMat.at<double>(0,3) = msg->D[3]; distortionMat.at<double>(0,4) = msg->D[4];
         // Get rectification Matrix
         rectificationMat.at<double>(0,0) = msg->R[0]; rectificationMat.at<double>(0,1) = msg->R[1]; rectificationMat.at<double>(0,2) = msg->R[2];
         rectificationMat.at<double>(1,0) = msg->R[3]; rectificationMat.at<double>(1,1) = msg->R[4]; rectificationMat.at<double>(1,2) = msg->R[5];

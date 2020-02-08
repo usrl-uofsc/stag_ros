@@ -1,6 +1,7 @@
 # STag parameters
 libraryHD: 15
 errorCorrection: 7
+tagSize: 0.163
 
 # Logitech USB configuration
 camera_info_topic: /usb_cam/camera_info
