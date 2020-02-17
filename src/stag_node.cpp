@@ -81,7 +81,7 @@ void stag_node::loadParameters()
 
     nh_lcl.param("libraryHD", stagLib, 15);
     nh_lcl.param("errorCorrection", errorC, 7);
-    nh_lcl.param("tagSize", tagSize, 15.0);
+    nh_lcl.param("tagSize", tagSize, 14.6);
     nh_lcl.param("raw_image_topic", imageTopic, std::string("usb_cam/image_raw"));
     nh_lcl.param("camera_info_topic", cameraInfoTopic, std::string("usb_cam/camera_info"));
     nh_lcl.param("debug_images", debugI, false);
@@ -166,10 +166,6 @@ void stag_node::cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg)
         // Get frame ID
         cameraID = msg->header.frame_id;
         // Get camera Matrix
-        std::cout << "Camera matrix real: \n";
-        for (int i = 0; i < 9; i++)
-            std::cout << msg->K[i] << "\n";
-        
         cameraMatrix.at<double>(0,0) = msg->K[0]; cameraMatrix.at<double>(0,1) = msg->K[1]; cameraMatrix.at<double>(0,2) = msg->K[2];
         cameraMatrix.at<double>(1,0) = msg->K[3]; cameraMatrix.at<double>(1,1) = msg->K[4]; cameraMatrix.at<double>(1,2) = msg->K[5];
         cameraMatrix.at<double>(2,0) = msg->K[6]; cameraMatrix.at<double>(2,1) = msg->K[7]; cameraMatrix.at<double>(2,2) = msg->K[8];

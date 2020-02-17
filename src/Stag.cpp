@@ -37,7 +37,8 @@ void Stag::detectMarkers(Mat inImage)
 		{
 			Marker marker(quads[indQuad], id);
 			marker.shiftCorners2(shift);
-			markers.push_back(marker);
+			if (checkDuplicate(marker))
+				markers.push_back(marker);
 		}
 		else if (keepLogs)
 			falseCandidates.push_back(quads[indQuad]);
@@ -49,6 +50,25 @@ void Stag::detectMarkers(Mat inImage)
 
 cv::Mat Stag::drawMarkers() {
 	return drawer.drawMarkers("markers.png", image, markers);
+}
+
+bool Stag::checkDuplicate(Marker mrkr)
+{
+	if (markers.size() == 0)
+		return true;
+	else
+	{
+		for (int indMarker = 0; indMarker < markers.size(); indMarker++){
+			double diff = 0.0;
+			for (int indCorner = 0; indCorner < markers[indMarker].corners.size(); indCorner++){
+				diff += std::abs(mrkr.corners[indCorner].x - markers[indMarker].corners[indCorner].x) + 
+				        std::abs(mrkr.corners[indCorner].y - markers[indMarker].corners[indCorner].y);
+			}
+			if (diff < 1.0)
+				return false;
+		}
+	}
+	return true;
 }
 
 /*
