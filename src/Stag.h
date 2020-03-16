@@ -41,5 +41,4 @@ public:
 	vector<Marker> getMarkerList() const {return markers;}
 };
 
-
 #endif

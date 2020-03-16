@@ -64,10 +64,10 @@ stag_node::stag_node(ros::NodeHandle& nh, image_transport::ImageTransport& image
     // Initialize tag corners
     double halfTagSize = 0.5 * tagSize;
     tagCorners.push_back(cv::Point3f(0.0, 0.0, 0.0));
-    tagCorners.push_back(cv::Point3f(-halfTagSize, -halfTagSize, 0.0));
     tagCorners.push_back(cv::Point3f(-halfTagSize,  halfTagSize, 0.0));
     tagCorners.push_back(cv::Point3f( halfTagSize,  halfTagSize, 0.0));
     tagCorners.push_back(cv::Point3f( halfTagSize, -halfTagSize, 0.0));
+    tagCorners.push_back(cv::Point3f(-halfTagSize, -halfTagSize, 0.0));
 }
 
 stag_node::~stag_node() {
