@@ -8,48 +8,50 @@
 ///----------------------------------------------------------
 /// Copy from our buffer to Ipl image buffer taking care of the alignment
 ///
-static void CopyToIplBuffer(unsigned char *buffer, IplImage *ipl){
+static void CopyToIplBuffer(unsigned char *buffer, IplImage *ipl) {
   int width = ipl->width;
   int height = ipl->height;
 
-  for (int i=0; i<height; i++){
-    char *p = ipl->imageData + i*ipl->widthStep;
-    memcpy(p, &buffer[i*width], width);
-  } //end-for
-} //end-IplImage
-
+  for (int i = 0; i < height; i++) {
+    char *p = ipl->imageData + i * ipl->widthStep;
+    memcpy(p, &buffer[i * width], width);
+  }  // end-for
+}  // end-IplImage
 
 ///----------------------------------------------------------
 /// Copy from Ipl image buffer taking our buffer care of the alignment
 ///
-static void CopyFromIplBuffer(unsigned char *buffer, IplImage *ipl){
+static void CopyFromIplBuffer(unsigned char *buffer, IplImage *ipl) {
   int width = ipl->width;
   int height = ipl->height;
 
-  for (int i=0; i<height; i++){
-    char *p = ipl->imageData + i*ipl->widthStep;
-    memcpy(&buffer[i*width], p, width);
-  } //end-for
-} //end-CopyFromIplBuffer
+  for (int i = 0; i < height; i++) {
+    char *p = ipl->imageData + i * ipl->widthStep;
+    memcpy(&buffer[i * width], p, width);
+  }  // end-for
+}  // end-CopyFromIplBuffer
 
 ///---------------------------------------------------------------------------------------------------------------------------------------
-/// Given an image of size widthxheight in srcImg, smooths the image using a gaussian filter (cvSmooth) and copies the smoothed image to smoothImg
-/// If sigma=0.0, then calls cvSmooth(srcImg, smoothedImg, CV_GAUSSIAN, 5, 5); This is the default.
-/// If sigma>0.0, then calls cvSmooth(srcImg, smoothedImg, CV_GAUSSIAN, 0, 0, sigma);
+/// Given an image of size widthxheight in srcImg, smooths the image using a
+/// gaussian filter (cvSmooth) and copies the smoothed image to smoothImg If
+/// sigma=0.0, then calls cvSmooth(srcImg, smoothedImg, CV_GAUSSIAN, 5, 5); This
+/// is the default. If sigma>0.0, then calls cvSmooth(srcImg, smoothedImg,
+/// CV_GAUSSIAN, 0, 0, sigma);
 ///
-void SmoothImage(unsigned char *srcImg, unsigned char *smoothImg, int width, int height, double sigma){
+void SmoothImage(unsigned char *srcImg, unsigned char *smoothImg, int width,
+                 int height, double sigma) {
   IplImage *iplImg1, *iplImg2;
 
-  if (sigma <= 0){
-    memcpy(smoothImg, srcImg, width*height);
+  if (sigma <= 0) {
+    memcpy(smoothImg, srcImg, width * height);
     return;
-  } //end-if
+  }  // end-if
 
-  iplImg1 = cvCreateImageHeader(cvSize(width, height),IPL_DEPTH_8U, 1);
+  iplImg1 = cvCreateImageHeader(cvSize(width, height), IPL_DEPTH_8U, 1);
   iplImg1->imageData = (char *)srcImg;
   iplImg1->widthStep = width;
 
-  iplImg2 = cvCreateImageHeader(cvSize(width, height),IPL_DEPTH_8U, 1);
+  iplImg2 = cvCreateImageHeader(cvSize(width, height), IPL_DEPTH_8U, 1);
   iplImg2->imageData = (char *)smoothImg;
   iplImg2->widthStep = width;
 
@@ -57,45 +59,48 @@ void SmoothImage(unsigned char *srcImg, unsigned char *smoothImg, int width, int
     cvSmooth(iplImg1, iplImg2, CV_GAUSSIAN, 5, 5);
   else if (sigma == 1.5)
     cvSmooth(iplImg1, iplImg2, CV_GAUSSIAN, 7, 7);  // seems to be better?
-  else 
+  else
     cvSmooth(iplImg1, iplImg2, CV_GAUSSIAN, 0, 0, sigma);
 
   cvReleaseImageHeader(&iplImg1);
   cvReleaseImageHeader(&iplImg2);
-} //end-SmoothImage
+}  // end-SmoothImage
 
 ///---------------------------------------------------------------------------------------------------------------------------------------
-/// Given an image of size widthxheight in srcImg, smooths the image using a gaussian filter (cvSmooth) and copies the smoothed image to smoothImg
-/// If sigma=0.0, then calls cvSmooth(srcImg, smoothedImg, CV_GAUSSIAN, 5, 5); This is the default.
-/// If sigma>0.0, then calls cvSmooth(srcImg, smoothedImg, CV_GAUSSIAN, 0, 0, sigma);
+/// Given an image of size widthxheight in srcImg, smooths the image using a
+/// gaussian filter (cvSmooth) and copies the smoothed image to smoothImg If
+/// sigma=0.0, then calls cvSmooth(srcImg, smoothedImg, CV_GAUSSIAN, 5, 5); This
+/// is the default. If sigma>0.0, then calls cvSmooth(srcImg, smoothedImg,
+/// CV_GAUSSIAN, 0, 0, sigma);
 ///
-void SmoothImage(IplImage *iplImg1, unsigned char *smoothImg, double sigma){
+void SmoothImage(IplImage *iplImg1, unsigned char *smoothImg, double sigma) {
   IplImage *iplImg2;
 
-  if (sigma <= 0){
+  if (sigma <= 0) {
     CopyFromIplBuffer(smoothImg, iplImg1);
     return;
-  } //end-if
+  }  // end-if
 
   int width = iplImg1->width;
   int height = iplImg1->height;
 
-  iplImg2 = cvCreateImageHeader(cvSize(width, height),IPL_DEPTH_8U, 1);
+  iplImg2 = cvCreateImageHeader(cvSize(width, height), IPL_DEPTH_8U, 1);
   iplImg2->imageData = (char *)smoothImg;
   iplImg2->widthStep = width;
 
   if (sigma == 1.0)
     cvSmooth(iplImg1, iplImg2, CV_GAUSSIAN, 5, 5);
-  else 
+  else
     cvSmooth(iplImg1, iplImg2, CV_GAUSSIAN, 0, 0, sigma);
 
   cvReleaseImageHeader(&iplImg2);
-} //end-SmoothImage
+}  // end-SmoothImage
 
 ///------------------------------------------------------------------------------------------
 /// Perform Gauss filter on "src" and store the result in "dst"
 ///
-static void GaussFilter(unsigned char *src, unsigned char *dst, int width, int height){
+static void GaussFilter(unsigned char *src, unsigned char *dst, int width,
+                        int height) {
 #if 0
   for (int j=0; j<width; j++){
     dst[j] = src[j];                    // row=0
@@ -113,7 +118,7 @@ static void GaussFilter(unsigned char *src, unsigned char *dst, int width, int h
     dst[i*width+width-1] = src[i*width+width-1];  // column=width-1
   } //end-for
 #else
-  memcpy(dst, src, width*height);
+  memcpy(dst, src, width * height);
 #endif
 
 #if 0
@@ -141,17 +146,24 @@ static void GaussFilter(unsigned char *src, unsigned char *dst, int width, int h
   //  {5, 12, 15, 12, 5},
   //  {4, 9, 12, 9, 4},
   //  {2, 4, 5, 4, 2}
-  for (int i=2; i<height-2; i++){
-    for (int j=2; j<width-2; j++){
-      dst[i*width+j] =  
-        (2*src[(i-2)*width+j-2] + 4*src[(i-2)*width+j-1] + 5*src[(i-2)*width+j] + 4*src[(i-2)*width+j+1] + 2*src[(i-2)*width+j+2] +
-         4*src[(i-1)*width+j-2] + 9*src[(i-1)*width+j-1] + 12*src[(i-1)*width+j] + 9*src[(i-1)*width+j+1] + 4*src[(i-1)*width+j+2] +
-         5*src[i*width+j-2] + 12*src[i*width+j-1] + 15*src[i*width+j] + 12*src[i*width+j+1] + 5*src[i*width+j+2] +
-         4*src[(i+1)*width+j-2] + 9*src[(i+1)*width+j-1] + 12*src[(i+1)*width+j] + 9*src[(i+1)*width+j+1] + 4*src[(i+1)*width+j+2] +
-         2*src[(i+2)*width+j-2] + 4*src[(i+2)*width+j-1] + 5*src[(i+2)*width+j] + 4*src[(i+2)*width+j+1] + 2*src[(i+2)*width+j+2] + 80) / 159;
-    } //end-for
-  } //end-for
+  for (int i = 2; i < height - 2; i++) {
+    for (int j = 2; j < width - 2; j++) {
+      dst[i * width + j] =
+          (2 * src[(i - 2) * width + j - 2] + 4 * src[(i - 2) * width + j - 1] +
+           5 * src[(i - 2) * width + j] + 4 * src[(i - 2) * width + j + 1] +
+           2 * src[(i - 2) * width + j + 2] + 4 * src[(i - 1) * width + j - 2] +
+           9 * src[(i - 1) * width + j - 1] + 12 * src[(i - 1) * width + j] +
+           9 * src[(i - 1) * width + j + 1] + 4 * src[(i - 1) * width + j + 2] +
+           5 * src[i * width + j - 2] + 12 * src[i * width + j - 1] +
+           15 * src[i * width + j] + 12 * src[i * width + j + 1] +
+           5 * src[i * width + j + 2] + 4 * src[(i + 1) * width + j - 2] +
+           9 * src[(i + 1) * width + j - 1] + 12 * src[(i + 1) * width + j] +
+           9 * src[(i + 1) * width + j + 1] + 4 * src[(i + 1) * width + j + 2] +
+           2 * src[(i + 2) * width + j - 2] + 4 * src[(i + 2) * width + j - 1] +
+           5 * src[(i + 2) * width + j] + 4 * src[(i + 2) * width + j + 1] +
+           2 * src[(i + 2) * width + j + 2] + 80) /
+          159;
+    }  // end-for
+  }    // end-for
 #endif
-} //end-GaussFilter
-
-
+}  // end-GaussFilter

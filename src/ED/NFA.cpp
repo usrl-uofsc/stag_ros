@@ -10,30 +10,30 @@ double nfa(int n, int k, double p, double logNT);
 ///----------------------------------------------
 /// Look Up Table (LUT) for NFA Computation
 ///
-NFALUT::NFALUT(int size, double _prob, double _logNT){
+NFALUT::NFALUT(int size, double _prob, double _logNT) {
   LUTSize = size;
   LUT = new int[LUTSize];
 
   prob = _prob;
   logNT = _logNT;
-  
+
   LUT[0] = 1;
   int j = 1;
-  for (int i=1; i<LUTSize; i++){
+  for (int i = 1; i < LUTSize; i++) {
     LUT[i] = LUTSize + 1;
     double ret = nfa(i, j, prob, logNT);
-    if (ret < 0){
-      while (j < i){
+    if (ret < 0) {
+      while (j < i) {
         j++;
         ret = nfa(i, j, prob, logNT);
         if (ret >= 0) break;
-      } //end-while
+      }  // end-while
 
       if (ret < 0) continue;
-    } //end-if
+    }  // end-if
 
     LUT[i] = j;
-  } //end-for
+  }  // end-for
 
 #if 0
   fprintf(stderr, "================== ENTIRE TABLE ====================\n");
@@ -41,28 +41,34 @@ NFALUT::NFALUT(int size, double _prob, double _logNT){
     fprintf(stderr, "n: %4d, k: %4d\n", i, LUT[i]);
   } //end-for
 #endif
-} //end-LUT
+}  // end-LUT
 
 ///-------------------------------------------
 /// Validation check without the help of a LUT
 ///
-bool checkValidationByNFA(int n, int k, double prob, double logNT){
+bool checkValidationByNFA(int n, int k, double prob, double logNT) {
   return nfa(n, k, prob, logNT) >= 0.0;
-} //end-checkValidationByNFA
+}  // end-checkValidationByNFA
 
 ///-------------------------------------------
 /// Validation check with the help of a LUT
 ///
-bool checkValidationByNFA(int n, int k, NFALUT *lut){
-  if (n >= lut->LUTSize) return nfa(n, k, lut->prob, lut->logNT) >= 0.0;
-  else return k >= lut->LUT[n];
-} // end-checkValidationByNFA
+bool checkValidationByNFA(int n, int k, NFALUT *lut) {
+  if (n >= lut->LUTSize)
+    return nfa(n, k, lut->prob, lut->logNT) >= 0.0;
+  else
+    return k >= lut->LUT[n];
+}  // end-checkValidationByNFA
 
 ///------------------------------------------------------
 /// The rest of this code used for NFA computation is directly taken from
 /// the LSD code distribution. Hope they do not mind :-)
 ///
-#define error(str) {printf(str); exit(1);}
+#define error(str) \
+  {                \
+    printf(str);   \
+    exit(1);       \
+  }
 
 /** ln(10) */
 #ifndef M_LN10
@@ -71,7 +77,7 @@ bool checkValidationByNFA(int n, int k, NFALUT *lut){
 
 /** PI */
 #ifndef M_PI
-#define M_PI   3.14159265358979323846
+#define M_PI 3.14159265358979323846
 #endif /* !M_PI */
 
 #ifndef FALSE
@@ -89,23 +95,23 @@ bool checkValidationByNFA(int n, int k, NFALUT *lut){
 #define M_3_2_PI 4.71238898038
 
 /** 2 pi */
-#define M_2__PI  6.28318530718
+#define M_2__PI 6.28318530718
 
 /** Label for pixels not used in yet. */
 #define NOTUSED 0
 
 /** Label for pixels already used in detection. */
-#define USED    1
+#define USED 1
 
 #define RELATIVE_ERROR_FACTOR 100.0
 
-static int double_equal(double a, double b){
-  double abs_diff,aa,bb,abs_max;
+static int double_equal(double a, double b) {
+  double abs_diff, aa, bb, abs_max;
 
   /* trivial case */
-  if( a == b ) return TRUE;
+  if (a == b) return TRUE;
 
-  abs_diff = fabs(a-b);
+  abs_diff = fabs(a - b);
   aa = fabs(a);
   bb = fabs(b);
   abs_max = aa > bb ? aa : bb;
@@ -115,7 +121,7 @@ static int double_equal(double a, double b){
      smaller numbers, the same quantization steps as for DBL_MIN
      are used. Then, for smaller numbers, a meaningful "relative"
      error should be computed by dividing the difference by DBL_MIN. */
-  if( abs_max < DBL_MIN ) abs_max = DBL_MIN;
+  if (abs_max < DBL_MIN) abs_max = DBL_MIN;
 
   /* equal if relative error <= factor x eps */
   return (abs_diff / abs_max) <= (RELATIVE_ERROR_FACTOR * DBL_EPSILON);
@@ -123,46 +129,44 @@ static int double_equal(double a, double b){
 
 #define TABSIZE 100000
 
-static double log_gamma_windschitl(double x)
-{
-  return 0.918938533204673 + (x-0.5)*log(x) - x
-         + 0.5*x*log( x*sinh(1/x) + 1/(810.0*pow(x,6.0)) );
+static double log_gamma_windschitl(double x) {
+  return 0.918938533204673 + (x - 0.5) * log(x) - x +
+         0.5 * x * log(x * sinh(1 / x) + 1 / (810.0 * pow(x, 6.0)));
 }
 
-static double log_gamma_lanczos(double x)
-{
-  static double q[7] = { 75122.6331530, 80916.6278952, 36308.2951477,
-                         8687.24529705, 1168.92649479, 83.8676043424,
-                         2.50662827511 };
-  double a = (x+0.5) * log(x+5.5) - (x+5.5);
+static double log_gamma_lanczos(double x) {
+  static double q[7] = {75122.6331530, 80916.6278952, 36308.2951477,
+                        8687.24529705, 1168.92649479, 83.8676043424,
+                        2.50662827511};
+  double a = (x + 0.5) * log(x + 5.5) - (x + 5.5);
   double b = 0.0;
   int n;
 
-  for(n=0;n<7;n++)
-    {
-      a -= log( x + (double) n );
-      b += q[n] * pow( x, (double) n );
-    }
+  for (n = 0; n < 7; n++) {
+    a -= log(x + (double)n);
+    b += q[n] * pow(x, (double)n);
+  }
   return a + log(b);
 }
 
-#define log_gamma(x) ((x)>15.0?log_gamma_windschitl(x):log_gamma_lanczos(x))
+#define log_gamma(x) \
+  ((x) > 15.0 ? log_gamma_windschitl(x) : log_gamma_lanczos(x))
 
-double nfa(int n, int k, double p, double logNT){
-  static double inv[TABSIZE];   /* table to keep computed inverse values */
-  double tolerance = 0.1;       /* an error of 10% in the result is accepted */
-  double log1term,term,bin_term,mult_term,bin_tail,err,p_term;
+double nfa(int n, int k, double p, double logNT) {
+  static double inv[TABSIZE]; /* table to keep computed inverse values */
+  double tolerance = 0.1;     /* an error of 10% in the result is accepted */
+  double log1term, term, bin_term, mult_term, bin_tail, err, p_term;
   int i;
 
   /* check parameters */
-  if( n<0 || k<0 || k>n || p<=0.0 || p>=1.0 ) return -1.0;
+  if (n < 0 || k < 0 || k > n || p <= 0.0 || p >= 1.0) return -1.0;
 
   /* trivial cases */
-  if( n==0 || k==0 ) return -logNT;
-  if( n==k ) return -logNT - (double) n * log10(p);
+  if (n == 0 || k == 0) return -logNT;
+  if (n == k) return -logNT - (double)n * log10(p);
 
   /* probability term */
-  p_term = p / (1.0-p);
+  p_term = p / (1.0 - p);
 
   /* compute the first term of the series */
   /*
@@ -172,22 +176,22 @@ double nfa(int n, int k, double p, double logNT){
        bincoef(n,k) = gamma(n+1) / ( gamma(k+1) * gamma(n-k+1) ).
      We use this to compute the first term. Actually the log of it.
    */
-  log1term = log_gamma( (double) n + 1.0 ) - log_gamma( (double) k + 1.0 )
-           - log_gamma( (double) (n-k) + 1.0 )
-           + (double) k * log(p) + (double) (n-k) * log(1.0-p);
+  log1term = log_gamma((double)n + 1.0) - log_gamma((double)k + 1.0) -
+             log_gamma((double)(n - k) + 1.0) + (double)k * log(p) +
+             (double)(n - k) * log(1.0 - p);
   term = exp(log1term);
 
   /* in some cases no more computations are needed */
-  if (double_equal(term, 0.0)){              /* the first term is almost zero */
-    if( (double) k > (double) n * p )     /* at begin or end of the tail?  */
-      return -log1term / M_LN10 - logNT;  /* end: use just the first term  */
+  if (double_equal(term, 0.0)) {         /* the first term is almost zero */
+    if ((double)k > (double)n * p)       /* at begin or end of the tail?  */
+      return -log1term / M_LN10 - logNT; /* end: use just the first term  */
     else
-      return -logNT;                      /* begin: the tail is roughly 1  */
-  } //end-if
+      return -logNT; /* begin: the tail is roughly 1  */
+  }                  // end-if
 
   /* compute more terms if needed */
   bin_tail = term;
-  for (i=k+1; i<=n; i++){
+  for (i = k + 1; i <= n; i++) {
     /*
        As
          term_i = bincoef(n,i) * p^i * (1-p)^(n-i)
@@ -201,21 +205,23 @@ double nfa(int n, int k, double p, double logNT){
        because divisions are expensive.
        p/(1-p) is computed only once and stored in 'p_term'.
      */
-    bin_term = (double) (n-i+1) * ( i<TABSIZE ?
-                 ( inv[i]!=0.0 ? inv[i] : ( inv[i] = 1.0 / (double) i ) ) :
-                 1.0 / (double) i );
+    bin_term =
+        (double)(n - i + 1) *
+        (i < TABSIZE ? (inv[i] != 0.0 ? inv[i] : (inv[i] = 1.0 / (double)i))
+                     : 1.0 / (double)i);
 
     mult_term = bin_term * p_term;
     term *= mult_term;
     bin_tail += term;
 
-    if (bin_term<1.0){
+    if (bin_term < 1.0) {
       /* When bin_term<1 then mult_term_j<mult_term_i for j>i.
          Then, the error on the binomial tail when truncated at
          the i term can be bounded by a geometric series of form
          term_i * sum mult_term_i^j.                            */
-      err = term * ( ( 1.0 - pow( mult_term, (double) (n-i+1) ) ) /
-                     (1.0-mult_term) - 1.0 );
+      err = term *
+            ((1.0 - pow(mult_term, (double)(n - i + 1))) / (1.0 - mult_term) -
+             1.0);
 
       /* One wants an error at most of tolerance*final_result, or:
          tolerance * abs(-log10(bin_tail)-logNT).
@@ -225,12 +231,12 @@ double nfa(int n, int k, double p, double logNT){
          tolerance * abs(-log10(bin_tail)-logNT) / (1/bin_tail)
          Finally, we truncate the tail if the error is less than:
          tolerance * abs(-log10(bin_tail)-logNT) * bin_tail        */
-      if (err < tolerance * fabs(-log10(bin_tail)-logNT) * bin_tail) break;
-    } //end-if
-  } //end-for
+      if (err < tolerance * fabs(-log10(bin_tail) - logNT) * bin_tail) break;
+    }  // end-if
+  }    // end-for
 
   return -log10(bin_tail) - logNT;
-} // end-nfa
+}  // end-nfa
 
 #if 0
 ///-----------------------------------------------------------------------------------------
@@ -349,7 +355,7 @@ bool IsLineValid(double b, int invert, double *x, double *y, int noPixels, EDIma
       ed->gradImg[r*width+c] = segmentNo;
 
       count++;
-    
+
 #if 0
       // compute gx & gy using the LSD filter
       // LSD gradient computation
@@ -522,7 +528,7 @@ bool IsLineValid(LineSegment *ls, EDImage *ed){
       ed->gradImg[r*width+c] = segmentNo;
 
       count++;
-    
+
 #if 0
       // compute gx & gy using the LSD filter
       // LSD gradient computation

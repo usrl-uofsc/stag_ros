@@ -5,6 +5,7 @@
 #include <opencv/cxcore.h>
 
 /// Compute color image gradient
-void ComputeGradientMapByPrewitt(IplImage *smoothImg, short *gradImg, unsigned char *dirImg, int GRADIENT_THRESH);
+void ComputeGradientMapByPrewitt(IplImage *smoothImg, short *gradImg,
+                                 unsigned char *dirImg, int GRADIENT_THRESH);
 
 #endif

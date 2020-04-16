@@ -1,7 +1,7 @@
 /**
 MIT License
 
-Copyright (c) 2020 Michail Kalaitzakis (Unmanned Systems and Robotics Lab, 
+Copyright (c) 2020 Michail Kalaitzakis (Unmanned Systems and Robotics Lab,
 University of South Carolina, USA)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -39,43 +39,43 @@ SOFTWARE.
 #include "../../src/Stag.h"
 
 class stag_node {
-public:
-    stag_node(ros::NodeHandle& nh, image_transport::ImageTransport& imageT);
-    ~stag_node();
+ public:
+  stag_node(ros::NodeHandle& nh, image_transport::ImageTransport& imageT);
+  ~stag_node();
 
-private:
-    // ROS Subcribers
-    image_transport::Subscriber imageSub;
-    ros::Subscriber cameraInfoSub;
+ private:
+  // ROS Subcribers
+  image_transport::Subscriber imageSub;
+  ros::Subscriber cameraInfoSub;
 
-    // ROS Publishers
-    ros::Publisher markersPub;
-    image_transport::Publisher imageDebugPub;
+  // ROS Publishers
+  ros::Publisher markersPub;
+  image_transport::Publisher imageDebugPub;
 
-    // Callbacks
-    void imageCallback(const sensor_msgs::ImageConstPtr& msg);
-    void cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg);
+  // Callbacks
+  void imageCallback(const sensor_msgs::ImageConstPtr& msg);
+  void cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg);
 
-    // STag handle
-    Stag* stag;
-    int stagLib;
-    int errorC;
-    double tagSize;
-    std::vector<cv::Point3d> tagCorners;
+  // STag handle
+  Stag* stag;
+  int stagLib;
+  int errorC;
+  double tagSize;
+  std::vector<cv::Point3d> tagCorners;
 
-    // Functions
-    void loadParameters();
+  // Functions
+  void loadParameters();
 
-    // Data
-    cv::Mat cameraMatrix;
-    cv::Mat distortionMat;
-    cv::Mat rectificationMat;
-    cv::Mat projectionMat;
-    std::string cameraID;
-    bool gotCamInfo;
-    bool debugI;
-    std::string imageTopic;
-    std::string cameraInfoTopic;
+  // Data
+  cv::Mat cameraMatrix;
+  cv::Mat distortionMat;
+  cv::Mat rectificationMat;
+  cv::Mat projectionMat;
+  std::string cameraID;
+  bool gotCamInfo;
+  bool debugI;
+  std::string imageTopic;
+  std::string cameraInfoTopic;
 };
 
-#endif // STAG_NODE_H
+#endif  // STAG_NODE_H

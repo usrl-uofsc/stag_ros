@@ -10,17 +10,16 @@ using std::bitset;
 
 typedef bitset<48> Codeword;
 
-class Decoder
-{
-	int wordSize = 48;
-	int noOfCodewords;
+class Decoder {
+  int wordSize = 48;
+  int noOfCodewords;
 
-	vector<Codeword> codewords;
+  vector<Codeword> codewords;
 
-public:
-	Decoder(){}
-	Decoder(int hd);
-	bool decode(const Codeword& c, int errCorr, int& id, int& shift);
+ public:
+  Decoder() {}
+  Decoder(int hd);
+  bool decode(const Codeword& c, int errCorr, int& id, int& shift);
 };
 
 #endif

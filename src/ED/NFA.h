@@ -5,21 +5,19 @@
 /// Lookup table (LUT) for NFA computation
 ///
 struct NFALUT {
-public:
+ public:
   int *LUT;
   int LUTSize;
 
   double prob;
   double logNT;
 
-public:
+ public:
   /// Constructor
   NFALUT(int size, double prob, double logNT);
 
   // Destructor
-  ~NFALUT(){
-    delete LUT;
-  } //end-~NFALUT
+  ~NFALUT() { delete LUT; }  // end-~NFALUT
 };
 
 ///-------------------------------------------
@@ -29,4 +27,3 @@ bool checkValidationByNFA(int n, int k, double prob, double logNT);
 bool checkValidationByNFA(int n, int k, NFALUT *lut);
 
 #endif
-

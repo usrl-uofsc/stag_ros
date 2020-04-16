@@ -4,30 +4,30 @@
 #include <windows.h>
 
 class Timer {
-private:
+ private:
   __int64 freq, tStart, tStop;
 
-public:
-  Timer(){
+ public:
+  Timer() {
     // Get the frequency of the hi-res timer
     QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
-  } //end-TimerClass
+  }  // end-TimerClass
 
-  void Start(){
+  void Start() {
     // Use hi-res timer
     QueryPerformanceCounter((LARGE_INTEGER*)&tStart);
-  } //end-Start
+  }  // end-Start
 
-  void Stop(){
+  void Stop() {
     // Perform operations that require timing
     QueryPerformanceCounter((LARGE_INTEGER*)&tStop);
-  } //end-Stop
+  }  // end-Stop
 
   // Returns time in milliseconds
-  double ElapsedTime(){
+  double ElapsedTime() {
     // Calculate time difference in milliseconds
-    return ((double)(tStop - tStart)/(double)freq)*1e3;
-  } //end-Elapsed
+    return ((double)(tStop - tStart) / (double)freq) * 1e3;
+  }  // end-Elapsed
 };
 
 #endif
