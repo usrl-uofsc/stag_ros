@@ -1,0 +1,7 @@
+<library path="lib/libstag_nodelet">
+  <class name="stag_ros/stag_nodelet" type="stag_ros::StagNodelet" base_class_type="nodelet::Nodelet">
+  <description>
+  Stag ros nodelet.
+  </description>
+  </class>
+</library>

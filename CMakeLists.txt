@@ -6,6 +6,9 @@ add_compile_options(-std=c++11)
 
 find_package(OpenCV REQUIRED)
 
+################
+# Dependencies #
+################
 find_package(catkin REQUIRED COMPONENTS
   camera_info_manager
   cv_bridge
@@ -32,9 +35,6 @@ generate_messages(
   geometry_msgs
 )
 
-###################################
-## catkin specific configuration ##
-###################################
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES stag_ros
@@ -42,20 +42,18 @@ catkin_package(
   DEPENDS system_lib
 )
 
-###########
-## Build ##
-###########
-
-## Includes
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
 )
 
-## Executables
-add_executable(stag_node
-  src/stag_node.cpp
+###########
+## Build ##
+###########
+
+## Runnables
+add_library(stag
   src/Decoder.cpp
   src/Drawer.cpp
   src/EDInterface.cpp
@@ -78,14 +76,35 @@ add_executable(stag_node
   src/ED/ValidateEdgeSegments.cpp
 )
 
+add_library(stag_nodelet
+  src/stag_nodelet.cpp
+)
+
+add_executable(stag_node
+  src/stag_node.cpp
+)
+
 ## Dependencies
+add_dependencies(stag_nodelet
+  ${catkin_EXPORTED_TARGETS}
+  ${PROJECT_NAME}_generate_messages_cpp
+)
 add_dependencies(stag_node
   ${catkin_EXPORTED_TARGETS}
   ${PROJECT_NAME}_generate_messages_cpp
 )
 
 ## Links
+target_link_libraries(stag
+  ${OpenCV_LIBS}
+)
+target_link_libraries(stag_nodelet
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBS}
+  stag
+)
 target_link_libraries(stag_node
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
+  stag
 )
