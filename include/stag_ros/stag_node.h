@@ -22,9 +22,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
-#ifndef STAG_NODE_H
-#define STAG_NODE_H
+#pragma once
 
 // ROS includes
 #include "ros/ros.h"
@@ -38,10 +36,11 @@ SOFTWARE.
 // Stag includes
 #include "../../src/Stag.h"
 
-class stag_node {
+namespace stag_ros {
+class StagNode {
  public:
-  stag_node(ros::NodeHandle& nh, image_transport::ImageTransport& imageT);
-  ~stag_node();
+  StagNode(ros::NodeHandle& nh, image_transport::ImageTransport& imageT);
+  ~StagNode();
 
  private:
   // ROS Subcribers
@@ -78,4 +77,4 @@ class stag_node {
   std::string cameraInfoTopic;
 };
 
-#endif  // STAG_NODE_H
+}  // namespace stag_ros

@@ -37,15 +37,17 @@ SOFTWARE.
 
 #include <iostream>
 
-stag_node::stag_node(ros::NodeHandle& nh,
-                     image_transport::ImageTransport& imageT) {
+namespace stag_ros {
+
+StagNode::StagNode(ros::NodeHandle& nh,
+                   image_transport::ImageTransport& imageT) {
   // Load Parameters
   loadParameters();
 
   // Set Subscribers
-  imageSub = imageT.subscribe(imageTopic, 1, &stag_node::imageCallback, this);
+  imageSub = imageT.subscribe(imageTopic, 1, &StagNode::imageCallback, this);
   cameraInfoSub =
-      nh.subscribe(cameraInfoTopic, 1, &stag_node::cameraInfoCallback, this);
+      nh.subscribe(cameraInfoTopic, 1, &StagNode::cameraInfoCallback, this);
 
   // Set Publishers
   markersPub = nh.advertise<stag_ros::StagMarkers>("/stag/markers", 1);
@@ -70,9 +72,9 @@ stag_node::stag_node(ros::NodeHandle& nh,
   tagCorners.push_back(cv::Point3f(-halfTagSize, -halfTagSize, 0.0));
 }
 
-stag_node::~stag_node() { delete stag; }
+StagNode::~StagNode() { delete stag; }
 
-void stag_node::loadParameters() {
+void StagNode::loadParameters() {
   // Create private nodeHandle to load parameters
   ros::NodeHandle nh_lcl("");
 
@@ -85,7 +87,7 @@ void stag_node::loadParameters() {
   nh_lcl.param("debug_images", debugI, false);
 }
 
-void stag_node::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
+void StagNode::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
   if (gotCamInfo) {
     // Read image from msg and convert it to grayscale
     cv::Mat src = cv_bridge::toCvShare(msg, "bgr8")->image;
@@ -154,7 +156,7 @@ void stag_node::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
   }
 }
 
-void stag_node::cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg) {
+void StagNode::cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg) {
   if (!gotCamInfo) {
     // Get frame ID
     cameraID = msg->header.frame_id;
@@ -202,13 +204,14 @@ void stag_node::cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg) {
     gotCamInfo = true;
   }
 }
+}  // namespace stag_ros
 
 int main(int argc, char** argv) {
   ros::init(argc, argv, "stag_node");
   ros::NodeHandle nh;
   image_transport::ImageTransport imageT(nh);
 
-  stag_node stagN(nh, imageT);
+  stag_ros::StagNode stagN(nh, imageT);
 
   ros::spin();
 
