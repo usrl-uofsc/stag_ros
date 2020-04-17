@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   std_msgs
+  swri_nodelet
   tf
 )
 
@@ -80,6 +81,7 @@ add_library(stag_nodelet
   src/stag_nodelet.cpp
 )
 
+
 add_executable(stag_node
   src/stag_node.cpp
 )
@@ -98,11 +100,15 @@ add_dependencies(stag_node
 target_link_libraries(stag
   ${OpenCV_LIBS}
 )
+
 target_link_libraries(stag_nodelet
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
   stag
 )
+swri_nodelet_add_node(stag_nodelet_runnable stag_ros StagNodelet)
+target_link_libraries(stag_nodelet_runnable stag_nodelet)
+
 target_link_libraries(stag_node
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}

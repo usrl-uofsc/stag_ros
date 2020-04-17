@@ -1,14 +1,11 @@
 <launch>
     <!--Start the logitech camera-->
-    <node name="rosbag" pkg="rosbag" type="play" args="/home/brennan/Documents/stag_data/Stag_1.bag" />
+    <node name="rosbag" pkg="rosbag" type="play" args="/home/brennan/Documents/stag_data/Stag_1.bag" required="true"/>
 
     <!--Load parameters-->
     <rosparam command="load" file="$(find stag_ros)/cfg/stag_w_usb.yaml"/>
 
-    <node pkg="nodelet" type="nodelet" name="standalone_nodelet"  args="manager" output="screen" required="true"/>
-
-    <node pkg="nodelet" type="nodelet" name="StagNodelet" args="load stag_ros/stag_nodelet standalone_nodelet" output="screen" required="true"/>
-    
+    <node name="stag_ros_nodelet" pkg="stag_ros" type="stag_nodelet_runnable" output="screen" required="true" />
     <!-- rviz -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find stag_ros)/cfg/rviz.rviz"/>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find stag_ros)/cfg/rviz.rviz" required="true" />
 </launch>

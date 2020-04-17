@@ -25,6 +25,7 @@ SOFTWARE.
 
 // Project includes
 #include "stag_ros/stag_nodelet.h"
+#include "stag_ros/instrument.hpp"
 #include "stag_ros/StagMarker.h"
 #include "stag_ros/StagMarkers.h"
 
@@ -36,9 +37,8 @@ SOFTWARE.
 #include <tf/transform_datatypes.h>
 
 #include <iostream>
-#include <pluginlib/class_list_macros.h>
-
-PLUGINLIB_EXPORT_CLASS(stag_ros::StagNodelet, nodelet::Nodelet)
+#include <swri_nodelet/class_list_macros.h>
+SWRI_NODELET_EXPORT_CLASS(stag_ros, StagNodelet)
 
 namespace stag_ros {
 
@@ -46,13 +46,14 @@ void StagNodelet::onInit() {
   ros::NodeHandle nh = getNodeHandle();
   image_transport::ImageTransport imageT(nh);
 
-  NODELET_DEBUG("Initializing nodelet...");
-
   // Load Parameters
   loadParameters();
 
   // Set Subscribers
-  imageSub = imageT.subscribe(imageTopic, 1, &StagNodelet::imageCallback, this);
+  imageSub = imageT.subscribe(
+      imageTopic, 1, &StagNodelet::imageCallback, this,
+      image_transport::TransportHints(isCompressed ? "compressed" : "raw"));
+
   cameraInfoSub =
       nh.subscribe(cameraInfoTopic, 1, &StagNodelet::cameraInfoCallback, this);
 
@@ -83,7 +84,7 @@ StagNodelet::~StagNodelet() { delete stag; }
 
 void StagNodelet::loadParameters() {
   // Create private nodeHandle to load parameters
-  ros::NodeHandle nh_lcl("");
+  ros::NodeHandle nh_lcl = getNodeHandle();
 
   nh_lcl.param("libraryHD", stagLib, 15);
   nh_lcl.param("errorCorrection", errorC, 7);
@@ -91,6 +92,7 @@ void StagNodelet::loadParameters() {
   nh_lcl.param("raw_image_topic", imageTopic, std::string("usb_cam/image_raw"));
   nh_lcl.param("camera_info_topic", cameraInfoTopic,
                std::string("usb_cam/camera_info"));
+  nh_lcl.param("is_compressed", isCompressed, false);
   nh_lcl.param("debug_images", debugI, false);
 }
 

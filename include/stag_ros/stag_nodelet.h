@@ -75,8 +75,10 @@ class StagNodelet : public nodelet::Nodelet {
   std::string cameraID;
   bool gotCamInfo;
   bool debugI;
+  bool isCompressed;
   std::string imageTopic;
   std::string cameraInfoTopic;
+
 };
 
 }  // namespace stag_ros
