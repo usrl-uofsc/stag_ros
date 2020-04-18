@@ -35,9 +35,11 @@ SOFTWARE.
 // ROS includes
 #include "tf/tf.h"
 #include <tf/transform_datatypes.h>
+#include <tf/transform_broadcaster.h>
 
 #include <iostream>
 #include <swri_nodelet/class_list_macros.h>
+
 SWRI_NODELET_EXPORT_CLASS(stag_ros, StagNodelet)
 
 namespace stag_ros {
@@ -94,14 +96,27 @@ void StagNodelet::loadParameters() {
                std::string("usb_cam/camera_info"));
   nh_lcl.param("is_compressed", isCompressed, false);
   nh_lcl.param("debug_images", debugI, false);
+  nh_lcl.param("tag_tf_prefix", tag_tf_prefix, std::string("stag_"));
 }
 
 void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
+  INSTRUMENT;
+  static tf::TransformBroadcaster br;
   if (gotCamInfo) {
-    // Read image from msg and convert it to grayscale
-    cv::Mat src = cv_bridge::toCvShare(msg, "bgr8")->image;
+    // Read image from msg and convert it to grayscale, checks provided for rgb8 and bgr8, default to mono8
     cv::Mat gray;
-    cv::cvtColor(src, gray, CV_BGR2GRAY);
+    if (msg->encoding.compare("bgr8") == 0) {
+      cv::Mat src = cv_bridge::toCvShare(msg, msg->encoding)->image;
+      cv::cvtColor(src, gray, CV_BGR2GRAY);
+    } else if (msg->encoding.compare("rgb8") == 0) {
+      cv::Mat src = cv_bridge::toCvShare(msg, msg->encoding)->image;
+      cv::cvtColor(src, gray, CV_RGB2GRAY);
+    } else if(msg->encoding.compare("mono8")==0) {
+      gray = cv_bridge::toCvShare(msg, msg->encoding)->image;
+    } else {
+      NODELET_FATAL("Wrong image encoding: %s. You must add support at line %i.",msg->encoding.c_str(),__LINE__);
+      ros::shutdown();
+    }
 
     // Process the image to find the markers
     stag->detectMarkers(gray);
@@ -110,7 +125,7 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
     // Publish debug image
     if (debugI) {
       cv_bridge::CvImage rosMat;
-      rosMat.header.frame_id = cameraID;
+      rosMat.header = msg->header;
       rosMat.encoding = "bgr8";
       rosMat.image = stag->drawMarkers();
 
@@ -143,6 +158,7 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
         cv::solvePnP(tagCorners, imageCorners, cameraMatrix, distortionMat,
                      rVec, tVec);
         cv::Rodrigues(rVec, rMat);
+
         tf::Matrix3x3 rotMat(rMat.at<double>(0, 0), rMat.at<double>(0, 1),
                              rMat.at<double>(0, 2), rMat.at<double>(1, 0),
                              rMat.at<double>(1, 1), rMat.at<double>(1, 2),
@@ -150,14 +166,15 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
                              rMat.at<double>(2, 2));
         tf::Quaternion rotQ;
         rotMat.getRotation(rotQ);
-
         markerMsg.pose.position.x = tVec.at<double>(0);
         markerMsg.pose.position.y = tVec.at<double>(1);
         markerMsg.pose.position.z = tVec.at<double>(2);
-
         tf::quaternionTFToMsg(rotQ, markerMsg.pose.orientation);
-
         markersMsg.markers.push_back(markerMsg);
+
+        tf::Vector3 tfVec(tVec.at<double>(0),tVec.at<double>(1),tVec.at<double>(2));
+        br.sendTransform(tf::StampedTransform(tf::Transform(rotQ,tfVec),msg->header.stamp,msg->header.frame_id,tag_tf_prefix+std::to_string(markers[i].id)));
+
       }
       markersPub.publish(markersMsg);
     } else
@@ -168,8 +185,6 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 void StagNodelet::cameraInfoCallback(
     const sensor_msgs::CameraInfoConstPtr& msg) {
   if (!gotCamInfo) {
-    // Get frame ID
-    cameraID = msg->header.frame_id;
     // Get camera Matrix
     cameraMatrix.at<double>(0, 0) = msg->K[0];
     cameraMatrix.at<double>(0, 1) = msg->K[1];

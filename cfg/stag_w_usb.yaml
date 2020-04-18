@@ -8,5 +8,8 @@ camera_info_topic: /usb_cam/camera_info
 raw_image_topic: /usb_cam/image_raw
 is_compressed: true
 
+# node configuration
+tag_tf_prefix: stag_
+
 # Publish debug images
 debug_images: true

@@ -72,12 +72,12 @@ class StagNodelet : public nodelet::Nodelet {
   cv::Mat distortionMat;
   cv::Mat rectificationMat;
   cv::Mat projectionMat;
-  std::string cameraID;
   bool gotCamInfo;
   bool debugI;
   bool isCompressed;
   std::string imageTopic;
   std::string cameraInfoTopic;
+  std::string tag_tf_prefix;
 
 };
 

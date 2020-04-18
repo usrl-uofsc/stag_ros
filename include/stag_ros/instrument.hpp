@@ -48,7 +48,7 @@ struct Instrument {
     size_t sum = std::accumulate(times.begin(), times.end(), 0);
 
     std::cout << "---------------------------------------" << std::endl;
-    printf("%s in %s line %i", fullname, file, line);
+    printf("%s in %s:%i\n", fullname, file, line);
     printf("calls: %lu\n", times.size());
     printf("min  : %lu\n", times.front());
     printf("med  : %lu\n", times.at(count / 2));
@@ -62,13 +62,13 @@ struct Instrument {
 
 struct Timer {
   Instrument& instrument;
-  std::chrono::time_point<std::chrono::high_resolution_clock> enter;
+  std::chrono::time_point<std::chrono::steady_clock> enter;
   Timer(Instrument& instrument)
-      : enter(std::chrono::high_resolution_clock::now()),
+      : enter(std::chrono::steady_clock::now()),
         instrument(instrument) {}
   ~Timer() {
     instrument.insert(std::chrono::duration_cast<std::chrono::microseconds>(
-                          std::chrono::high_resolution_clock::now() - enter)
+                          std::chrono::steady_clock::now() - enter)
                           .count());
   }
 };

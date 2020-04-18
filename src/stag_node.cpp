@@ -45,8 +45,11 @@ StagNode::StagNode(ros::NodeHandle& nh,
   loadParameters();
 
   // Set Subscribers
-  imageSub = imageT.subscribe(imageTopic, 1, &StagNode::imageCallback, this);
-  cameraInfoSub =
+
+  imageSub = imageT.subscribe(
+      imageTopic, 1, &StagNode::imageCallback, this,
+      image_transport::TransportHints("compressed"));
+        cameraInfoSub =
       nh.subscribe(cameraInfoTopic, 1, &StagNode::cameraInfoCallback, this);
 
   // Set Publishers
