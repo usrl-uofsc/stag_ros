@@ -3,8 +3,12 @@ project(stag_ros)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
+set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 find_package(OpenCV REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(JSONCPP jsoncpp)
+link_libraries(${JSONCPP_LIBRARIES})
 
 ################
 # Dependencies #
@@ -100,10 +104,12 @@ add_dependencies(stag_node
 target_link_libraries(stag
   ${OpenCV_LIBS}
 )
+message(STATUS "JSON lib : ${JSONCPP_LIBRARIES}")
 
 target_link_libraries(stag_nodelet
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
+  ${JSONCPP_LIBRARIES}
   stag
 )
 swri_nodelet_add_node(stag_nodelet_runnable stag_ros StagNodelet)

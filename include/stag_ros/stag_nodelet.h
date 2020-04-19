@@ -36,6 +36,8 @@ SOFTWARE.
 
 // Stag includes
 #include "../../src/Stag.h"
+#include "stag_ros/structures.hpp"
+#include "stag_ros/tagJsonLoader.hpp"
 
 namespace stag_ros {
 
@@ -50,8 +52,13 @@ class StagNodelet : public nodelet::Nodelet {
   void cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr &msg);
 
   // Functions
-  void loadParameters();
-
+  void loadParameters(const ros::NodeHandle &nh);
+  bool getBundleIndex(const int id, int &bundle_index, int &tag_index);
+  bool getTagIndex(const int id, int &tag_index);
+  void solvePnp(const std::vector<cv::Point2f> &img,
+      const std::vector<cv::Point3f> &world,
+      cv::Mat &output
+      );
   // ROS Subcribers
   image_transport::Subscriber imageSub;
   ros::Subscriber cameraInfoSub;
@@ -78,6 +85,10 @@ class StagNodelet : public nodelet::Nodelet {
   std::string imageTopic;
   std::string cameraInfoTopic;
   std::string tag_tf_prefix;
+
+  // Tag and bundle info
+  std::vector<Bundle> bundles;
+  std::vector<Tag> tags;
 
 };
 
