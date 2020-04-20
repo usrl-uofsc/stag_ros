@@ -69,7 +69,7 @@ inline void load(const std::string &filename, std::vector<Tag> &tags,
           exit(EXIT_FAILURE);
         }
         for (size_t i=1; i < 4; ++i)
-          t.corners[i] = cv::Point3f(
+          t.corners[i] = cv::Point3d(
               cfg_root["tags"][frame_id]["corners"][0][0].asDouble(),
               cfg_root["tags"][frame_id]["corners"][0][1].asDouble(),
               cfg_root["tags"][frame_id]["corners"][0][2].asDouble());

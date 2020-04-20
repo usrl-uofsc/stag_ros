@@ -70,10 +70,10 @@ void StagNodelet::onInit() {
 
   // Initialize camera info
   gotCamInfo = false;
-  cameraMatrix = cv::Mat::zeros(3, 3, CV_32F);
-  distortionMat = cv::Mat::zeros(1, 5, CV_32F);
-  rectificationMat = cv::Mat::zeros(3, 3, CV_32F);
-  projectionMat = cv::Mat::zeros(3, 4, CV_32F);
+  cameraMatrix = cv::Mat::zeros(3, 3, CV_64F);
+  distortionMat = cv::Mat::zeros(1, 5, CV_64F);
+  rectificationMat = cv::Mat::zeros(3, 3, CV_64F);
+  projectionMat = cv::Mat::zeros(3, 4, CV_64F);
 
 }  // namespace stag_ros
 
@@ -122,19 +122,14 @@ bool StagNodelet::getBundleIndex(const int id, int &bundle_index,
 }
 
 void StagNodelet::solvePnp(
-    const std::vector<cv::Point2f> &img, const std::vector<cv::Point3f> &world,
+    const std::vector<cv::Point2d> &img, const std::vector<cv::Point3d> &world,
     cv::Mat &output) {  // TODO: Big race condition introduced here
   if (img.empty() or world.empty()) return;
   cv::Mat rVec, rMat, tVec;
   cv::solvePnP(world, img, cameraMatrix, distortionMat, rVec, tVec);
-  std::cout << "types out: " << rVec.type()<< " " <<tVec.type() <<std::endl;
   cv::Rodrigues(rVec, rMat);
-  std::cout << "rodrigues solved" << std::endl;
-  std::cout << "translation: " << tVec << std::endl;
-  std::cout << "rotation : " << rMat << std::endl;
-  rMat.convertTo(output.colRange(0, 3),CV_32F);
-  tVec.convertTo(output.col(3),CV_32F);
-  std::cout << "T matrix " << output << std::endl;
+  rMat.convertTo(output.colRange(0, 3), CV_64F);
+  tVec.convertTo(output.col(3), CV_64F);
 }
 
 void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
@@ -179,10 +174,10 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
     // For each marker in the list
     if (markers.size() > 0) {
       // Create markers msg
-      std::vector<cv::Mat> tag_pose(tags.size(),cv::Mat(3,4,CV_32F));
-      std::vector<cv::Mat> bundle_pose(bundles.size(),cv::Mat(3,4,CV_32F));
-      std::vector<std::vector<cv::Point2f>> bundle_image(tags.size());
-      std::vector<std::vector<cv::Point3f>> bundle_world(tags.size());
+      std::vector<cv::Mat> tag_pose(tags.size(), cv::Mat(3, 4, CV_64F));
+      std::vector<cv::Mat> bundle_pose(bundles.size(), cv::Mat(3, 4, CV_64F));
+      std::vector<std::vector<cv::Point2d>> bundle_image(tags.size());
+      std::vector<std::vector<cv::Point3d>> bundle_world(tags.size());
 
       {  // anonymous for the tag jobs to be able to finish
         std::vector<std::future<void>> tag_jobs(tags.size());
@@ -191,8 +186,8 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
           int tag_index, bundle_index;
           if (getTagIndex(markers[i].id,
                           tag_index)) {  // if tag is a single tag, push back
-            std::vector<cv::Point2f> tag_image(5);
-            std::vector<cv::Point3f> tag_world(5);
+            std::vector<cv::Point2d> tag_image(5);
+            std::vector<cv::Point3d> tag_world(5);
 
             tag_image[0] = markers[i].center;
             tag_world[0] = tags[tag_index].center;
@@ -201,12 +196,11 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
               tag_image[ci + 1] = markers[i].corners[ci];
               tag_world[ci + 1] = tags[tag_index].corners[ci];
             }
-            std::cout << "Solving tag " << markers[i].id << " at index " << tag_index<< std::endl;
 
-            // tag_jobs[tag_index] =
-            // std::async(&StagNodelet::solvePnp,&*this,tag_image,tag_world,tag_pose[tag_index]);
-            this->solvePnp(tag_image, tag_world, tag_pose[tag_index]);
-            std::cout << "Outside solver : "  << tag_pose[tag_index]<<std::endl;;
+            tag_jobs[tag_index] = std::async(
+                [this, tag_image, tag_world, &tag_pose, tag_index]() {
+                  this->solvePnp(tag_image, tag_world, tag_pose[tag_index]);
+                });
           } else if (getBundleIndex(markers[i].id, tag_index, bundle_index)) {
             bundle_image[bundle_index].push_back(markers[i].center);
             bundle_world[bundle_index].push_back(
@@ -222,9 +216,10 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
         std::vector<std::future<void>> bundle_jobs(tags.size());
         for (size_t bi = 0; bi < bundles.size(); ++bi) {
           if (bundle_image[bi].size() > 0)
-            // bundle_jobs[bi] =
-            // std::async(&StagNodelet::solvePnp,*this,bundle_image[bi],bundle_world[bi],bundle_pose[bi]);
-            this->solvePnp(bundle_image[bi], bundle_world[bi], bundle_pose[bi]);
+            bundle_jobs[bi] = std::async(
+                [this, bundle_image, bundle_world, &bundle_pose, bi]() {
+                  this->solvePnp(bundle_image[bi], bundle_world[bi], bundle_pose[bi]);
+                });
         }
 
       }  // completes all jobs
@@ -232,17 +227,17 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
         if (bundle_pose[bi].empty()) continue;
 
         tf::Matrix3x3 rotMat(
-            bundle_pose[bi].at<float>(0, 0), bundle_pose[bi].at<float>(0, 1),
-            bundle_pose[bi].at<float>(0, 2), bundle_pose[bi].at<float>(1, 0),
-            bundle_pose[bi].at<float>(1, 1), bundle_pose[bi].at<float>(1, 2),
-            bundle_pose[bi].at<float>(2, 0), bundle_pose[bi].at<float>(2, 1),
-            bundle_pose[bi].at<float>(2, 2));
+            bundle_pose[bi].at<double>(0, 0), bundle_pose[bi].at<double>(0, 1),
+            bundle_pose[bi].at<double>(0, 2), bundle_pose[bi].at<double>(1, 0),
+            bundle_pose[bi].at<double>(1, 1), bundle_pose[bi].at<double>(1, 2),
+            bundle_pose[bi].at<double>(2, 0), bundle_pose[bi].at<double>(2, 1),
+            bundle_pose[bi].at<double>(2, 2));
         tf::Quaternion rotQ;
         rotMat.getRotation(rotQ);
 
-        tf::Vector3 tfVec(bundle_pose[bi].at<float>(0, 3),
-                          bundle_pose[bi].at<float>(1, 3),
-                          bundle_pose[bi].at<float>(2, 3));
+        tf::Vector3 tfVec(bundle_pose[bi].at<double>(0, 3),
+                          bundle_pose[bi].at<double>(1, 3),
+                          bundle_pose[bi].at<double>(2, 3));
         br.sendTransform(tf::StampedTransform(
             tf::Transform(rotQ, tfVec), msg->header.stamp, msg->header.frame_id,
             tag_tf_prefix + std::to_string(markers[bi].id)));
@@ -251,22 +246,21 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
         if (tag_pose[ti].empty()) continue;
 
         tf::Matrix3x3 rotMat(
-            tag_pose[ti].at<float>(0, 0), tag_pose[ti].at<float>(0, 1),
-            tag_pose[ti].at<float>(0, 2), tag_pose[ti].at<float>(1, 0),
-            tag_pose[ti].at<float>(1, 1), tag_pose[ti].at<float>(1, 2),
-            tag_pose[ti].at<float>(2, 0), tag_pose[ti].at<float>(2, 1),
-            tag_pose[ti].at<float>(2, 2));
+            tag_pose[ti].at<double>(0, 0), tag_pose[ti].at<double>(0, 1),
+            tag_pose[ti].at<double>(0, 2), tag_pose[ti].at<double>(1, 0),
+            tag_pose[ti].at<double>(1, 1), tag_pose[ti].at<double>(1, 2),
+            tag_pose[ti].at<double>(2, 0), tag_pose[ti].at<double>(2, 1),
+            tag_pose[ti].at<double>(2, 2));
         tf::Quaternion rotQ;
         rotMat.getRotation(rotQ);
 
-        tf::Vector3 tfVec(tag_pose[ti].at<float>(0, 3),
-                          tag_pose[ti].at<float>(1, 3),
-                          tag_pose[ti].at<float>(2, 3));
+        tf::Vector3 tfVec(tag_pose[ti].at<double>(0, 3),
+                          tag_pose[ti].at<double>(1, 3),
+                          tag_pose[ti].at<double>(2, 3));
         br.sendTransform(tf::StampedTransform(
             tf::Transform(rotQ, tfVec), msg->header.stamp, msg->header.frame_id,
             tag_tf_prefix + std::to_string(markers[ti].id)));
       }
-
     } else
       ROS_WARN("No markers detected");
   }
@@ -276,45 +270,45 @@ void StagNodelet::cameraInfoCallback(
     const sensor_msgs::CameraInfoConstPtr &msg) {
   if (!gotCamInfo) {
     // Get camera Matrix
-    cameraMatrix.at<float>(0, 0) = msg->K[0];
-    cameraMatrix.at<float>(0, 1) = msg->K[1];
-    cameraMatrix.at<float>(0, 2) = msg->K[2];
-    cameraMatrix.at<float>(1, 0) = msg->K[3];
-    cameraMatrix.at<float>(1, 1) = msg->K[4];
-    cameraMatrix.at<float>(1, 2) = msg->K[5];
-    cameraMatrix.at<float>(2, 0) = msg->K[6];
-    cameraMatrix.at<float>(2, 1) = msg->K[7];
-    cameraMatrix.at<float>(2, 2) = msg->K[8];
+    cameraMatrix.at<double>(0, 0) = msg->K[0];
+    cameraMatrix.at<double>(0, 1) = msg->K[1];
+    cameraMatrix.at<double>(0, 2) = msg->K[2];
+    cameraMatrix.at<double>(1, 0) = msg->K[3];
+    cameraMatrix.at<double>(1, 1) = msg->K[4];
+    cameraMatrix.at<double>(1, 2) = msg->K[5];
+    cameraMatrix.at<double>(2, 0) = msg->K[6];
+    cameraMatrix.at<double>(2, 1) = msg->K[7];
+    cameraMatrix.at<double>(2, 2) = msg->K[8];
 
     // Get distortion Matrix
-    distortionMat.at<float>(0, 0) = msg->D[0];
-    distortionMat.at<float>(0, 1) = msg->D[1];
-    distortionMat.at<float>(0, 2) = msg->D[2];
-    distortionMat.at<float>(0, 3) = msg->D[3];
-    distortionMat.at<float>(0, 4) = msg->D[4];
+    distortionMat.at<double>(0, 0) = msg->D[0];
+    distortionMat.at<double>(0, 1) = msg->D[1];
+    distortionMat.at<double>(0, 2) = msg->D[2];
+    distortionMat.at<double>(0, 3) = msg->D[3];
+    distortionMat.at<double>(0, 4) = msg->D[4];
     // Get rectification Matrix
-    rectificationMat.at<float>(0, 0) = msg->R[0];
-    rectificationMat.at<float>(0, 1) = msg->R[1];
-    rectificationMat.at<float>(0, 2) = msg->R[2];
-    rectificationMat.at<float>(1, 0) = msg->R[3];
-    rectificationMat.at<float>(1, 1) = msg->R[4];
-    rectificationMat.at<float>(1, 2) = msg->R[5];
-    rectificationMat.at<float>(2, 0) = msg->R[6];
-    rectificationMat.at<float>(2, 1) = msg->R[7];
-    rectificationMat.at<float>(2, 2) = msg->R[8];
+    rectificationMat.at<double>(0, 0) = msg->R[0];
+    rectificationMat.at<double>(0, 1) = msg->R[1];
+    rectificationMat.at<double>(0, 2) = msg->R[2];
+    rectificationMat.at<double>(1, 0) = msg->R[3];
+    rectificationMat.at<double>(1, 1) = msg->R[4];
+    rectificationMat.at<double>(1, 2) = msg->R[5];
+    rectificationMat.at<double>(2, 0) = msg->R[6];
+    rectificationMat.at<double>(2, 1) = msg->R[7];
+    rectificationMat.at<double>(2, 2) = msg->R[8];
     // Get projection Matrix
-    projectionMat.at<float>(0, 0) = msg->P[0];
-    projectionMat.at<float>(0, 1) = msg->P[1];
-    projectionMat.at<float>(0, 2) = msg->P[2];
-    projectionMat.at<float>(1, 0) = msg->P[3];
-    projectionMat.at<float>(1, 1) = msg->P[4];
-    projectionMat.at<float>(1, 2) = msg->P[5];
-    projectionMat.at<float>(2, 0) = msg->P[6];
-    projectionMat.at<float>(2, 1) = msg->P[7];
-    projectionMat.at<float>(2, 2) = msg->P[8];
-    projectionMat.at<float>(2, 0) = msg->P[9];
-    projectionMat.at<float>(2, 1) = msg->P[10];
-    projectionMat.at<float>(2, 2) = msg->P[11];
+    projectionMat.at<double>(0, 0) = msg->P[0];
+    projectionMat.at<double>(0, 1) = msg->P[1];
+    projectionMat.at<double>(0, 2) = msg->P[2];
+    projectionMat.at<double>(1, 0) = msg->P[3];
+    projectionMat.at<double>(1, 1) = msg->P[4];
+    projectionMat.at<double>(1, 2) = msg->P[5];
+    projectionMat.at<double>(2, 0) = msg->P[6];
+    projectionMat.at<double>(2, 1) = msg->P[7];
+    projectionMat.at<double>(2, 2) = msg->P[8];
+    projectionMat.at<double>(2, 0) = msg->P[9];
+    projectionMat.at<double>(2, 1) = msg->P[10];
+    projectionMat.at<double>(2, 2) = msg->P[11];
 
     gotCamInfo = true;
   }

@@ -6,8 +6,8 @@ namespace stag_ros {
 struct Tag {
   int id;
   std::string frame_id;
-  cv::Point3f corners[4];
-  cv::Point3f center;
+  cv::Point3d corners[4];
+  cv::Point3d center;
   
 };
 
