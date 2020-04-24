@@ -1,0 +1,3 @@
+/home/michailk/git/stag/build/CMakeFiles/edit_cache.dir
+/home/michailk/git/stag/build/CMakeFiles/stag_test.dir
+/home/michailk/git/stag/build/CMakeFiles/rebuild_cache.dir

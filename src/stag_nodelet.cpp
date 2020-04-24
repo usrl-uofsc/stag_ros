@@ -31,7 +31,7 @@ SOFTWARE.
 #include "stag_ros/StagMarkers.h"
 
 // Stag marker handle
-#include "Marker.h"
+#include "../lib/stag_core/Marker.h"
 
 // ROS includes
 #include "tf/tf.h"

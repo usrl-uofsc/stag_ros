@@ -25,6 +25,7 @@ SOFTWARE.
 #pragma once
 
 #include <nodelet/nodelet.h>
+
 // ROS includes
 #include "ros/ros.h"
 #include "cv_bridge/cv_bridge.h"
@@ -35,7 +36,7 @@ SOFTWARE.
 #include "sensor_msgs/image_encodings.h"
 
 // Stag includes
-#include "../../src/Stag.h"
+#include "../../lib/stag_core/Stag.h"
 #include "stag_ros/structures.hpp"
 #include "stag_ros/tagJsonLoader.hpp"
 

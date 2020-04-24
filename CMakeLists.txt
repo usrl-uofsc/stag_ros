@@ -41,7 +41,7 @@ generate_messages(
 )
 
 catkin_package(
-  INCLUDE_DIRS include
+  INCLUDE_DIRS include lib/stag_core
   LIBRARIES stag_ros
   CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport message_generation roscpp sensor_msgs std_msgs
   DEPENDS system_lib
@@ -58,33 +58,32 @@ include_directories(
 ###########
 
 ## Runnables
-add_library(stag
-  src/Decoder.cpp
-  src/Drawer.cpp
-  src/EDInterface.cpp
-  src/Ellipse.cpp
-  src/Marker.cpp
-  src/PoseRefiner.cpp
-  src/Quad.cpp
-  src/QuadDetector.cpp
-  src/Stag.cpp
-  src/utility.cpp
-  src/ED/ED.cpp
-  src/ED/EDInternals.cpp
-  src/ED/EDLines.cpp
-  src/ED/GradientOperators.cpp
-  src/ED/ImageSmooth.cpp
-  src/ED/LineSegment.cpp
-  src/ED/MyMath.cpp
-  src/ED/NFA.cpp
-  src/ED/Utilities.cpp
-  src/ED/ValidateEdgeSegments.cpp
+add_library(stag_core
+  lib/stag_core/Decoder.cpp
+  lib/stag_core/Drawer.cpp
+  lib/stag_core/EDInterface.cpp
+  lib/stag_core/Ellipse.cpp
+  lib/stag_core/Marker.cpp
+  lib/stag_core/PoseRefiner.cpp
+  lib/stag_core/Quad.cpp
+  lib/stag_core/QuadDetector.cpp
+  lib/stag_core/Stag.cpp
+  lib/stag_core/utility.cpp
+  lib/stag_core/ED/ED.cpp
+  lib/stag_core/ED/EDInternals.cpp
+  lib/stag_core/ED/EDLines.cpp
+  lib/stag_core/ED/GradientOperators.cpp
+  lib/stag_core/ED/ImageSmooth.cpp
+  lib/stag_core/ED/LineSegment.cpp
+  lib/stag_core/ED/MyMath.cpp
+  lib/stag_core/ED/NFA.cpp
+  lib/stag_core/ED/Utilities.cpp
+  lib/stag_core/ED/ValidateEdgeSegments.cpp
 )
 
 add_library(stag_nodelet
   src/stag_nodelet.cpp
 )
-
 
 add_executable(stag_node
   src/stag_node.cpp
@@ -101,7 +100,7 @@ add_dependencies(stag_node
 )
 
 ## Links
-target_link_libraries(stag
+target_link_libraries(stag_core
   ${OpenCV_LIBS}
 )
 message(STATUS "JSON lib : ${JSONCPP_LIBRARIES}")
@@ -110,7 +109,7 @@ target_link_libraries(stag_nodelet
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
   ${JSONCPP_LIBRARIES}
-  stag
+  stag_core
 )
 swri_nodelet_add_node(stag_nodelet_runnable stag_ros StagNodelet)
 target_link_libraries(stag_nodelet_runnable stag_nodelet)
@@ -118,5 +117,5 @@ target_link_libraries(stag_nodelet_runnable stag_nodelet)
 target_link_libraries(stag_node
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
-  stag
+  stag_core
 )

@@ -1,7 +1,7 @@
 #include "Stag.h"
 #include "Ellipse.h"
 #include "utility.h"
-#include "stag_ros/instrument.hpp"
+#include "../../include/stag_ros/instrument.hpp"
 
 #define HALF_PI 1.570796326794897
 
