@@ -36,7 +36,7 @@ SOFTWARE.
 #include "sensor_msgs/image_encodings.h"
 
 // Stag includes
-#include "../../lib/stag_core/Stag.h"
+#include "stag/Stag.h"
 #include "stag_ros/structures.hpp"
 #include "stag_ros/tagJsonLoader.hpp"
 

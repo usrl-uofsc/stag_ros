@@ -34,7 +34,7 @@ SOFTWARE.
 #include "sensor_msgs/image_encodings.h"
 
 // Stag includes
-#include "../../lib/stag_core/Stag.h"
+#include "stag/Stag.h"
 
 namespace stag_ros {
 class StagNode {

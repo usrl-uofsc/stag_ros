@@ -1,3 +1,4 @@
 setup.bash
-.vscode/settings.json
-builds
+.vscode
+.idea
+build
