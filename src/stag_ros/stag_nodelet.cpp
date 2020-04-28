@@ -27,6 +27,9 @@ SOFTWARE.
 #include "stag_ros/stag_nodelet.h"
 #include "stag_ros/instrument.hpp"
 #include "stag_ros/tagJsonLoader.hpp"
+#include "stag_ros/utility.hpp"
+
+// Ros generated
 #include "stag_ros/StagMarker.h"
 #include "stag_ros/StagMarkers.h"
 
@@ -136,23 +139,8 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
   INSTRUMENT;
   static tf::TransformBroadcaster br;
   if (gotCamInfo) {
-    // Read image from msg and convert it to grayscale, checks provided for rgb8
-    // and bgr8, default to mono8
     cv::Mat gray;
-    if (msg->encoding.compare("bgr8") == 0) {
-      cv::Mat src = cv_bridge::toCvShare(msg, msg->encoding)->image;
-      cv::cvtColor(src, gray, CV_BGR2GRAY);
-    } else if (msg->encoding.compare("rgb8") == 0) {
-      cv::Mat src = cv_bridge::toCvShare(msg, msg->encoding)->image;
-      cv::cvtColor(src, gray, CV_RGB2GRAY);
-    } else if (msg->encoding.compare("mono8") == 0) {
-      gray = cv_bridge::toCvShare(msg, msg->encoding)->image;
-    } else {
-      NODELET_FATAL(
-          "Wrong image encoding: %s. You must add support at line %i.",
-          msg->encoding.c_str(), __LINE__);
-      ros::shutdown();
-    }
+    msgToGray(msg, gray);
 
     // Process the image to find the markers
     stag->detectMarkers(gray);
@@ -218,7 +206,8 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
           if (bundle_image[bi].size() > 0)
             bundle_jobs[bi] = std::async(
                 [this, bundle_image, bundle_world, &bundle_pose, bi]() {
-                  this->solvePnp(bundle_image[bi], bundle_world[bi], bundle_pose[bi]);
+                  this->solvePnp(bundle_image[bi], bundle_world[bi],
+                                 bundle_pose[bi]);
                 });
         }
 
