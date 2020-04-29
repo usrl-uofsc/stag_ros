@@ -2,3 +2,4 @@ setup.bash
 .vscode
 .idea
 build
+data/*

@@ -1254,8 +1254,9 @@ typedef struct ntuple_list_s {
   double *values;
 } * ntuple_list;
 
-static void error(char *msg) {
-  fprintf(stderr, "gaussian_sampler error: %s\n", msg);
+// static void error(char *msg) {
+static void error(std::string msg) {
+  fprintf(stderr, "gaussian_sampler error: %s\n", msg.c_str());
   exit(EXIT_FAILURE);
 }
 
