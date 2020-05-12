@@ -44,7 +44,6 @@ catkin_package(
   INCLUDE_DIRS include src/stag
   LIBRARIES stag_ros
   CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport message_generation roscpp sensor_msgs std_msgs
-  DEPENDS system_lib
 )
 
 include_directories(
