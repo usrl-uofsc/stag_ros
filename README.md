@@ -8,6 +8,21 @@ Markers (will provide a generation script in the future):
 
 https://drive.google.com/drive/folders/0ByNTNYCAhWbIV1RqdU9vRnd2Vnc
 
+## Installation
+Follow these steps to install
+### Prerequisites
+This assumes you already have ros installed on your device.
+```
+sudo apt-get install ros-{DISTRO}-swri-nodelet
+
+```
+### Install STag ROS
+```
+mkdir -p /path/to/ws/src
+cd /path/to/ws/src
+git clone git@github.com:usrl-uofsc/stag_ros.git
+```
+
 ### TODO:
 * Add a makefile
 * Write Matlab and Python wrappers
