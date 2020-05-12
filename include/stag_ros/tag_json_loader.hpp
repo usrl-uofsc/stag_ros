@@ -1,10 +1,11 @@
 #pragma once
+#include <fstream>
 #include <jsoncpp/json/json.h>
 #include <opencv2/core/types.hpp>
 #include "structures.hpp"
 namespace stag_ros {
 
-namespace tagJsonLoader {
+namespace tag_json_loader {
 
 inline bool checkIdAndFrameValid(const std::vector<Tag> &tags,
                                  const std::vector<Bundle> &bundles,
@@ -20,6 +21,7 @@ inline bool checkIdAndFrameValid(const std::vector<Tag> &tags,
   }
   return true;
 }
+
 inline void load(const std::string &filename, std::vector<Tag> &tags,
                  std::vector<Bundle> &bundles) {
   tags.clear();
@@ -83,5 +85,5 @@ inline void load(const std::string &filename, std::vector<Tag> &tags,
   }
 }
 
-} // namepsace tagJsonLoader
+} // namespace tagJsonLoader
 }  // namespace stag_ros

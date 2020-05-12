@@ -1,7 +1,7 @@
 /**
 MIT License
 
-Copyright (c) 2020 Michail Kalaitzakis (Unmanned Systems and Robotics Lab,
+Copyright (c) 2020 Michail Kalaitzakis and Brennan Cain (Unmanned Systems and Robotics Lab,
 University of South Carolina, USA)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +26,7 @@ SOFTWARE.
 // Project includes
 #include "stag_ros/stag_nodelet.h"
 #include "stag_ros/instrument.hpp"
-#include "stag_ros/tagJsonLoader.hpp"
+#include "stag_ros/tag_json_loader.hpp"
 #include "stag_ros/utility.hpp"
 
 // Ros generated
@@ -97,7 +97,7 @@ void StagNodelet::loadParameters(const ros::NodeHandle &nh) {
   std::string tagJson;
   nh.param("tag_config_json", tagJson, std::string("tag_config.json"));
 
-  tagJsonLoader::load(tagJson, tags, bundles);
+  tag_json_loader::load(tagJson, tags, bundles);
 }
 
 bool StagNodelet::getTagIndex(const int id, int &tag_index) {

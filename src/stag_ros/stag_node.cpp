@@ -1,7 +1,7 @@
 /**
 MIT License
 
-Copyright (c) 2020 Michail Kalaitzakis (Unmanned Systems and Robotics Lab,
+Copyright (c) 2020 Michail Kalaitzakis and Brennan Cain (Unmanned Systems and Robotics Lab,
 University of South Carolina, USA)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
