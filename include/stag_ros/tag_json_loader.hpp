@@ -55,8 +55,10 @@ inline void load(const std::string &filename, std::vector<Tag> &tags,
       t.corners[3] = t.corners[0] + (t.corners[2] - t.corners[1]);
       tags.emplace_back(t);
     }
+    std::cout << tags.size() << " individual tags found\n";
   }
   if (cfg_root.isMember("bundles")) {
+    std::cout << "Loading bundles" << std::endl;
     for (auto frame_id : cfg_root["bundles"].getMemberNames()) {
       Bundle b;
       b.frame_id = frame_id;
@@ -82,6 +84,7 @@ inline void load(const std::string &filename, std::vector<Tag> &tags,
       }
       bundles.emplace_back(b);
     }
+    std::cout << bundles.size() << " tag bundle(s) found\n";
   }
 }
 

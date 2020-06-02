@@ -164,8 +164,8 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
       // Create markers msg
       std::vector<cv::Mat> tag_pose(tags.size(), cv::Mat(3, 4, CV_64F));
       std::vector<cv::Mat> bundle_pose(bundles.size(), cv::Mat(3, 4, CV_64F));
-      std::vector<std::vector<cv::Point2d>> bundle_image(tags.size());
-      std::vector<std::vector<cv::Point3d>> bundle_world(tags.size());
+      std::vector<std::vector<cv::Point2d>> bundle_image(bundles.size());
+      std::vector<std::vector<cv::Point3d>> bundle_world(bundles.size());
 
       {  // anonymous for the tag jobs to be able to finish
         std::vector<std::future<void>> tag_jobs(tags.size());
@@ -189,7 +189,7 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                 [this, tag_image, tag_world, &tag_pose, tag_index]() {
                   this->solvePnp(tag_image, tag_world, tag_pose[tag_index]);
                 });
-          } else if (getBundleIndex(markers[i].id, tag_index, bundle_index)) {
+          } else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
             bundle_image[bundle_index].push_back(markers[i].center);
             bundle_world[bundle_index].push_back(
                 bundles[bundle_index].tags[tag_index].center);
@@ -210,7 +210,6 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                                  bundle_pose[bi]);
                 });
         }
-
       }  // completes all jobs
       for (size_t bi = 0; bi < bundle_world.size(); ++bi) {
         if (bundle_pose[bi].empty()) continue;
