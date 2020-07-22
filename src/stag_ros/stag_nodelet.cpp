@@ -92,7 +92,7 @@ void StagNodelet::loadParameters(const ros::NodeHandle &nh) {
   nh.param("camera_info_topic", cameraInfoTopic, std::string("camera_info"));
   nh.param("is_compressed", isCompressed, false);
   nh.param("debug_images", debugI, false);
-  nh.param("tag_tf_prefix", tag_tf_prefix, std::string("stag_"));
+  nh.param("tag_tf_prefix", tag_tf_prefix, std::string("STag_"));
 
   std::string tagJson;
   nh.param("tag_config_json", tagJson, std::string("tag_config.json"));
@@ -172,8 +172,9 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
         for (int i = 0; i < markers.size(); i++) {
           // Create marker msg
           int tag_index, bundle_index;
-          if (getTagIndex(markers[i].id,
-                          tag_index)) {  // if tag is a single tag, push back
+
+          // if tag is a single tag, push back
+          if (getTagIndex(markers[i].id, tag_index)) {
             std::vector<cv::Point2d> tag_image(5);
             std::vector<cv::Point3d> tag_world(5);
 
@@ -189,29 +190,29 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                 [this, tag_image, tag_world, &tag_pose, tag_index]() {
                   this->solvePnp(tag_image, tag_world, tag_pose[tag_index]);
                 });
-          } else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
+          }
+          else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
             bundle_image[bundle_index].push_back(markers[i].center);
-            bundle_world[bundle_index].push_back(
-                bundles[bundle_index].tags[tag_index].center);
+            bundle_world[bundle_index].push_back(bundles[bundle_index].tags[tag_index].center);
 
             for (size_t ci = 0; ci < 4; ++ci) {
               bundle_image[bundle_index].push_back(markers[i].corners[ci]);
-              bundle_world[bundle_index].push_back(
-                  bundles[bundle_index].tags[tag_index].corners[ci]);
+              bundle_world[bundle_index].push_back(bundles[bundle_index].tags[tag_index].corners[ci]);
             }
           }
         }
-        std::vector<std::future<void>> bundle_jobs(tags.size());
+
+        std::vector<std::future<void>> bundle_jobs(bundles.size());
         for (size_t bi = 0; bi < bundles.size(); ++bi) {
           if (bundle_image[bi].size() > 0)
             bundle_jobs[bi] = std::async(
                 [this, bundle_image, bundle_world, &bundle_pose, bi]() {
-                  this->solvePnp(bundle_image[bi], bundle_world[bi],
-                                 bundle_pose[bi]);
+                  this->solvePnp(bundle_image[bi], bundle_world[bi], bundle_pose[bi]);
                 });
         }
       }  // completes all jobs
-      for (size_t bi = 0; bi < bundle_world.size(); ++bi) {
+
+      for (size_t bi = 0; bi < bundles.size(); ++bi) {
         if (bundle_pose[bi].empty()) continue;
 
         tf::Matrix3x3 rotMat(
@@ -228,9 +229,9 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                           bundle_pose[bi].at<double>(2, 3));
         br.sendTransform(tf::StampedTransform(
             tf::Transform(rotQ, tfVec), msg->header.stamp, msg->header.frame_id,
-            tag_tf_prefix + std::to_string(markers[bi].id)));
+            tag_tf_prefix + bundles[bi].frame_id));
       }
-      for (size_t ti = 0; ti < bundle_world.size(); ++ti) {
+      for (size_t ti = 0; ti < tags.size(); ++ti) {
         if (tag_pose[ti].empty()) continue;
 
         tf::Matrix3x3 rotMat(
@@ -247,7 +248,7 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                           tag_pose[ti].at<double>(2, 3));
         br.sendTransform(tf::StampedTransform(
             tf::Transform(rotQ, tfVec), msg->header.stamp, msg->header.frame_id,
-            tag_tf_prefix + std::to_string(markers[ti].id)));
+            tag_tf_prefix + tags[ti].frame_id));
       }
     } else
       ROS_WARN("No markers detected");

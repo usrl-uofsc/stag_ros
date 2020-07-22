@@ -72,14 +72,14 @@ inline void load(const std::string &filename, std::vector<Tag> &tags,
 
           exit(EXIT_FAILURE);
         }
-        for (size_t i=1; i < 4; ++i)
+        for (size_t i=0; i < 3; ++i)
           t.corners[i] = cv::Point3d(
               cfg_root["tags"][frame_id]["corners"][0][0].asDouble(),
               cfg_root["tags"][frame_id]["corners"][0][1].asDouble(),
               cfg_root["tags"][frame_id]["corners"][0][2].asDouble());
-        // project the vector C2->C3 from C1 to get C4
-        t.corners[0]=(t.corners[3] + t.corners[1])/2;
-        t.corners[4] = t.corners[1] + (t.corners[3] - t.corners[2]);
+        t.center = (t.corners[2]+t.corners[0])/2;
+        // project the vector C1->C2 from C0 to get the fourth corner
+        t.corners[3] = t.corners[0] + (t.corners[2] - t.corners[1]);
         b.tags.emplace_back(t);
       }
       bundles.emplace_back(b);
