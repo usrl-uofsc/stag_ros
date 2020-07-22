@@ -8,7 +8,6 @@ struct Tag {
   std::string frame_id;
   cv::Point3d corners[4];
   cv::Point3d center;
-  
 };
 
 struct Bundle {

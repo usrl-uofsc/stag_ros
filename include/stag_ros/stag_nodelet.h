@@ -38,7 +38,6 @@ SOFTWARE.
 // Stag includes
 #include "stag/Stag.h"
 #include "stag_ros/structures.hpp"
-#include "stag_ros/tag_json_loader.hpp"
 
 namespace stag_ros {
 

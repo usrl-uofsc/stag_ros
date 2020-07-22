@@ -29,7 +29,7 @@ SOFTWARE.
 #include "stag_ros/tag_json_loader.hpp"
 #include "stag_ros/utility.hpp"
 
-// Ros generated
+// ROS generated
 #include "stag_ros/StagMarker.h"
 #include "stag_ros/StagMarkers.h"
 
@@ -201,7 +201,6 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
             }
           }
         }
-
         std::vector<std::future<void>> bundle_jobs(bundles.size());
         for (size_t bi = 0; bi < bundles.size(); ++bi) {
           if (bundle_image[bi].size() > 0)

@@ -35,6 +35,7 @@ SOFTWARE.
 
 // Stag includes
 #include "stag/Stag.h"
+#include "stag_ros/structures.hpp"
 
 namespace stag_ros {
 class StagNode {
@@ -64,17 +65,28 @@ class StagNode {
 
   // Functions
   void loadParameters();
+  bool getBundleIndex(const int id, int &bundle_index, int &tag_index);
+  bool getTagIndex(const int id, int &tag_index);
+  void solvePnp(const std::vector<cv::Point2d> &img,
+      const std::vector<cv::Point3d> &world,
+      cv::Mat &output
+      );
 
   // Data
   cv::Mat cameraMatrix;
   cv::Mat distortionMat;
   cv::Mat rectificationMat;
   cv::Mat projectionMat;
-  std::string cameraID;
   bool gotCamInfo;
   bool debugI;
+  bool isCompressed;
   std::string imageTopic;
   std::string cameraInfoTopic;
+  std::string tag_tf_prefix;
+
+  // Tag and bundle info
+  std::vector<Bundle> bundles;
+  std::vector<Tag> tags;
 };
 
 }  // namespace stag_ros
