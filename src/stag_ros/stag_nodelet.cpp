@@ -87,7 +87,6 @@ void StagNodelet::loadParameters(const ros::NodeHandle &nh) {
 
   nh.param("libraryHD", stagLib, 15);
   nh.param("errorCorrection", errorC, 7);
-  nh.param("tagSize", tagSize, 14.6);
   nh.param("raw_image_topic", imageTopic, std::string("image_raw"));
   nh.param("camera_info_topic", cameraInfoTopic, std::string("camera_info"));
   nh.param("is_compressed", isCompressed, false);
@@ -186,7 +185,7 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
               tag_world[ci + 1] = tags[tag_index].corners[ci];
             }
 
-            tag_jobs[tag_index] = std::async(
+            tag_jobs[tag_index] = std::async(std::launch::async, 
                 [this, tag_image, tag_world, &tag_pose, tag_index]() {
                   this->solvePnp(tag_image, tag_world, tag_pose[tag_index]);
                 });
@@ -204,7 +203,7 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
         std::vector<std::future<void>> bundle_jobs(bundles.size());
         for (size_t bi = 0; bi < bundles.size(); ++bi) {
           if (bundle_image[bi].size() > 0)
-            bundle_jobs[bi] = std::async(
+            bundle_jobs[bi] = std::async(std::launch::async, 
                 [this, bundle_image, bundle_world, &bundle_pose, bi]() {
                   this->solvePnp(bundle_image[bi], bundle_world[bi], bundle_pose[bi]);
                 });

@@ -60,7 +60,6 @@ class StagNode {
   Stag* stag;
   int stagLib;
   int errorC;
-  double tagSize;
   std::vector<cv::Point3d> tagCorners;
 
   // Functions
