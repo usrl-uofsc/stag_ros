@@ -1,8 +1,8 @@
 /**
 MIT License
 
-Copyright (c) 2020 Michail Kalaitzakis and Brennan Cain (Unmanned Systems and Robotics Lab,
-University of South Carolina, USA)
+Copyright (c) 2020 Michail Kalaitzakis and Brennan Cain (Unmanned Systems and
+Robotics Lab, University of South Carolina, USA)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -46,8 +46,8 @@ SOFTWARE.
 
 namespace stag_ros {
 
-StagNode::StagNode(ros::NodeHandle& nh,
-                   image_transport::ImageTransport& imageT) {
+StagNode::StagNode(ros::NodeHandle &nh,
+                   image_transport::ImageTransport &imageT) {
   // Load Parameters
   loadParameters();
 
@@ -82,7 +82,8 @@ void StagNode::loadParameters() {
   nh_lcl.param("libraryHD", stagLib, 15);
   nh_lcl.param("errorCorrection", errorC, 7);
   nh_lcl.param("raw_image_topic", imageTopic, std::string("image_raw"));
-  nh_lcl.param("camera_info_topic", cameraInfoTopic, std::string("camera_info"));
+  nh_lcl.param("camera_info_topic", cameraInfoTopic,
+               std::string("camera_info"));
   nh_lcl.param("is_compressed", isCompressed, false);
   nh_lcl.param("debug_images", debugI, false);
   nh_lcl.param("tag_tf_prefix", tag_tf_prefix, std::string("STag_"));
@@ -103,8 +104,7 @@ bool StagNode::getTagIndex(const int id, int &tag_index) {
   return false;  // not found
 }
 
-bool StagNode::getBundleIndex(const int id, int &bundle_index,
-                                 int &tag_index) {
+bool StagNode::getBundleIndex(const int id, int &bundle_index, int &tag_index) {
   for (int bi = 0; bi < bundles.size(); ++bi) {
     for (int ti = 0; ti < bundles[bi].tags.size(); ++ti) {
       if (bundles[bi].tags[ti].id == id) {
@@ -179,27 +179,31 @@ void StagNode::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
               tag_world[ci + 1] = tags[tag_index].corners[ci];
             }
 
-            tag_jobs[tag_index] = std::async(std::launch::async, 
+            tag_jobs[tag_index] = std::async(
+                std::launch::async,
                 [this, tag_image, tag_world, &tag_pose, tag_index]() {
                   this->solvePnp(tag_image, tag_world, tag_pose[tag_index]);
                 });
-          }
-          else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
+          } else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
             bundle_image[bundle_index].push_back(markers[i].center);
-            bundle_world[bundle_index].push_back(bundles[bundle_index].tags[tag_index].center);
+            bundle_world[bundle_index].push_back(
+                bundles[bundle_index].tags[tag_index].center);
 
             for (size_t ci = 0; ci < 4; ++ci) {
               bundle_image[bundle_index].push_back(markers[i].corners[ci]);
-              bundle_world[bundle_index].push_back(bundles[bundle_index].tags[tag_index].corners[ci]);
+              bundle_world[bundle_index].push_back(
+                  bundles[bundle_index].tags[tag_index].corners[ci]);
             }
           }
         }
         std::vector<std::future<void>> bundle_jobs(bundles.size());
         for (size_t bi = 0; bi < bundles.size(); ++bi) {
           if (bundle_image[bi].size() > 0)
-            bundle_jobs[bi] = std::async(std::launch::async, 
+            bundle_jobs[bi] = std::async(
+                std::launch::async,
                 [this, bundle_image, bundle_world, &bundle_pose, bi]() {
-                  this->solvePnp(bundle_image[bi], bundle_world[bi], bundle_pose[bi]);
+                  this->solvePnp(bundle_image[bi], bundle_world[bi],
+                                 bundle_pose[bi]);
                 });
         }
       }  // completes all jobs
@@ -247,7 +251,7 @@ void StagNode::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
   }
 }
 
-void StagNode::cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg) {
+void StagNode::cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr &msg) {
   if (!gotCamInfo) {
     // Get camera Matrix
     cameraMatrix.at<double>(0, 0) = msg->K[0];
@@ -295,7 +299,7 @@ void StagNode::cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg) {
 }
 }  // namespace stag_ros
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   ros::init(argc, argv, "stag_node");
   ros::NodeHandle nh;
   image_transport::ImageTransport imageT(nh);

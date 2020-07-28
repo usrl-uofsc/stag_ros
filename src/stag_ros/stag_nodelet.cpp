@@ -1,8 +1,8 @@
 /**
 MIT License
 
-Copyright (c) 2020 Michail Kalaitzakis and Brennan Cain (Unmanned Systems and Robotics Lab,
-University of South Carolina, USA)
+Copyright (c) 2020 Michail Kalaitzakis and Brennan Cain (Unmanned Systems and
+Robotics Lab, University of South Carolina, USA)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -185,27 +185,31 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
               tag_world[ci + 1] = tags[tag_index].corners[ci];
             }
 
-            tag_jobs[tag_index] = std::async(std::launch::async, 
+            tag_jobs[tag_index] = std::async(
+                std::launch::async,
                 [this, tag_image, tag_world, &tag_pose, tag_index]() {
                   this->solvePnp(tag_image, tag_world, tag_pose[tag_index]);
                 });
-          }
-          else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
+          } else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
             bundle_image[bundle_index].push_back(markers[i].center);
-            bundle_world[bundle_index].push_back(bundles[bundle_index].tags[tag_index].center);
+            bundle_world[bundle_index].push_back(
+                bundles[bundle_index].tags[tag_index].center);
 
             for (size_t ci = 0; ci < 4; ++ci) {
               bundle_image[bundle_index].push_back(markers[i].corners[ci]);
-              bundle_world[bundle_index].push_back(bundles[bundle_index].tags[tag_index].corners[ci]);
+              bundle_world[bundle_index].push_back(
+                  bundles[bundle_index].tags[tag_index].corners[ci]);
             }
           }
         }
         std::vector<std::future<void>> bundle_jobs(bundles.size());
         for (size_t bi = 0; bi < bundles.size(); ++bi) {
           if (bundle_image[bi].size() > 0)
-            bundle_jobs[bi] = std::async(std::launch::async, 
+            bundle_jobs[bi] = std::async(
+                std::launch::async,
                 [this, bundle_image, bundle_world, &bundle_pose, bi]() {
-                  this->solvePnp(bundle_image[bi], bundle_world[bi], bundle_pose[bi]);
+                  this->solvePnp(bundle_image[bi], bundle_world[bi],
+                                 bundle_pose[bi]);
                 });
         }
       }  // completes all jobs

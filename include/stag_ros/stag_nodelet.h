@@ -56,9 +56,7 @@ class StagNodelet : public nodelet::Nodelet {
   bool getBundleIndex(const int id, int &bundle_index, int &tag_index);
   bool getTagIndex(const int id, int &tag_index);
   void solvePnp(const std::vector<cv::Point2d> &img,
-      const std::vector<cv::Point3d> &world,
-      cv::Mat &output
-      );
+                const std::vector<cv::Point3d> &world, cv::Mat &output);
   // ROS Subcribers
   image_transport::Subscriber imageSub;
   ros::Subscriber cameraInfoSub;
@@ -88,7 +86,6 @@ class StagNodelet : public nodelet::Nodelet {
   // Tag and bundle info
   std::vector<Bundle> bundles;
   std::vector<Tag> tags;
-
 };
 
 }  // namespace stag_ros

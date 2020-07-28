@@ -42,15 +42,15 @@ inline void load(const std::string &filename, std::vector<Tag> &tags,
                   << " with id: " << t.id << std::endl;
         exit(EXIT_FAILURE);
       }
-      std::cout << "loading " << t.frame_id<<std::endl;
-      for (int i=0; i < 3; ++i) {
+      std::cout << "loading " << t.frame_id << std::endl;
+      for (int i = 0; i < 3; ++i) {
         t.corners[i] =
             cv::Point3d(cfg_root["tags"][frame_id]["corners"][i][0].asDouble(),
                         cfg_root["tags"][frame_id]["corners"][i][1].asDouble(),
                         cfg_root["tags"][frame_id]["corners"][i][2].asDouble());
         std::cout << t.corners[i] << std::endl;
       }
-      t.center = (t.corners[2]+t.corners[0])/2;
+      t.center = (t.corners[2] + t.corners[0]) / 2;
       // project the vector C1->C2 from C0 to get the fourth corner
       t.corners[3] = t.corners[0] + (t.corners[2] - t.corners[1]);
       tags.emplace_back(t);
@@ -72,12 +72,11 @@ inline void load(const std::string &filename, std::vector<Tag> &tags,
 
           exit(EXIT_FAILURE);
         }
-        for (int i=0; i < 3; ++i)
-          t.corners[i] =
-              cv::Point3d(tit["corners"][i][0].asDouble(),
-                          tit["corners"][i][1].asDouble(),
-                          tit["corners"][i][2].asDouble());
-        t.center = (t.corners[2]+t.corners[0])/2;
+        for (int i = 0; i < 3; ++i)
+          t.corners[i] = cv::Point3d(tit["corners"][i][0].asDouble(),
+                                     tit["corners"][i][1].asDouble(),
+                                     tit["corners"][i][2].asDouble());
+        t.center = (t.corners[2] + t.corners[0]) / 2;
         // project the vector C1->C2 from C0 to get the fourth corner
         t.corners[3] = t.corners[0] + (t.corners[2] - t.corners[1]);
         b.tags.emplace_back(t);
@@ -88,5 +87,5 @@ inline void load(const std::string &filename, std::vector<Tag> &tags,
   }
 }
 
-} // namespace tagJsonLoader
+}  // namespace tag_json_loader
 }  // namespace stag_ros

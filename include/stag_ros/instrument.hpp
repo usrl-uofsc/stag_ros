@@ -40,8 +40,8 @@ struct Instrument {
 
   Instrument(const char* fullname, const char* file, int line)
       : fullname(fullname), file(file), line(line) {
-          std::cout << "Beginning instrumenting" << std::endl;
-      }
+    std::cout << "Beginning instrumenting" << std::endl;
+  }
   ~Instrument() {
     std::sort(times.begin(), times.end());
     size_t count = times.size();
@@ -64,8 +64,7 @@ struct Timer {
   Instrument& instrument;
   std::chrono::time_point<std::chrono::steady_clock> enter;
   Timer(Instrument& instrument)
-      : enter(std::chrono::steady_clock::now()),
-        instrument(instrument) {}
+      : enter(std::chrono::steady_clock::now()), instrument(instrument) {}
   ~Timer() {
     instrument.insert(std::chrono::duration_cast<std::chrono::microseconds>(
                           std::chrono::steady_clock::now() - enter)

@@ -40,7 +40,7 @@ SOFTWARE.
 namespace stag_ros {
 class StagNode {
  public:
-  StagNode(ros::NodeHandle& nh, image_transport::ImageTransport& imageT);
+  StagNode(ros::NodeHandle &nh, image_transport::ImageTransport &imageT);
   ~StagNode();
 
  private:
@@ -53,11 +53,11 @@ class StagNode {
   image_transport::Publisher imageDebugPub;
 
   // Callbacks
-  void imageCallback(const sensor_msgs::ImageConstPtr& msg);
-  void cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr& msg);
+  void imageCallback(const sensor_msgs::ImageConstPtr &msg);
+  void cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr &msg);
 
   // STag handle
-  Stag* stag;
+  Stag *stag;
   int stagLib;
   int errorC;
   std::vector<cv::Point3d> tagCorners;
@@ -67,9 +67,7 @@ class StagNode {
   bool getBundleIndex(const int id, int &bundle_index, int &tag_index);
   bool getTagIndex(const int id, int &tag_index);
   void solvePnp(const std::vector<cv::Point2d> &img,
-      const std::vector<cv::Point3d> &world,
-      cv::Mat &output
-      );
+                const std::vector<cv::Point3d> &world, cv::Mat &output);
 
   // Data
   cv::Mat cameraMatrix;
