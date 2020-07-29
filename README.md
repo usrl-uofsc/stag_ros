@@ -2,7 +2,7 @@
 
 This package is developed independently from the creators of STag.  
 [Original STag source and marker generation script](https://github.com/bbenligiray/stag)  
-[Original publication](https://arxiv.org/abs/1707.06292)
+[Original publication](https://www.sciencedirect.com/science/article/abs/pii/S0262885619300903)
 
 ## Installation
 Follow these steps to install
