@@ -10,7 +10,7 @@ is_compressed: true
 # Node configuration
 
 # Absolute path to JSON file
-tag_config_json: /home/michailk/catkin_ws/src/stag_ros/cfg/bundle_2_config.json
+tag_config_json: /absolute/path/to/stag_ros/cfg/tag_config.json
 tag_tf_prefix: stag_
 
 # Tag corner order in JSON file:
