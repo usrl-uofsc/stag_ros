@@ -24,8 +24,11 @@ SOFTWARE.
 */
 
 // Project includes
-#include "stag_ros/stag_node.h"
+#ifndef NDEBUG
 #include "stag_ros/instrument.hpp"
+#endif
+
+#include "stag_ros/stag_node.h"
 #include "stag_ros/tag_json_loader.hpp"
 #include "stag_ros/utility.hpp"
 
@@ -42,7 +45,6 @@ SOFTWARE.
 #include <tf/transform_broadcaster.h>
 
 #include <iostream>
-#include <future>
 
 namespace stag_ros {
 
@@ -85,7 +87,7 @@ void StagNode::loadParameters() {
   nh_lcl.param("camera_info_topic", cameraInfoTopic,
                std::string("camera_info"));
   nh_lcl.param("is_compressed", isCompressed, false);
-  nh_lcl.param("debug_images", debugI, false);
+  nh_lcl.param("show_markers", debugI, false);
   nh_lcl.param("tag_tf_prefix", tag_tf_prefix, std::string("STag_"));
 
   std::string tagJson;
@@ -129,7 +131,9 @@ void StagNode::solvePnp(
 }
 
 void StagNode::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
+#ifndef NDEBUG
   INSTRUMENT;
+#endif
   static tf::TransformBroadcaster br;
   if (gotCamInfo) {
     cv::Mat gray;
@@ -160,53 +164,42 @@ void StagNode::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
       std::vector<std::vector<cv::Point2d>> bundle_image(bundles.size());
       std::vector<std::vector<cv::Point3d>> bundle_world(bundles.size());
 
-      {  // anonymous for the tag jobs to be able to finish
-        std::vector<std::future<void>> tag_jobs(tags.size());
-        for (int i = 0; i < markers.size(); i++) {
-          // Create marker msg
-          int tag_index, bundle_index;
+      for (int i = 0; i < markers.size(); i++) {
+        // Create marker msg
+        int tag_index, bundle_index;
 
-          // if tag is a single tag, push back
-          if (getTagIndex(markers[i].id, tag_index)) {
-            std::vector<cv::Point2d> tag_image(5);
-            std::vector<cv::Point3d> tag_world(5);
+        // if tag is a single tag, push back
+        if (getTagIndex(markers[i].id, tag_index)) {
+          std::vector<cv::Point2d> tag_image(5);
+          std::vector<cv::Point3d> tag_world(5);
 
-            tag_image[0] = markers[i].center;
-            tag_world[0] = tags[tag_index].center;
+          tag_image[0] = markers[i].center;
+          tag_world[0] = tags[tag_index].center;
 
-            for (size_t ci = 0; ci < 4; ++ci) {
-              tag_image[ci + 1] = markers[i].corners[ci];
-              tag_world[ci + 1] = tags[tag_index].corners[ci];
-            }
+          for (size_t ci = 0; ci < 4; ++ci) {
+            tag_image[ci + 1] = markers[i].corners[ci];
+            tag_world[ci + 1] = tags[tag_index].corners[ci];
+          }
 
-            tag_jobs[tag_index] = std::async(
-                std::launch::async,
-                [this, tag_image, tag_world, &tag_pose, tag_index]() {
-                  this->solvePnp(tag_image, tag_world, tag_pose[tag_index]);
-                });
-          } else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
-            bundle_image[bundle_index].push_back(markers[i].center);
+          solvePnp(tag_image, tag_world, tag_pose[tag_index]);
+
+        } else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
+          bundle_image[bundle_index].push_back(markers[i].center);
+          bundle_world[bundle_index].push_back(
+              bundles[bundle_index].tags[tag_index].center);
+
+          for (size_t ci = 0; ci < 4; ++ci) {
+            bundle_image[bundle_index].push_back(markers[i].corners[ci]);
             bundle_world[bundle_index].push_back(
-                bundles[bundle_index].tags[tag_index].center);
-
-            for (size_t ci = 0; ci < 4; ++ci) {
-              bundle_image[bundle_index].push_back(markers[i].corners[ci]);
-              bundle_world[bundle_index].push_back(
-                  bundles[bundle_index].tags[tag_index].corners[ci]);
-            }
+                bundles[bundle_index].tags[tag_index].corners[ci]);
           }
         }
-        std::vector<std::future<void>> bundle_jobs(bundles.size());
-        for (size_t bi = 0; bi < bundles.size(); ++bi) {
-          if (bundle_image[bi].size() > 0)
-            bundle_jobs[bi] = std::async(
-                std::launch::async,
-                [this, bundle_image, bundle_world, &bundle_pose, bi]() {
-                  this->solvePnp(bundle_image[bi], bundle_world[bi],
-                                 bundle_pose[bi]);
-                });
-        }
-      }  // completes all jobs
+      }
+
+      for (size_t bi = 0; bi < bundles.size(); ++bi) {
+        if (bundle_image[bi].size() > 0)
+          solvePnp(bundle_image[bi], bundle_world[bi], bundle_pose[bi]);
+      }
 
       for (size_t bi = 0; bi < bundles.size(); ++bi) {
         if (bundle_pose[bi].empty()) continue;

@@ -1,10 +1,7 @@
 <launch>
-    <!--Start the logitech camera-->
-    <include file="$(find usb_camera)/launch/logi_cam_640x480.launch"/>
-
     <!--Load parameters-->
     <rosparam command="load" file="$(find stag_ros)/cfg/stag_w_usb.yaml"/>
 
-    <!--Start Stag Node-->
+    <!--Start STag Node-->
     <node name="stag_node" pkg="stag_ros" type="stag_node" output="screen"/>
 </launch>

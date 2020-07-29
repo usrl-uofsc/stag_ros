@@ -1,6 +1,6 @@
 <launch>
-    <!--Start the logitech camera-->
-    <node name="rosbag" pkg="rosbag" type="play" args="/home/brennan/Documents/stag_data/Stag_1.bag" />
+    <!--Play ROSbag file-->
+    <!-- <node name="rosbag" pkg="rosbag" type="play" args="/absolute/path/to/Stag.bag" /> -->
 
     <!--Load parameters-->
     <rosparam command="load" file="$(find stag_ros)/cfg/stag_w_usb.yaml"/>

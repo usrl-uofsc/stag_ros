@@ -1,0 +1,7 @@
+<launch>
+    <!--Load parameters-->
+    <rosparam command="load" file="$(find stag_ros)/cfg/stag_w_usb.yaml"/>
+
+    <!--Start STag Nodelet-->
+    <node name="stag_ros_nodelet" pkg="stag_ros" type="stag_nodelet_runnable" output="screen" required="true" />
+</launch>

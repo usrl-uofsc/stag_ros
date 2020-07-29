@@ -24,8 +24,11 @@ SOFTWARE.
 */
 
 // Project includes
-#include "stag_ros/stag_nodelet.h"
+#ifndef NDEBUG
 #include "stag_ros/instrument.hpp"
+#endif
+
+#include "stag_ros/stag_nodelet.h"
 #include "stag_ros/tag_json_loader.hpp"
 #include "stag_ros/utility.hpp"
 
@@ -90,7 +93,7 @@ void StagNodelet::loadParameters(const ros::NodeHandle &nh) {
   nh.param("raw_image_topic", imageTopic, std::string("image_raw"));
   nh.param("camera_info_topic", cameraInfoTopic, std::string("camera_info"));
   nh.param("is_compressed", isCompressed, false);
-  nh.param("debug_images", debugI, false);
+  nh.param("show_markers", debugI, false);
   nh.param("tag_tf_prefix", tag_tf_prefix, std::string("STag_"));
 
   std::string tagJson;
@@ -135,7 +138,9 @@ void StagNodelet::solvePnp(
 }
 
 void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
+#ifndef NDEBUG
   INSTRUMENT;
+#endif
   static tf::TransformBroadcaster br;
   if (gotCamInfo) {
     cv::Mat gray;

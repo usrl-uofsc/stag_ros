@@ -2,7 +2,9 @@
 #include "stag/Ellipse.h"
 #include "stag/utility.h"
 
+#ifndef NDEBUG
 #include "stag_ros/instrument.hpp"
+#endif
 
 #define HALF_PI 1.570796326794897
 
@@ -18,7 +20,9 @@ Stag::Stag(int libraryHD, int inErrorCorrection, bool inKeepLogs) {
 }
 
 void Stag::detectMarkers(Mat inImage) {
+#ifndef NDEBUG
   INSTRUMENT;
+#endif
   // Clear markers vector
   markers.clear();
 
