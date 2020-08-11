@@ -30,7 +30,9 @@ class Stag {
   // take readings from 48 code locations, 12 black border locations, and 12
   // white border locations thresholds and converts to binary code
   Codeword readCode(const Quad &q);
-  bool checkDuplicate(Marker mrkr);
+  // If a marker with the same id already exists keep the one with the
+  // smallest projective distortion
+  void checkDuplicate(Marker mrkr);
   void fillCodeLocations();
   cv::Mat createMatFromPolarCoords(double radius, double radians,
                                    double circleRadius);

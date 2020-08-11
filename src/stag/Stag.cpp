@@ -31,7 +31,7 @@ void Stag::detectMarkers(Mat inImage) {
 
   vector<Quad> quads = quadDetector.getQuads();
 
-  for (int indQuad = 0; indQuad < quads.size(); indQuad++) {
+  for (int indQuad = 0; indQuad < quads.size(); ++indQuad) {
     quads[indQuad].estimateHomography();
     Codeword c = readCode(quads[indQuad]);
     int shift;
@@ -39,12 +39,12 @@ void Stag::detectMarkers(Mat inImage) {
     if (decoder.decode(c, errorCorrection, id, shift)) {
       Marker marker(quads[indQuad], id);
       marker.shiftCorners2(shift);
-      if (checkDuplicate(marker)) markers.push_back(marker);
+      checkDuplicate(marker);
     } else if (keepLogs)
       falseCandidates.push_back(quads[indQuad]);
   }
 
-  for (int indMarker = 0; indMarker < markers.size(); indMarker++)
+  for (int indMarker = 0; indMarker < markers.size(); ++indMarker)
     poseRefiner.refineMarkerPose(&edInterface, markers[indMarker]);
 }
 
@@ -52,23 +52,21 @@ cv::Mat Stag::drawMarkers() {
   return drawer.drawMarkers("markers.png", image, markers);
 }
 
-bool Stag::checkDuplicate(Marker mrkr) {
+void Stag::checkDuplicate(Marker mrkr) {
   if (markers.size() == 0)
-    return true;
+    markers.emplace_back(mrkr);
   else {
-    for (int indMarker = 0; indMarker < markers.size(); indMarker++) {
-      double diff = 0.0;
-      for (int indCorner = 0; indCorner < markers[indMarker].corners.size();
-           indCorner++) {
-        diff += std::abs(mrkr.corners[indCorner].x -
-                         markers[indMarker].corners[indCorner].x) +
-                std::abs(mrkr.corners[indCorner].y -
-                         markers[indMarker].corners[indCorner].y);
+    bool notFound = true;
+    for (int indMarker = 0; indMarker < markers.size(); ++indMarker) {
+      if (mrkr.id == markers[indMarker].id) {
+        notFound = false;
+        if (mrkr.projectiveDistortion < markers[indMarker].projectiveDistortion)
+          markers[indMarker] = mrkr;
       }
-      if (diff < 1.0) return false;
     }
+    if (notFound)
+      markers.emplace_back(mrkr);
   }
-  return true;
 }
 
 /*

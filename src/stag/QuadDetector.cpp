@@ -57,8 +57,10 @@ void QuadDetector::detectQuads(const cv::Mat& image, EDInterface* edInterface) {
       // eliminate if projective distortion is larger than the threshold
       if (quad.projectiveDistortion > thresProjectiveDistortion) {
         if (keepLogs) distortedQuads.push_back(quad);
-      } else
+      } else {
         quads.push_back(quad);
+        if (currCornerGroup.size() <= 4) break;
+      }
     }
   }
 }
