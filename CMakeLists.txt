@@ -88,6 +88,7 @@ add_dependencies(stag_node
 target_link_libraries(stag_core
   ${OpenCV_LIBS}
 )
+
 message(STATUS "JSON lib : ${JSONCPP_LIBRARIES}")
 
 target_link_libraries(stag_nodelet
