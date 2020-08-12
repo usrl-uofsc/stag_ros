@@ -57,12 +57,12 @@ class StagNodelet : public nodelet::Nodelet {
   bool getTagIndex(const int id, int &tag_index);
   void solvePnp(const std::vector<cv::Point2d> &img,
                 const std::vector<cv::Point3d> &world, cv::Mat &output);
+
   // ROS Subcribers
   image_transport::Subscriber imageSub;
   ros::Subscriber cameraInfoSub;
 
   // ROS Publishers
-  ros::Publisher markersPub;
   image_transport::Publisher imageDebugPub;
 
   // STag handle

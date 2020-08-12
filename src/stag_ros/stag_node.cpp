@@ -32,10 +32,6 @@ SOFTWARE.
 #include "stag_ros/tag_json_loader.hpp"
 #include "stag_ros/utility.hpp"
 
-// ROS Generated
-#include "stag_ros/StagMarker.h"
-#include "stag_ros/StagMarkers.h"
-
 // Stag marker handle
 #include "stag/Marker.h"
 
@@ -61,7 +57,6 @@ StagNode::StagNode(ros::NodeHandle &nh,
       nh.subscribe(cameraInfoTopic, 1, &StagNode::cameraInfoCallback, this);
 
   // Set Publishers
-  markersPub = nh.advertise<stag_ros::StagMarkers>("markers", 1);
   if (debugI) imageDebugPub = imageT.advertise("image_markers", 1);
 
   // Initialize Stag

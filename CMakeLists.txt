@@ -26,20 +26,6 @@ find_package(catkin REQUIRED COMPONENTS
   tf
 )
 
-## Generate messages in the 'msg' folder
-add_message_files(DIRECTORY msg
-  FILES
-  StagMarker.msg
-  StagMarkers.msg
-)
-
-## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-  geometry_msgs
-)
-
 catkin_package(
   INCLUDE_DIRS include src/stag
   LIBRARIES stag_ros

@@ -49,7 +49,6 @@ class StagNode {
   ros::Subscriber cameraInfoSub;
 
   // ROS Publishers
-  ros::Publisher markersPub;
   image_transport::Publisher imageDebugPub;
 
   // Callbacks
