@@ -1,12 +1,14 @@
 <launch>
     <!--Play ROSbag file-->
-    <node name="rosbag" pkg="rosbag" type="play" args="/mnt/FastUbuntu/stag/bundle_2.bag"  required="true"/>
-
-    <!--Load parameters-->
-    <rosparam command="load" file="$(find stag_ros)/cfg/bundle_2.yaml"/>
+    <node name="rosbag" pkg="rosbag" type="play" args="$(find stag_ros)/bags/bundle_2.bag -r .1"  required="true"/>
 
     <!--Start Stag Node-->
-    <node name="stag_node" pkg="stag_ros" type="stag_node" output="screen" required="true"/>
+    <node name="stag_node" pkg="stag_ros" type="stag_node" output="screen" required="true">
+        <!-- Place the correct yaml file here-->
+        <rosparam command="load" file="$(find stag_ros)/cfg/bundle_2.yaml"/>
+        <!-- Place the correct json bundle file here-->
+        <param name="tag_config_json" value="$(find stag_ros)/cfg/bundle_2.json"/>
+    </node>
 
     <!-- rviz -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find stag_ros)/cfg/bundle_2.rviz" required="true"/>

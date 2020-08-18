@@ -10,7 +10,6 @@ is_compressed: true
 # Node configuration
 
 # Absolute path to JSON file
-tag_config_json: /home/brennan/Documents/melodic_ws/src/stag_ros/cfg/bundle_4.json
 tag_tf_prefix: stag_
 
 # Tag corner order in JSON file:

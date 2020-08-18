@@ -75,7 +75,7 @@ StagNode::~StagNode() { delete stag; }
 
 void StagNode::loadParameters() {
   // Create private nodeHandle to load parameters
-  ros::NodeHandle nh_lcl("");
+  ros::NodeHandle nh_lcl("~");
 
   nh_lcl.param("libraryHD", stagLib, 15);
   nh_lcl.param("errorCorrection", errorC, 7);
@@ -88,12 +88,13 @@ void StagNode::loadParameters() {
 
   std::string tagJson;
   nh_lcl.param("tag_config_json", tagJson, std::string());
-  if(tagJson.compare("")==0)
-  {
+
+  if (tagJson.compare("") == 0) {
     ROS_FATAL("No json specified");
     ros::shutdown();
+  } else {
+    tag_json_loader::load(tagJson, tags, bundles);
   }
-  tag_json_loader::load(tagJson, tags, bundles);
 }
 
 bool StagNode::getTagIndex(const int id, int &tag_index) {
