@@ -1,0 +1,13 @@
+<launch>
+    <!--Play ROSbag file-->
+    <node name="rosbag" pkg="rosbag" type="play" args="/mnt/FastUbuntu/stag/bundle_4.bag"  required="true"/>
+
+    <!--Load parameters-->
+    <rosparam command="load" file="$(find stag_ros)/cfg/bundle_4.yaml"/>
+
+    <!--Start Stag Node-->
+    <node name="stag_node" pkg="stag_ros" type="stag_node" output="screen" required="true"/>
+
+    <!-- rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find stag_ros)/cfg/bundle_4.rviz" required="true"/>
+</launch>
