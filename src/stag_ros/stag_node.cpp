@@ -41,6 +41,7 @@ SOFTWARE.
 #include <tf/transform_broadcaster.h>
 
 #include <iostream>
+#include <stag_ros/common.hpp>
 
 namespace stag_ros {
 
@@ -86,8 +87,12 @@ void StagNode::loadParameters() {
   nh_lcl.param("tag_tf_prefix", tag_tf_prefix, std::string("STag_"));
 
   std::string tagJson;
-  nh_lcl.param("tag_config_json", tagJson, std::string("tag_config.json"));
-
+  nh_lcl.param("tag_config_json", tagJson, std::string());
+  if(tagJson.compare("")==0)
+  {
+    ROS_FATAL("No json specified");
+    ros::shutdown();
+  }
   tag_json_loader::load(tagJson, tags, bundles);
 }
 
@@ -112,17 +117,6 @@ bool StagNode::getBundleIndex(const int id, int &bundle_index, int &tag_index) {
     }
   }
   return false;  // not found
-}
-
-void StagNode::solvePnp(
-    const std::vector<cv::Point2d> &img, const std::vector<cv::Point3d> &world,
-    cv::Mat &output) {  // TODO: Big race condition introduced here
-  if (img.empty() or world.empty()) return;
-  cv::Mat rVec, rMat, tVec;
-  cv::solvePnP(world, img, cameraMatrix, distortionMat, rVec, tVec);
-  cv::Rodrigues(rVec, rMat);
-  rMat.convertTo(output.colRange(0, 3), CV_64F);
-  tVec.convertTo(output.col(3), CV_64F);
 }
 
 void StagNode::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
@@ -176,7 +170,8 @@ void StagNode::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
             tag_world[ci + 1] = tags[tag_index].corners[ci];
           }
 
-          solvePnp(tag_image, tag_world, tag_pose[tag_index]);
+          Common::solvePnpSingle(tag_image, tag_world, tag_pose[tag_index],
+                                 cameraMatrix, distortionMat);
 
         } else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
           bundle_image[bundle_index].push_back(markers[i].center);
@@ -193,7 +188,8 @@ void StagNode::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
 
       for (size_t bi = 0; bi < bundles.size(); ++bi) {
         if (bundle_image[bi].size() > 0)
-          solvePnp(bundle_image[bi], bundle_world[bi], bundle_pose[bi]);
+          Common::solvePnpBundle(bundle_image[bi], bundle_world[bi],
+                                 bundle_pose[bi], cameraMatrix, distortionMat);
       }
 
       for (size_t bi = 0; bi < bundles.size(); ++bi) {

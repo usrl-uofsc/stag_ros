@@ -44,29 +44,26 @@ class StagNode {
   ~StagNode();
 
  private:
+  // Callbacks
+  void imageCallback(const sensor_msgs::ImageConstPtr &msg);
+  void cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr &msg);
+
+  // Functions
+  void loadParameters();
+  bool getBundleIndex(const int id, int &bundle_index, int &tag_index);
+  bool getTagIndex(const int id, int &tag_index);
+
+  // STag handle
+  Stag *stag;
+  int stagLib;
+  int errorC;
+
   // ROS Subcribers
   image_transport::Subscriber imageSub;
   ros::Subscriber cameraInfoSub;
 
   // ROS Publishers
   image_transport::Publisher imageDebugPub;
-
-  // Callbacks
-  void imageCallback(const sensor_msgs::ImageConstPtr &msg);
-  void cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr &msg);
-
-  // STag handle
-  Stag *stag;
-  int stagLib;
-  int errorC;
-  std::vector<cv::Point3d> tagCorners;
-
-  // Functions
-  void loadParameters();
-  bool getBundleIndex(const int id, int &bundle_index, int &tag_index);
-  bool getTagIndex(const int id, int &tag_index);
-  void solvePnp(const std::vector<cv::Point2d> &img,
-                const std::vector<cv::Point3d> &world, cv::Mat &output);
 
   // Data
   cv::Mat cameraMatrix;

@@ -43,6 +43,7 @@ SOFTWARE.
 #include <iostream>
 #include <future>
 #include <swri_nodelet/class_list_macros.h>
+#include <stag_ros/common.hpp>
 
 SWRI_NODELET_EXPORT_CLASS(stag_ros, StagNodelet)
 
@@ -92,8 +93,12 @@ void StagNodelet::loadParameters(const ros::NodeHandle &nh) {
   nh.param("tag_tf_prefix", tag_tf_prefix, std::string("STag_"));
 
   std::string tagJson;
-  nh.param("tag_config_json", tagJson, std::string("tag_config.json"));
-
+  nh.param("tag_config_json", tagJson, std::string());
+  if(tagJson.compare("")==0)
+  {
+    ROS_FATAL("No json specified");
+    ros::shutdown();
+  }
   tag_json_loader::load(tagJson, tags, bundles);
 }
 
@@ -119,17 +124,6 @@ bool StagNodelet::getBundleIndex(const int id, int &bundle_index,
     }
   }
   return false;  // not found
-}
-
-void StagNodelet::solvePnp(
-    const std::vector<cv::Point2d> &img, const std::vector<cv::Point3d> &world,
-    cv::Mat &output) {  // TODO: Big race condition introduced here
-  if (img.empty() or world.empty()) return;
-  cv::Mat rVec, rMat, tVec;
-  cv::solvePnP(world, img, cameraMatrix, distortionMat, rVec, tVec);
-  cv::Rodrigues(rVec, rMat);
-  rMat.convertTo(output.colRange(0, 3), CV_64F);
-  tVec.convertTo(output.col(3), CV_64F);
 }
 
 void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
@@ -166,53 +160,43 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
       std::vector<std::vector<cv::Point2d>> bundle_image(bundles.size());
       std::vector<std::vector<cv::Point3d>> bundle_world(bundles.size());
 
-      {  // anonymous for the tag jobs to be able to finish
-        std::vector<std::future<void>> tag_jobs(tags.size());
-        for (int i = 0; i < markers.size(); i++) {
-          // Create marker msg
-          int tag_index, bundle_index;
+      for (int i = 0; i < markers.size(); i++) {
+        // Create marker msg
+        int tag_index, bundle_index;
 
-          // if tag is a single tag, push back
-          if (getTagIndex(markers[i].id, tag_index)) {
-            std::vector<cv::Point2d> tag_image(5);
-            std::vector<cv::Point3d> tag_world(5);
+        // if tag is a single tag, push back
+        if (getTagIndex(markers[i].id, tag_index)) {
+          std::vector<cv::Point2d> tag_image(5);
+          std::vector<cv::Point3d> tag_world(5);
 
-            tag_image[0] = markers[i].center;
-            tag_world[0] = tags[tag_index].center;
+          tag_image[0] = markers[i].center;
+          tag_world[0] = tags[tag_index].center;
 
-            for (size_t ci = 0; ci < 4; ++ci) {
-              tag_image[ci + 1] = markers[i].corners[ci];
-              tag_world[ci + 1] = tags[tag_index].corners[ci];
-            }
+          for (size_t ci = 0; ci < 4; ++ci) {
+            tag_image[ci + 1] = markers[i].corners[ci];
+            tag_world[ci + 1] = tags[tag_index].corners[ci];
+          }
 
-            tag_jobs[tag_index] = std::async(
-                std::launch::async,
-                [this, tag_image, tag_world, &tag_pose, tag_index]() {
-                  this->solvePnp(tag_image, tag_world, tag_pose[tag_index]);
-                });
-          } else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
-            bundle_image[bundle_index].push_back(markers[i].center);
+          Common::solvePnpSingle(tag_image, tag_world, tag_pose[tag_index],
+                                 cameraMatrix, distortionMat);
+
+        } else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
+          bundle_image[bundle_index].push_back(markers[i].center);
+          bundle_world[bundle_index].push_back(
+              bundles[bundle_index].tags[tag_index].center);
+
+          for (size_t ci = 0; ci < 4; ++ci) {
+            bundle_image[bundle_index].push_back(markers[i].corners[ci]);
             bundle_world[bundle_index].push_back(
-                bundles[bundle_index].tags[tag_index].center);
-
-            for (size_t ci = 0; ci < 4; ++ci) {
-              bundle_image[bundle_index].push_back(markers[i].corners[ci]);
-              bundle_world[bundle_index].push_back(
-                  bundles[bundle_index].tags[tag_index].corners[ci]);
-            }
+                bundles[bundle_index].tags[tag_index].corners[ci]);
           }
         }
-        std::vector<std::future<void>> bundle_jobs(bundles.size());
-        for (size_t bi = 0; bi < bundles.size(); ++bi) {
-          if (bundle_image[bi].size() > 0)
-            bundle_jobs[bi] = std::async(
-                std::launch::async,
-                [this, bundle_image, bundle_world, &bundle_pose, bi]() {
-                  this->solvePnp(bundle_image[bi], bundle_world[bi],
-                                 bundle_pose[bi]);
-                });
-        }
-      }  // completes all jobs
+      }
+      for (size_t bi = 0; bi < bundles.size(); ++bi) {
+        if (bundle_image[bi].size() > 0)
+          Common::solvePnpBundle(bundle_image[bi], bundle_world[bi],
+                                 bundle_pose[bi], cameraMatrix, distortionMat);
+      }
 
       for (size_t bi = 0; bi < bundles.size(); ++bi) {
         if (bundle_pose[bi].empty()) continue;

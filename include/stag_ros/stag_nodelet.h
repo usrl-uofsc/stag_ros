@@ -55,8 +55,11 @@ class StagNodelet : public nodelet::Nodelet {
   void loadParameters(const ros::NodeHandle &nh);
   bool getBundleIndex(const int id, int &bundle_index, int &tag_index);
   bool getTagIndex(const int id, int &tag_index);
-  void solvePnp(const std::vector<cv::Point2d> &img,
-                const std::vector<cv::Point3d> &world, cv::Mat &output);
+
+  // STag handle
+  Stag *stag;
+  int stagLib;
+  int errorC;
 
   // ROS Subcribers
   image_transport::Subscriber imageSub;
@@ -64,12 +67,6 @@ class StagNodelet : public nodelet::Nodelet {
 
   // ROS Publishers
   image_transport::Publisher imageDebugPub;
-
-  // STag handle
-  Stag *stag;
-  int stagLib;
-  int errorC;
-  std::vector<cv::Point3d> tagCorners;
 
   // Data
   cv::Mat cameraMatrix;
