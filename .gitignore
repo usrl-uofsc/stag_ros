@@ -4,3 +4,4 @@ setup.bash
 build
 data/*
 scripts/launch_bundle.sh
+cmake-*
