@@ -68,5 +68,7 @@ Then run any of the following launch commands.
 roslaunch stag_ros rosNode_single.launch
 roslaunch stag_ros rosNode_bundle_2.launch
 roslaunch stag_ros rosNode_bundle_4.launch
+roslaunch stag_ros rosNodelet_single.launch
+roslaunch stag_ros rosNodelet_bundle_2.launch
+roslaunch stag_ros rosNodelet_bundle_4.launch
 ```
-The nodelet implementation and launch files are under development.
