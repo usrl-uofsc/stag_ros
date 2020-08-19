@@ -1,0 +1,13 @@
+# STag parameters
+libraryHD: 15
+errorCorrection: 7
+
+# Camera configuration
+camera_info_topic: /usb_cam/camera_info
+raw_image_topic: /usb_cam/image_raw
+is_compressed: true
+
+# bundle generation parameters
+tag_ids: [76,103,92,138]
+# in meters
+tag_sizes: [.089,.089,.089,.089]
