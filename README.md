@@ -15,6 +15,12 @@ This assumes you already have ros installed on your device.
 sudo apt-get install ros-{DISTRO}-swri-nodelet
 ```
 
+### Install Git LFS
+You may need to install git LFS to download the example bag files.
+```
+sudo apt-get install git-lfs
+```
+
 ### Install STag ROS
 ```
 mkdir -p /path/to/catkin_ws/src
@@ -27,19 +33,32 @@ git clone git@github.com:usrl-uofsc/stag_ros.git
 catkin_make
 ```
 
-### Build STag ROS with Debug information
+### Build STag ROS with Debug information (alternative)
 ```
 catkin_make -DCMAKE_BUILD_TYPE=Debug
 ```
 
-### Package configuration
-To use the package you need to edit the node config file (**e.g. cfg/stag_w_usb.yaml**) that loads all the parameters and the marker config file (**e.g. cfg/tag_config.json**).
+## Package configuration
+To use the package you need to edit the node config file (**e.g. cfg/single.yaml**) that loads all the parameters and the marker config file (**e.g. cfg/single.json**).
 
-#### Config file
+### Config file
 In the configuration file you can specify information about the STag configuration, the camera topic and the marker configuration
 
-#### Marker config JSON file
+### Marker config JSON file
 STag ROS allows the detection of multiple markers and marker bundles as long as they all are from the same HD family. You can specify the individual markers and the marker bundles in a JSON file
 
-#### Launch file
-We provide both a node and a nodelet implementation with launch files for each one of them
+## Examples
+Three examples are available through the bags included with LFS. 
+
+First source the workspace.
+```
+source /path/to/catkin_ws/devel/setup.bash (or your shell ex. sh, zsh)
+```
+
+Then run any of the following launch commands.
+```
+roslaunch stag_ros rosNode_single.launch
+roslaunch stag_ros rosNode_bundle_2.launch
+roslaunch stag_ros rosNode_bundle_4.launch
+```
+The nodelet implementation and launch files are under development.
