@@ -25,8 +25,16 @@ sudo apt-get install git-lfs
 ```
 mkdir -p /path/to/catkin_ws/src
 cd /path/to/catkin_ws/src
+```
+To download bag files during the clone use this command.
+```
+git lfs clone git@github.com:usrl-uofsc/stag_ros.git
+```
+Otherwise use this to download the plain repo without the bag files.
+```
 git clone git@github.com:usrl-uofsc/stag_ros.git
 ```
+You can always pull the bags later with ```git lfs pull```.
 
 ### Build STag ROS
 ```
