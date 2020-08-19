@@ -51,10 +51,11 @@ namespace stag_ros {
 
 void StagNodelet::onInit() {
   ros::NodeHandle nh = getNodeHandle();
+  ros::NodeHandle nh_lcl = getPrivateNodeHandle();
   image_transport::ImageTransport imageT(nh);
 
   // Load Parameters
-  loadParameters(nh);
+  loadParameters(nh_lcl);
 
   // Set Subscribers
   imageSub = imageT.subscribe(
@@ -94,12 +95,13 @@ void StagNodelet::loadParameters(const ros::NodeHandle &nh) {
 
   std::string tagJson;
   nh.param("tag_config_json", tagJson, std::string());
-  if(tagJson.compare("")==0)
-  {
+
+  if (tagJson.compare("") == 0) {
     ROS_FATAL("No json specified");
     ros::shutdown();
+  } else {
+    tag_json_loader::load(tagJson, tags, bundles);
   }
-  tag_json_loader::load(tagJson, tags, bundles);
 }
 
 bool StagNodelet::getTagIndex(const int id, int &tag_index) {

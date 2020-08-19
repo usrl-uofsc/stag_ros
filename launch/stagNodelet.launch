@@ -1,7 +1,9 @@
 <launch>
-    <!--Load parameters-->
-    <rosparam command="load" file="$(find stag_ros)/cfg/stag_w_usb.yaml"/>
-
     <!--Start STag Nodelet-->
-    <node name="stag_ros_nodelet" pkg="stag_ros" type="stag_nodelet_runnable" output="screen" required="true" />
+    <node name="stag_ros_nodelet" pkg="stag_ros" type="stag_nodelet_runnable" output="screen" required="true">
+        <!-- Place the correct yaml file here-->
+        <rosparam command="load" file="$(find stag_ros)/cfg/single.yaml"/>
+        <!-- Place the correct json bundle file here-->
+        <param name="tag_config_json" value="$(find stag_ros)/cfg/single.json"/>
+    </node>
 </launch>
