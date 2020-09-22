@@ -55,8 +55,8 @@ class StagNode {
 
   // STag handle
   Stag *stag;
-  int stagLib;
-  int errorC;
+  int stag_library;
+  int error_correction;
 
   // ROS Subcribers
   image_transport::Subscriber imageSub;
@@ -64,17 +64,20 @@ class StagNode {
 
   // ROS Publishers
   image_transport::Publisher imageDebugPub;
+  ros::Publisher bundlePub;
+  ros::Publisher markersPub;
 
   // Data
   cv::Mat cameraMatrix;
   cv::Mat distortionMat;
   cv::Mat rectificationMat;
   cv::Mat projectionMat;
-  bool gotCamInfo;
-  bool debugI;
-  bool isCompressed;
-  std::string imageTopic;
-  std::string cameraInfoTopic;
+  bool got_camera_info;
+  bool debug_images;
+  bool publish_tf;
+  bool is_compressed;
+  std::string image_topic;
+  std::string camera_info_topic;
   std::string tag_tf_prefix;
 
   // Tag and bundle info

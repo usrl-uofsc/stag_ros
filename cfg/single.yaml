@@ -8,18 +8,15 @@ raw_image_topic: /usb_cam/image_raw
 is_compressed: true
 
 # Node configuration
-
-# Absolute path to JSON file
-tag_tf_prefix: stag_
+tag_tf_prefix: STag_
+show_markers: true
+publish_tf: true
 
 # Tag corner order in JSON file:
-# 4          3
+# 1          2
 #  HD########
 #  #ID#  ####
 #  ##  ##  ##
 #  ####  ####
 #  ##########
-# 1          2
-
-# Publish detected markers
-show_markers: true
+# 4          3

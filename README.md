@@ -16,7 +16,7 @@ sudo apt-get install ros-{DISTRO}-swri-nodelet
 ```
 
 ### Install Git LFS
-You may need to install git LFS to download the example bag files. For Ubuntu 18.04 or later do:
+You may need to install git LFS to download the example bag files. For Ubuntu 18.04 or later:
 ```
 sudo apt-get install git-lfs
 ```

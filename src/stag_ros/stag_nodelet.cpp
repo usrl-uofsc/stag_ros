@@ -39,6 +39,7 @@ SOFTWARE.
 #include <tf/tf.h>
 #include <tf/transform_datatypes.h>
 #include <tf/transform_broadcaster.h>
+#include <geometry_msgs/PoseStamped.h>
 
 #include <iostream>
 #include <future>
@@ -59,20 +60,22 @@ void StagNodelet::onInit() {
 
   // Set Subscribers
   imageSub = imageT.subscribe(
-      imageTopic, 1, &StagNodelet::imageCallback, this,
-      image_transport::TransportHints(isCompressed ? "compressed" : "raw"));
-
-  cameraInfoSub =
-      nh.subscribe(cameraInfoTopic, 1, &StagNodelet::cameraInfoCallback, this);
+      image_topic, 1, &StagNodelet::imageCallback, this,
+      image_transport::TransportHints(is_compressed ? "compressed" : "raw"));
+  cameraInfoSub = nh.subscribe(camera_info_topic, 1,
+                               &StagNodelet::cameraInfoCallback, this);
 
   // Set Publishers
-  if (debugI) imageDebugPub = imageT.advertise("image_markers", 1);
+  if (debug_images)
+    imageDebugPub = imageT.advertise("stag_ros/image_markers", 1);
+  bundlePub = nh.advertise<geometry_msgs::PoseStamped>("stag_ros/bundles", 1);
+  markersPub = nh.advertise<geometry_msgs::PoseStamped>("stag_ros/markers", 1);
 
   // Initialize Stag
-  stag = new Stag(stagLib, errorC, false);
+  stag = new Stag(stag_library, error_correction, false);
 
   // Initialize camera info
-  gotCamInfo = false;
+  got_camera_info = false;
   cameraMatrix = cv::Mat::zeros(3, 3, CV_64F);
   distortionMat = cv::Mat::zeros(1, 5, CV_64F);
   rectificationMat = cv::Mat::zeros(3, 3, CV_64F);
@@ -85,12 +88,13 @@ StagNodelet::~StagNodelet() { delete stag; }
 void StagNodelet::loadParameters(const ros::NodeHandle &nh) {
   // Create private nodeHandle to load parameters
 
-  nh.param("libraryHD", stagLib, 15);
-  nh.param("errorCorrection", errorC, 7);
-  nh.param("raw_image_topic", imageTopic, std::string("image_raw"));
-  nh.param("camera_info_topic", cameraInfoTopic, std::string("camera_info"));
-  nh.param("is_compressed", isCompressed, false);
-  nh.param("show_markers", debugI, false);
+  nh.param("libraryHD", stag_library, 15);
+  nh.param("errorCorrection", error_correction, 7);
+  nh.param("raw_image_topic", image_topic, std::string("image_raw"));
+  nh.param("camera_info_topic", camera_info_topic, std::string("camera_info"));
+  nh.param("is_compressed", is_compressed, false);
+  nh.param("show_markers", debug_images, false);
+  nh.param("publish_tf", publish_tf, false);
   nh.param("tag_tf_prefix", tag_tf_prefix, std::string("STag_"));
 
   std::string tagJson;
@@ -132,8 +136,7 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
 #ifndef NDEBUG
   INSTRUMENT;
 #endif
-  static tf::TransformBroadcaster br;
-  if (gotCamInfo) {
+  if (got_camera_info) {
     cv::Mat gray;
     msgToGray(msg, gray);
 
@@ -142,7 +145,7 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
     std::vector<Marker> markers = stag->getMarkerList();
 
     // Publish debug image
-    if (debugI) {
+    if (debug_images) {
       cv_bridge::CvImage rosMat;
       rosMat.header = msg->header;
       rosMat.encoding = "bgr8";
@@ -215,9 +218,10 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
         tf::Vector3 tfVec(bundle_pose[bi].at<double>(0, 3),
                           bundle_pose[bi].at<double>(1, 3),
                           bundle_pose[bi].at<double>(2, 3));
-        br.sendTransform(tf::StampedTransform(
-            tf::Transform(rotQ, tfVec), msg->header.stamp, msg->header.frame_id,
-            tag_tf_prefix + bundles[bi].frame_id));
+        auto bundle_tf = tf::Transform(rotQ, tfVec);
+        Common::publishTransform(bundle_tf, bundlePub, msg->header,
+                                 tag_tf_prefix, bundles[bi].frame_id,
+                                 publish_tf);
       }
       for (size_t ti = 0; ti < tags.size(); ++ti) {
         if (tag_pose[ti].empty()) continue;
@@ -234,9 +238,9 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
         tf::Vector3 tfVec(tag_pose[ti].at<double>(0, 3),
                           tag_pose[ti].at<double>(1, 3),
                           tag_pose[ti].at<double>(2, 3));
-        br.sendTransform(tf::StampedTransform(
-            tf::Transform(rotQ, tfVec), msg->header.stamp, msg->header.frame_id,
-            tag_tf_prefix + tags[ti].frame_id));
+        auto marker_tf = tf::Transform(rotQ, tfVec);
+        Common::publishTransform(marker_tf, markersPub, msg->header,
+                                 tag_tf_prefix, tags[ti].frame_id, publish_tf);
       }
     } else
       ROS_WARN("No markers detected");
@@ -245,7 +249,7 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
 
 void StagNodelet::cameraInfoCallback(
     const sensor_msgs::CameraInfoConstPtr &msg) {
-  if (!gotCamInfo) {
+  if (!got_camera_info) {
     // Get camera Matrix
     cameraMatrix.at<double>(0, 0) = msg->K[0];
     cameraMatrix.at<double>(0, 1) = msg->K[1];
@@ -287,7 +291,7 @@ void StagNodelet::cameraInfoCallback(
     projectionMat.at<double>(2, 1) = msg->P[10];
     projectionMat.at<double>(2, 2) = msg->P[11];
 
-    gotCamInfo = true;
+    got_camera_info = true;
   }
 }
 }  // namespace stag_ros
