@@ -37,75 +37,75 @@ void JoinCollinearLines(EDLines *lines,
 
 ///----------------------------------------------------------------------------
 /// Dumps lines to file
-///
-void DumpLines2File(EDLines *lines, char *fname) {
-// Burak - suppresses _CRT_SECURE_NO_DEPRECATE warnings
-#pragma warning(disable : 4996)
+// ///
+// void DumpLines2File(EDLines *lines, char *fname) {
+// // Burak - suppresses _CRT_SECURE_NO_DEPRECATE warnings
+// #pragma warning(disable : 4996)
 
-  FILE *fp = fopen(fname, "w");
+//   FILE *fp = fopen(fname, "w");
 
-// Burak - restores _CRT_SECURE_NO_DEPRECATE warnings
-#pragma warning(default : 4996)
+// // Burak - restores _CRT_SECURE_NO_DEPRECATE warnings
+// #pragma warning(default : 4996)
 
-  /// Dump lines to the file
-  fprintf(fp,
-          "+=======+===========+=======+=========+=== LINES "
-          "=====+========+========+========+========+========+========+\n");
-  fprintf(fp,
-          "| LineNo| SegmentNo |   a   |    b    |invert|   sx   |   sy   |   "
-          "ex   |   ey   |  Angle |Distance| Length |\n");
-  fprintf(fp,
-          "+=======+===========+=======+=========+===============+========+===="
-          "====+========+========+========+========+\n");
+//   /// Dump lines to the file
+//   fprintf(fp,
+//           "+=======+===========+=======+=========+=== LINES "
+//           "=====+========+========+========+========+========+========+\n");
+//   fprintf(fp,
+//           "| LineNo| SegmentNo |   a   |    b    |invert|   sx   |   sy   |   "
+//           "ex   |   ey   |  Angle |Distance| Length |\n");
+//   fprintf(fp,
+//           "+=======+===========+=======+=========+===============+========+===="
+//           "====+========+========+========+========+\n");
 
-  int i = 0;
-  while (i < lines->noLines) {
-    fprintf(fp,
-            "+-------+-----------+-------+---------+---------------+--------+--"
-            "------+--------+--------+--------+--------+\n");
+//   int i = 0;
+//   while (i < lines->noLines) {
+//     fprintf(fp,
+//             "+-------+-----------+-------+---------+---------------+--------+--"
+//             "------+--------+--------+--------+--------+\n");
 
-    int segmentNo = lines->lines[i].segmentNo;
-    int count = 1;
-    int firstLineIndex = i;
-    int lastLineIndex = i + 1;
+//     int segmentNo = lines->lines[i].segmentNo;
+//     int count = 1;
+//     int firstLineIndex = i;
+//     int lastLineIndex = i + 1;
 
-    while (lastLineIndex < lines->noLines &&
-           lines->lines[lastLineIndex].segmentNo == segmentNo) {
-      count++;
-      lastLineIndex++;
-    }  // end-while
+//     while (lastLineIndex < lines->noLines &&
+//            lines->lines[lastLineIndex].segmentNo == segmentNo) {
+//       count++;
+//       lastLineIndex++;
+//     }  // end-while
 
-    i += count;
-    lastLineIndex--;
+//     i += count;
+//     lastLineIndex--;
 
-    for (int j = firstLineIndex; j <= lastLineIndex; j++) {
-      double len = LineSegmentLength(&lines->lines[j]);
-      double dist = -1;
-      double angle = -1;
-      int next = j + 1;
-      if (next > lastLineIndex) next = firstLineIndex;
+//     for (int j = firstLineIndex; j <= lastLineIndex; j++) {
+//       double len = LineSegmentLength(&lines->lines[j]);
+//       double dist = -1;
+//       double angle = -1;
+//       int next = j + 1;
+//       if (next > lastLineIndex) next = firstLineIndex;
 
-      if (next != j) {
-        angle = ComputeAngleBetweenTwoLines(&lines->lines[j],
-                                            &lines->lines[next], &dist);
-      }  // end-if
+//       if (next != j) {
+//         angle = ComputeAngleBetweenTwoLines(&lines->lines[j],
+//                                             &lines->lines[next], &dist);
+//       }  // end-if
 
-      fprintf(fp,
-              "|   %3d |    %3d    "
-              "|%7.1lf|%9.5lf|%6d|%8.1lf|%8.1lf|%8.1lf|%8.1lf|%8.1lf|%8.1lf|%8."
-              "1lf|\n",
-              j, lines->lines[j].segmentNo, lines->lines[j].a,
-              lines->lines[j].b, lines->lines[j].invert, lines->lines[j].sx,
-              lines->lines[j].sy, lines->lines[j].ex, lines->lines[j].ey, angle,
-              dist, len);
-    }  // end-for
-  }    // end-for
-  fprintf(fp,
-          "+=======+===========+=======+=========+===============+========+===="
-          "====+========+========+========+========+\n");
+//       fprintf(fp,
+//               "|   %3d |    %3d    "
+//               "|%7.1lf|%9.5lf|%6d|%8.1lf|%8.1lf|%8.1lf|%8.1lf|%8.1lf|%8.1lf|%8."
+//               "1lf|\n",
+//               j, lines->lines[j].segmentNo, lines->lines[j].a,
+//               lines->lines[j].b, lines->lines[j].invert, lines->lines[j].sx,
+//               lines->lines[j].sy, lines->lines[j].ex, lines->lines[j].ey, angle,
+//               dist, len);
+//     }  // end-for
+//   }    // end-for
+//   fprintf(fp,
+//           "+=======+===========+=======+=========+===============+========+===="
+//           "====+========+========+========+========+\n");
 
-  fclose(fp);
-}  // end-DumpLines2File
+//   fclose(fp);
+// }  // end-DumpLines2File
 
 ///------------------------------------------------------------------
 /// Goes over the original line segments and combines collinear lines that
@@ -710,133 +710,133 @@ int ComputeMinLineLength(int width, int height) {
 ///
 // Burak - original function decleration: EDLines *DetectLinesByED(unsigned char
 // *srcImg, int width, int height, double smoothingSigma, EDLines *invalidLines)
-EDLines *DetectLinesByED(EdgeMap *&map, unsigned char *srcImg, int width,
-                         int height, double smoothingSigma,
-                         EDLines *invalidLines) {
-  // Make sure, smoothingSigma <= 2.0. Higher values do not produce good results
-  if (smoothingSigma > 2.0) smoothingSigma = 2.0;
+// EDLines *DetectLinesByED(EdgeMap *&map, unsigned char *srcImg, int width,
+//                          int height, double smoothingSigma,
+//                          EDLines *invalidLines) {
+//   // Make sure, smoothingSigma <= 2.0. Higher values do not produce good results
+//   if (smoothingSigma > 2.0) smoothingSigma = 2.0;
 
-  EDLines *lines = new EDLines(width, height);
+//   EDLines *lines = new EDLines(width, height);
 
-#define USE_GX_GY_PLUS
-#ifdef USE_GX_GY_PLUS
-  /* used with g = gx+gy */
-  int GRADIENT_THRESH =
-      11;  // 9 seems to give the best results // (1-2), (3-4), (5-6), ..,
-           // (11-12) pairs produce the same gradient map! ANCHOR_THRESH pairs
-           // (1,2), (3,4), (5,6) etc. generate the same number of anchors!
+// #define USE_GX_GY_PLUS
+// #ifdef USE_GX_GY_PLUS
+//   /* used with g = gx+gy */
+//   int GRADIENT_THRESH =
+//       11;  // 9 seems to give the best results // (1-2), (3-4), (5-6), ..,
+//            // (11-12) pairs produce the same gradient map! ANCHOR_THRESH pairs
+//            // (1,2), (3,4), (5,6) etc. generate the same number of anchors!
 
-  if (smoothingSigma >= 2.0)
-    GRADIENT_THRESH += 2;  // higher GRADIENT_THRESH for higher smoothing so
-                           // that we do not get any false detections
+//   if (smoothingSigma >= 2.0)
+//     GRADIENT_THRESH += 2;  // higher GRADIENT_THRESH for higher smoothing so
+//                            // that we do not get any false detections
 
-#elif USE_GX_GY_SQRT
-  /* used with g = sqrt(gx*gx+gy*gy) */
-  // This threshold should in fact be 10.45 (4/sin(22.5)=10.45). But, since
-  // we are computing the gradient over the smoothed image, a smaller value must
-  // be used. 8 seems to give results closest to the theoretical threshold
-  // value, and thus results closest to LSD.
-  int GRADIENT_THRESH = 8;  // with g = sqrt(gx*gx+gy*gy)
-#endif
+// #elif USE_GX_GY_SQRT
+//   /* used with g = sqrt(gx*gx+gy*gy) */
+//   // This threshold should in fact be 10.45 (4/sin(22.5)=10.45). But, since
+//   // we are computing the gradient over the smoothed image, a smaller value must
+//   // be used. 8 seems to give results closest to the theoretical threshold
+//   // value, and thus results closest to LSD.
+//   int GRADIENT_THRESH = 8;  // with g = sqrt(gx*gx+gy*gy)
+// #endif
 
-  int ANCHOR_THRESH = 3;  // smaller values produce noise!
+//   int ANCHOR_THRESH = 3;  // smaller values produce noise!
 
-  /*----------- DETECT EDGES ----------------*/
-  // Timer timer;
-  // timer.Start();
+//   /*----------- DETECT EDGES ----------------*/
+//   // Timer timer;
+//   // timer.Start();
 
-  // Detect edges by edge drawing
-  unsigned char *smoothImg = new unsigned char[width * height];
-  unsigned char *dirImg = new unsigned char[width * height];
-  short *gradImg = new short[width * height];
+//   // Detect edges by edge drawing
+//   unsigned char *smoothImg = new unsigned char[width * height];
+//   unsigned char *dirImg = new unsigned char[width * height];
+//   short *gradImg = new short[width * height];
 
-  SmoothImage(srcImg, smoothImg, width, height, smoothingSigma);
-  ComputeGradientMapByLSD(smoothImg, gradImg, dirImg, width, height,
-                          GRADIENT_THRESH);
-  map = DoDetectEdgesByED(gradImg, dirImg, width, height, GRADIENT_THRESH,
-                          ANCHOR_THRESH);
+//   SmoothImage(srcImg, smoothImg, width, height, smoothingSigma);
+//   ComputeGradientMapByLSD(smoothImg, gradImg, dirImg, width, height,
+//                           GRADIENT_THRESH);
+//   map = DoDetectEdgesByED(gradImg, dirImg, width, height, GRADIENT_THRESH,
+//                           ANCHOR_THRESH);
 
-#if 0
-  void SaveImage(char *, char *, int, int, int);
-  for (int i=0; i<width*height; i++) if (gradImg[i] >= GRADIENT_THRESH) dirImg[i]=255; else dirImg[i]=0;
-  SaveImage("OutputImages/gradImgBW.pgm", (char *)dirImg, width, height, 8);
-#endif
+// #if 0
+//   void SaveImage(char *, char *, int, int, int);
+//   for (int i=0; i<width*height; i++) if (gradImg[i] >= GRADIENT_THRESH) dirImg[i]=255; else dirImg[i]=0;
+//   SaveImage("OutputImages/gradImgBW.pgm", (char *)dirImg, width, height, 8);
+// #endif
 
-  delete gradImg;
-  delete dirImg;
+//   delete gradImg;
+//   delete dirImg;
 
-  // timer.Stop();
-  lines->edgeDetectionTime = 1;  // timer.ElapsedTime();
+//   // timer.Stop();
+//   lines->edgeDetectionTime = 1;  // timer.ElapsedTime();
 
-  /*----------- FIT LINES ----------------*/
-  // timer.Start();
+//   /*----------- FIT LINES ----------------*/
+//   // timer.Start();
 
-  // Now, go over the edge segments & fit lines
-  lines->clear();
+//   // Now, go over the edge segments & fit lines
+//   lines->clear();
 
-  lines->MIN_LINE_LEN = ComputeMinLineLength(width, height);
+//   lines->MIN_LINE_LEN = ComputeMinLineLength(width, height);
 
-  // Too small?
-  //  if (lines->MIN_LINE_LEN < 8) lines->MIN_LINE_LEN = 8;
+//   // Too small?
+//   //  if (lines->MIN_LINE_LEN < 8) lines->MIN_LINE_LEN = 8;
 
-  // Min line length 9 seems to give the closest results to LSD. Keep this?
-  if (lines->MIN_LINE_LEN < 9) lines->MIN_LINE_LEN = 9;
+//   // Min line length 9 seems to give the closest results to LSD. Keep this?
+//   if (lines->MIN_LINE_LEN < 9) lines->MIN_LINE_LEN = 9;
 
-  // A min line length of 10 gives less lines than LSD, but the lines are much
-  // cleaner
-  //  if (lines->MIN_LINE_LEN < 10) lines->MIN_LINE_LEN = 10;
+//   // A min line length of 10 gives less lines than LSD, but the lines are much
+//   // cleaner
+//   //  if (lines->MIN_LINE_LEN < 10) lines->MIN_LINE_LEN = 10;
 
-  double *x = lines->x;
-  double *y = lines->y;
+//   double *x = lines->x;
+//   double *y = lines->y;
 
-  // Use the whole segment
-  for (int segmentNo = 0; segmentNo < map->noSegments; segmentNo++) {
-    EdgeSegment *segment = &map->segments[segmentNo];
+//   // Use the whole segment
+//   for (int segmentNo = 0; segmentNo < map->noSegments; segmentNo++) {
+//     EdgeSegment *segment = &map->segments[segmentNo];
 
-    for (int k = 0; k < segment->noPixels; k++) {
-      x[k] = segment->pixels[k].c;
-      y[k] = segment->pixels[k].r;
-    }  // end-for
+//     for (int k = 0; k < segment->noPixels; k++) {
+//       x[k] = segment->pixels[k].c;
+//       y[k] = segment->pixels[k].r;
+//     }  // end-for
 
-    SplitSegment2Lines(x, y, segment->noPixels, segmentNo, lines);
-  }  // end-for
+//     SplitSegment2Lines(x, y, segment->noPixels, segmentNo, lines);
+//   }  // end-for
 
-  // timer.Stop();
-  lines->lineFitTime = 1;  // timer.ElapsedTime();
+//   // timer.Stop();
+//   lines->lineFitTime = 1;  // timer.ElapsedTime();
 
-  /*----------- JOIN COLLINEAR LINES ----------------*/
-  // timer.Start();
+//   /*----------- JOIN COLLINEAR LINES ----------------*/
+//   // timer.Start();
 
-  JoinCollinearLines(lines, 6.0, 1.30);
+//   JoinCollinearLines(lines, 6.0, 1.30);
 
-  // timer.Stop();
-  lines->joinLineSegmentsTime = 1;  // timer.ElapsedTime();
+//   // timer.Stop();
+//   lines->joinLineSegmentsTime = 1;  // timer.ElapsedTime();
 
-  /*----------- VALIDATE LINES ----------------*/
-  // timer.Start();
+//   /*----------- VALIDATE LINES ----------------*/
+//   // timer.Start();
 
-#if 0
-  // Validate with unsmoothed image
-  ValidateLineSegments(map, srcImg, lines, invalidLines);
-#else
-  // Validate with smoothed image -- good especially for noisy images
-  double validationSigma =
-      smoothingSigma / 2.5;  // Gives one false detection in noisy images, but I
-                             // think this is better in general
-                             //  double validationSigma = smoothingSigma/3;
-  SmoothImage(srcImg, smoothImg, width, height, validationSigma);
-  ValidateLineSegments(map, smoothImg, lines, invalidLines);
-#endif
+// #if 0
+//   // Validate with unsmoothed image
+//   ValidateLineSegments(map, srcImg, lines, invalidLines);
+// #else
+//   // Validate with smoothed image -- good especially for noisy images
+//   double validationSigma =
+//       smoothingSigma / 2.5;  // Gives one false detection in noisy images, but I
+//                              // think this is better in general
+//                              //  double validationSigma = smoothingSigma/3;
+//   SmoothImage(srcImg, smoothImg, width, height, validationSigma);
+//   ValidateLineSegments(map, smoothImg, lines, invalidLines);
+// #endif
 
-  // timer.Stop();
-  lines->lineValidationTime = 1;  // timer.ElapsedTime();
+//   // timer.Stop();
+//   lines->lineValidationTime = 1;  // timer.ElapsedTime();
 
-  delete smoothImg;
-  // Burak - need to return this, don't delete
-  // delete map;
+//   delete smoothImg;
+//   // Burak - need to return this, don't delete
+//   // delete map;
 
-  return lines;
-}  // end-DetectLinesByED
+//   return lines;
+// }  // end-DetectLinesByED
 
 ///----------------------------------------------------------------------------------------------------------------
 /// Extract all lines using edge drawing parameter free (EDPF)
