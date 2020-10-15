@@ -17,7 +17,7 @@ struct LineSegment {
 int Round(double d);
 
 /// Simply returns the length of a line segment
-double LineSegmentLength(LineSegment *ls);
+// double LineSegmentLength(LineSegment *ls);
 
 /// Computes the minimum distance between the end points of two lines
 /// "which" returns a value that designates which endpoints are closest
@@ -31,22 +31,22 @@ double ComputeMinDistanceBetweenTwoLines(LineSegment *ls1, LineSegment *ls2,
 
 /// Computes the angle between two line segments
 /// Assumes that (ex, ey) of ls1 is closer to (sx, ey) of ls2
-double ComputeAngleBetweenTwoLines(LineSegment *ls1, LineSegment *ls2,
-                                   double *pMinDist = NULL);
+// double ComputeAngleBetweenTwoLines(LineSegment *ls1, LineSegment *ls2,
+//                                    double *pMinDist = NULL);
 
 /// Computes the angle (in degrees) between two line segments
-double ComputeAngleBetweenTwoLines2(LineSegment *ls1, LineSegment *ls2,
-                                    double *pMinDist = NULL,
-                                    int *pwhich = NULL);
+// double ComputeAngleBetweenTwoLines2(LineSegment *ls1, LineSegment *ls2,
+//                                     double *pMinDist = NULL,
+//                                     int *pwhich = NULL);
 
 /// Computes the intersection of two line segments
-void FindIntersectionPoint(LineSegment *ls1, LineSegment *ls2, double *xInt,
-                           double *yInt);
+// void FindIntersectionPoint(LineSegment *ls1, LineSegment *ls2, double *xInt,
+//                            double *yInt);
 
 /// Given the start and end of a line segment, computes the points from (sx,
 /// sy)-->(ex, ey) using the Bresenham's line trace algorithm
-void BresenhamLineTrace(int sx, int sy, int ex, int ey, int px[], int py[],
-                        int *noPoints);
+// void BresenhamLineTrace(int sx, int sy, int ex, int ey, int px[], int py[],
+//                         int *noPoints);
 
 /// Computes the closest point on the line to a given point (x1, y1)
 void ComputeClosestPoint(double x1, double y1, double a, double b, int invert,
@@ -68,8 +68,8 @@ bool TryToJoinTwoLineSegments(LineSegment *ls1, LineSegment *ls2,
 
 /// Given two points (sx, sy)----(ex, ey), computes the line that passes through
 /// these points Assumes that the points are not very close
-void ComputeLine(double sx, double sy, double ex, double ey, double *a,
-                 double *b, int *invert);
+// void ComputeLine(double sx, double sy, double ex, double ey, double *a,
+//                  double *b, int *invert);
 
 /// Fits a line to a given set of points. Returns the mean square error
 void LineFit(double *x, double *y, int count, double *a, double *b, double *e,

@@ -105,9 +105,9 @@ struct EDLines {
 // following two functions Burak - original function decleration: EDLines
 // *DetectLinesByED(unsigned char *srcImg, int width, int height, double
 // smoothingSigma=1.0, EDLines *invalidLines=NULL);
-EDLines *DetectLinesByED(EdgeMap *&map, unsigned char *srcImg, int width,
-                         int height, double smoothingSigma = 1.0,
-                         EDLines *invalidLines = NULL);
+// EDLines *DetectLinesByED(EdgeMap *&map, unsigned char *srcImg, int width,
+//                          int height, double smoothingSigma = 1.0,
+//                          EDLines *invalidLines = NULL);
 // Burak - original function decleration: EDLines *DetectLinesByEDPF(unsigned
 // char *srcImg, int width, int height, EDLines *invalidLines=NULL);
 EDLines *DetectLinesByEDPF(EdgeMap *&map, unsigned char *srcImg, int width,
@@ -115,6 +115,6 @@ EDLines *DetectLinesByEDPF(EdgeMap *&map, unsigned char *srcImg, int width,
                            int thresManhDist);
 
 /// Dump lines to file
-void DumpLines2File(EDLines *lines, char *fname);
+// void DumpLines2File(EDLines *lines, char *fname);
 
 #endif

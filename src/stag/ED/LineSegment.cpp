@@ -12,48 +12,48 @@ int Round(double d) { return (int)(d + 0.5); }  // end-Round
 ///-------------------------------------------------------------------------------
 /// Simply returns the length of a line segment
 ///
-double LineSegmentLength(LineSegment *ls) {
-  double dx = ls->sx - ls->ex;
-  double dy = ls->sy - ls->ey;
+// double LineSegmentLength(LineSegment *ls) {
+//   double dx = ls->sx - ls->ex;
+//   double dy = ls->sy - ls->ey;
 
-  return sqrt(dx * dx + dy * dy);
-}  // end-LineSegmentLength
+//   return sqrt(dx * dx + dy * dy);
+// }  // end-LineSegmentLength
 
 ///-------------------------------------------------------------------------------
 /// Computes the angle between two line segments
 /// Assumes that (ex, ey) of ls1 is closer to (sx, ey) of ls2
 ///
-double ComputeAngleBetweenTwoLines(LineSegment *ls1, LineSegment *ls2,
-                                   double *pMinDist) {
-  double vx1 = ls1->ex - ls1->sx;
-  double vy1 = ls1->ey - ls1->sy;
-  double v1Len = sqrt(vx1 * vx1 + vy1 * vy1);
+// double ComputeAngleBetweenTwoLines(LineSegment *ls1, LineSegment *ls2,
+//                                    double *pMinDist) {
+//   double vx1 = ls1->ex - ls1->sx;
+//   double vy1 = ls1->ey - ls1->sy;
+//   double v1Len = sqrt(vx1 * vx1 + vy1 * vy1);
 
-  double vx2 = ls2->ex - ls2->sx;
-  double vy2 = ls2->ey - ls2->sy;
-  double v2Len = sqrt(vx2 * vx2 + vy2 * vy2);
+//   double vx2 = ls2->ex - ls2->sx;
+//   double vy2 = ls2->ey - ls2->sy;
+//   double v2Len = sqrt(vx2 * vx2 + vy2 * vy2);
 
-  double dotProduct = vx1 * vx2 + vy1 * vy2;
-  double result = dotProduct / (v1Len * v2Len);
-  if (result < -1.0)
-    result = -1.0;
-  else if (result > 1.0)
-    result = 1.0;
-  double angle = acos(result);
+//   double dotProduct = vx1 * vx2 + vy1 * vy2;
+//   double result = dotProduct / (v1Len * v2Len);
+//   if (result < -1.0)
+//     result = -1.0;
+//   else if (result > 1.0)
+//     result = 1.0;
+//   double angle = acos(result);
 
-#define PI 3.14159
-  angle = (angle / PI) * 180;  // convert to degrees
+// #define PI 3.14159
+//   angle = (angle / PI) * 180;  // convert to degrees
 
-  if (pMinDist) {
-    //  Compute the distance between (ex, ey) of ls1 & (sx, sy) of ls2
-    double dx = ls1->ex - ls2->sx;
-    double dy = ls1->ey - ls2->sy;
+//   if (pMinDist) {
+//     //  Compute the distance between (ex, ey) of ls1 & (sx, sy) of ls2
+//     double dx = ls1->ex - ls2->sx;
+//     double dy = ls1->ey - ls2->sy;
 
-    *pMinDist = sqrt(dx * dx + dy * dy);
-  }  // end-if
+//     *pMinDist = sqrt(dx * dx + dy * dy);
+//   }  // end-if
 
-  return angle;
-}  // end-ComputeAngleBetweenTwoLines
+//   return angle;
+// }  // end-ComputeAngleBetweenTwoLines
 
 ///-------------------------------------------------------------------------------
 /// Computes the angle (in degrees) between two line segments
@@ -69,94 +69,94 @@ double ComputeAngleBetweenTwoLines(LineSegment *ls1, LineSegment *ls2,
 #define SE 1
 #define ES 2
 #define EE 3
-double ComputeAngleBetweenTwoLines2(LineSegment *ls1, LineSegment *ls2,
-                                    double *pMinDist, int *pwhich) {
-  double dx = ls1->sx - ls2->sx;
-  double dy = ls1->sy - ls2->sy;
-  double d = sqrt(dx * dx + dy * dy);
-  double min = d;
-  int which = SS;
+// double ComputeAngleBetweenTwoLines2(LineSegment *ls1, LineSegment *ls2,
+//                                     double *pMinDist, int *pwhich) {
+//   double dx = ls1->sx - ls2->sx;
+//   double dy = ls1->sy - ls2->sy;
+//   double d = sqrt(dx * dx + dy * dy);
+//   double min = d;
+//   int which = SS;
 
-  dx = ls1->sx - ls2->ex;
-  dy = ls1->sy - ls2->ey;
-  d = sqrt(dx * dx + dy * dy);
-  if (d < min) {
-    min = d;
-    which = SE;
-  }
+//   dx = ls1->sx - ls2->ex;
+//   dy = ls1->sy - ls2->ey;
+//   d = sqrt(dx * dx + dy * dy);
+//   if (d < min) {
+//     min = d;
+//     which = SE;
+//   }
 
-  dx = ls1->ex - ls2->sx;
-  dy = ls1->ey - ls2->sy;
-  d = sqrt(dx * dx + dy * dy);
-  if (d < min) {
-    min = d;
-    which = ES;
-  }
+//   dx = ls1->ex - ls2->sx;
+//   dy = ls1->ey - ls2->sy;
+//   d = sqrt(dx * dx + dy * dy);
+//   if (d < min) {
+//     min = d;
+//     which = ES;
+//   }
 
-  dx = ls1->ex - ls2->ex;
-  dy = ls1->ey - ls2->ey;
-  d = sqrt(dx * dx + dy * dy);
-  if (d < min) {
-    min = d;
-    which = EE;
-  }
+//   dx = ls1->ex - ls2->ex;
+//   dy = ls1->ey - ls2->ey;
+//   d = sqrt(dx * dx + dy * dy);
+//   if (d < min) {
+//     min = d;
+//     which = EE;
+//   }
 
-  if (pMinDist) *pMinDist = min;
-  if (pwhich) *pwhich = which;
+//   if (pMinDist) *pMinDist = min;
+//   if (pwhich) *pwhich = which;
 
-  double vx1, vy1, vx2, vy2;
+//   double vx1, vy1, vx2, vy2;
 
-  switch (which) {
-    case SS:
-      vx1 = ls1->ex - ls1->sx;
-      vy1 = ls1->ey - ls1->sy;
+//   switch (which) {
+//     case SS:
+//       vx1 = ls1->ex - ls1->sx;
+//       vy1 = ls1->ey - ls1->sy;
 
-      vx2 = ls2->ex - ls2->sx;
-      vy2 = ls2->ey - ls2->sy;
-      break;
+//       vx2 = ls2->ex - ls2->sx;
+//       vy2 = ls2->ey - ls2->sy;
+//       break;
 
-    case SE:
-      vx1 = ls1->ex - ls1->sx;
-      vy1 = ls1->ey - ls1->sy;
+//     case SE:
+//       vx1 = ls1->ex - ls1->sx;
+//       vy1 = ls1->ey - ls1->sy;
 
-      vx2 = ls2->sx - ls2->ex;
-      vy2 = ls2->sy - ls2->ey;
-      break;
+//       vx2 = ls2->sx - ls2->ex;
+//       vy2 = ls2->sy - ls2->ey;
+//       break;
 
-    case ES:
-      vx1 = ls1->sx - ls1->ex;
-      vy1 = ls1->sy - ls1->ey;
+//     case ES:
+//       vx1 = ls1->sx - ls1->ex;
+//       vy1 = ls1->sy - ls1->ey;
 
-      vx2 = ls2->ex - ls2->sx;
-      vy2 = ls2->ey - ls2->sy;
-      break;
+//       vx2 = ls2->ex - ls2->sx;
+//       vy2 = ls2->ey - ls2->sy;
+//       break;
 
-    case EE:
-      vx1 = ls1->sx - ls1->ex;
-      vy1 = ls1->sy - ls1->ey;
+//     case EE:
+//       vx1 = ls1->sx - ls1->ex;
+//       vy1 = ls1->sy - ls1->ey;
 
-      vx2 = ls2->sx - ls2->ex;
-      vy2 = ls2->sy - ls2->ey;
-      break;
-  }  // end-case
+//       vx2 = ls2->sx - ls2->ex;
+//       vy2 = ls2->sy - ls2->ey;
+//       break;
+//   }  // end-case
 
-  double v1Len = sqrt(vx1 * vx1 + vy1 * vy1);
-  double v2Len = sqrt(vx2 * vx2 + vy2 * vy2);
+//   double v1Len = sqrt(vx1 * vx1 + vy1 * vy1);
+//   double v2Len = sqrt(vx2 * vx2 + vy2 * vy2);
 
-  double dotProduct = vx1 * vx2 + vy1 * vy2;
-  double result = dotProduct / (v1Len * v2Len);
-  if (result < -1.0)
-    result = -1.0;
-  else if (result > 1.0)
-    result = 1.0;
-  double angle = acos(result);
+//   double dotProduct = vx1 * vx2 + vy1 * vy2;
+//   double result = dotProduct / (v1Len * v2Len);
+//   if (result < -1.0)
+//     result = -1.0;
+//   else if (result > 1.0)
+//     result = 1.0;
+//   double angle = acos(result);
 
-#define PI 3.14159
-  angle = (angle / PI) * 180;  // convert to degrees
+// #define PI 3.14159
+//   angle = (angle / PI) * 180;  // convert to degrees
 
-  // Return the angle
-  return angle;
-}  // end-ComputeAngleBetweenTwoLines2
+//   // Return the angle
+//   return angle;
+// }  // end-ComputeAngleBetweenTwoLines2
 
 ///-------------------------------------------------------------------------------
 /// Computes the minimum distance between the end points of two lines
@@ -201,35 +201,35 @@ double ComputeMinDistanceBetweenTwoLines(LineSegment *ls1, LineSegment *ls2,
 /// Computes the intersection point of the two lines ls1 & ls2
 /// Assumes that the lines are NOT collinear
 ///
-void FindIntersectionPoint(LineSegment *ls1, LineSegment *ls2, double *xInt,
-                           double *yInt) {
-  double x = 0.0;
-  double y = 0.0;
+// void FindIntersectionPoint(LineSegment *ls1, LineSegment *ls2, double *xInt,
+//                            double *yInt) {
+//   double x = 0.0;
+//   double y = 0.0;
 
-  if (ls1->invert == 0 && ls2->invert == 0) {
-    // Both lines are of the form  y = bx + a
-    x = (ls2->a - ls1->a) / (ls1->b - ls2->b);
-    y = ls1->b * x + ls1->a;
+//   if (ls1->invert == 0 && ls2->invert == 0) {
+//     // Both lines are of the form  y = bx + a
+//     x = (ls2->a - ls1->a) / (ls1->b - ls2->b);
+//     y = ls1->b * x + ls1->a;
 
-  } else if (ls1->invert == 0 && ls2->invert == 1) {
-    // LS1 is of the form y = bx + a, LS2 is of the form x = by + a
-    x = (ls2->b * ls1->a + ls2->a) / (1.0 - ls2->b * ls1->b);
-    y = ls1->b * x + ls1->a;
+//   } else if (ls1->invert == 0 && ls2->invert == 1) {
+//     // LS1 is of the form y = bx + a, LS2 is of the form x = by + a
+//     x = (ls2->b * ls1->a + ls2->a) / (1.0 - ls2->b * ls1->b);
+//     y = ls1->b * x + ls1->a;
 
-  } else if (ls1->invert == 1 && ls2->invert == 0) {
-    // LS1 is of the form x = by + a and LS2 is of the form y = bx + a
-    y = (ls2->b * ls1->a + ls2->a) / (1.0 - ls1->b * ls2->b);
-    x = ls1->b * y + ls1->a;
+//   } else if (ls1->invert == 1 && ls2->invert == 0) {
+//     // LS1 is of the form x = by + a and LS2 is of the form y = bx + a
+//     y = (ls2->b * ls1->a + ls2->a) / (1.0 - ls1->b * ls2->b);
+//     x = ls1->b * y + ls1->a;
 
-  } else {  // ls1->invert == 1 && ls2->invert == 1
-    // Both lines are of the form x = by + a
-    y = (ls1->a - ls2->a) / (ls2->b - ls1->b);
-    x = ls1->b * y + ls1->a;
-  }  // end-else
+//   } else {  // ls1->invert == 1 && ls2->invert == 1
+//     // Both lines are of the form x = by + a
+//     y = (ls1->a - ls2->a) / (ls2->b - ls1->b);
+//     x = ls1->b * y + ls1->a;
+//   }  // end-else
 
-  *xInt = x;
-  *yInt = y;
-}  // end-FindIntersectionPoint
+//   *xInt = x;
+//   *yInt = y;
+// }  // end-FindIntersectionPoint
 
 ///-----------------------------------------------------------------
 /// Checks if the given line segments are collinear & joins them if they are
@@ -400,80 +400,80 @@ bool TryToJoinTwoLineSegments(LineSegment *ls1, LineSegment *ls2,
 /// algorithm The points on the line are filled into px and py arrays. No of
 /// points are also returned
 ///
-void BresenhamLineTrace(int sx, int sy, int ex, int ey, int px[], int py[],
-                        int *noPoints) {
-  int dx = ex - sx;
-  int dy = ey - sy;
-  int count = 0;
+// void BresenhamLineTrace(int sx, int sy, int ex, int ey, int px[], int py[],
+//                         int *noPoints) {
+//   int dx = ex - sx;
+//   int dy = ey - sy;
+//   int count = 0;
 
-  if (abs(dx) >= abs(dy)) {
-    int xIncr = 1;
-    if (dx < 0) xIncr = -1;
-    int yIncr = 1;
-    if (dy < 0) yIncr = -1;
+//   if (abs(dx) >= abs(dy)) {
+//     int xIncr = 1;
+//     if (dx < 0) xIncr = -1;
+//     int yIncr = 1;
+//     if (dy < 0) yIncr = -1;
 
-    int incrE, incrNE, d, x, y;
-    d = abs(dy) * 2 - abs(dx);
-    incrE = abs(dy) * 2;
-    incrNE = (abs(dy) - abs(dx)) * 2;
-    x = sx;
-    y = sy;
+//     int incrE, incrNE, d, x, y;
+//     d = abs(dy) * 2 - abs(dx);
+//     incrE = abs(dy) * 2;
+//     incrNE = (abs(dy) - abs(dx)) * 2;
+//     x = sx;
+//     y = sy;
 
-    dx = abs(dx);
-    for (int xx = 0; xx <= dx; xx++) {
-      px[count] = x;
-      py[count] = y;
-      count++;
+//     dx = abs(dx);
+//     for (int xx = 0; xx <= dx; xx++) {
+//       px[count] = x;
+//       py[count] = y;
+//       count++;
 
-      if (d <= 0) {
-        d += incrE;
-        x += xIncr;
+//       if (d <= 0) {
+//         d += incrE;
+//         x += xIncr;
 
-      } else {
-        d += incrNE;
-        x += xIncr;
-        y += yIncr;
-      }  // end-else
-    }    // end-while
+//       } else {
+//         d += incrNE;
+//         x += xIncr;
+//         y += yIncr;
+//       }  // end-else
+//     }    // end-while
 
-  } else {
-    int xIncr = 1;
-    if (dx < 0) xIncr = -1;
-    int yIncr = 1;
-    if (dy < 0) yIncr = -1;
+//   } else {
+//     int xIncr = 1;
+//     if (dx < 0) xIncr = -1;
+//     int yIncr = 1;
+//     if (dy < 0) yIncr = -1;
 
-    int incrE, incrNE, d, x, y;
-    d = abs(dx) * 2 - abs(dy);
-    incrE = abs(dx) * 2;
-    incrNE = (abs(dx) - abs(dy)) * 2;
-    x = sx;
-    y = sy;
+//     int incrE, incrNE, d, x, y;
+//     d = abs(dx) * 2 - abs(dy);
+//     incrE = abs(dx) * 2;
+//     incrNE = (abs(dx) - abs(dy)) * 2;
+//     x = sx;
+//     y = sy;
 
-    dy = abs(dy);
-    for (int yy = 0; yy <= dy; yy++) {
-      px[count] = x;
-      py[count] = y;
-      count++;
+//     dy = abs(dy);
+//     for (int yy = 0; yy <= dy; yy++) {
+//       px[count] = x;
+//       py[count] = y;
+//       count++;
 
-      if (d <= 0) {
-        d += incrE;
-        y += yIncr;
+//       if (d <= 0) {
+//         d += incrE;
+//         y += yIncr;
 
-      } else {
-        d += incrNE;
-        y += yIncr;
-        x += xIncr;
-      }  // end-else
-    }    // end-while
-  }      // end-else
+//       } else {
+//         d += incrNE;
+//         y += yIncr;
+//         x += xIncr;
+//       }  // end-else
+//     }    // end-while
+//   }      // end-else
 
-  *noPoints = count;
-}  // end-BresenhamLineTrace
+//   *noPoints = count;
+// }  // end-BresenhamLineTrace
 
-///---------------------------------------------------------------------------------
-/// Given a point (x1, y1) and a line equation y=a+bx (invert=0) OR x=a+by
-/// (invert=1) Computes the (x2, y2) on the line that is closest to (x1, y1)
-///
+// ///---------------------------------------------------------------------------------
+// /// Given a point (x1, y1) and a line equation y=a+bx (invert=0) OR x=a+by
+// /// (invert=1) Computes the (x2, y2) on the line that is closest to (x1, y1)
+// ///
 void ComputeClosestPoint(double x1, double y1, double a, double b, int invert,
                          double *xOut, double *yOut) {
   double x2, y2;
@@ -593,34 +593,34 @@ void UpdateLineParameters(LineSegment *ls) {
 /// Given two points (sx, sy)----(ex, ey), computes the line that passes through
 /// these points Assumes that the points are not very close
 ///
-void ComputeLine(double sx, double sy, double ex, double ey, double *a,
-                 double *b, int *invert) {
-  double dx = ex - sx;
-  double dy = ey - sy;
+// void ComputeLine(double sx, double sy, double ex, double ey, double *a,
+//                  double *b, int *invert) {
+//   double dx = ex - sx;
+//   double dy = ey - sy;
 
-  if (fabs(dx) >= fabs(dy)) {
-    /// Line will be of the form y = a + bx
-    *invert = 0;
-    if (fabs(dy) < 1e-3) {
-      *b = 0;
-      *a = (sy + ey) / 2;
-    } else {
-      *b = dy / dx;
-      *a = sy - (*b) * sx;
-    }  // end-else
+//   if (fabs(dx) >= fabs(dy)) {
+//     /// Line will be of the form y = a + bx
+//     *invert = 0;
+//     if (fabs(dy) < 1e-3) {
+//       *b = 0;
+//       *a = (sy + ey) / 2;
+//     } else {
+//       *b = dy / dx;
+//       *a = sy - (*b) * sx;
+//     }  // end-else
 
-  } else {
-    /// Line will be of the form x = a + by
-    *invert = 1;
-    if (fabs(dx) < 1e-3) {
-      *b = 0;
-      *a = (sx + ex) / 2;
-    } else {
-      *b = dx / dy;
-      *a = sx - (*b) * sy;
-    }  // end-else
-  }    // end-else
-}  // end-ComputeLine
+//   } else {
+//     /// Line will be of the form x = a + by
+//     *invert = 1;
+//     if (fabs(dx) < 1e-3) {
+//       *b = 0;
+//       *a = (sx + ex) / 2;
+//     } else {
+//       *b = dx / dy;
+//       *a = sx - (*b) * sy;
+//     }  // end-else
+//   }    // end-else
+// }  // end-ComputeLine
 
 ///-----------------------------------------------------------------------------------
 /// Fits a line of the form y=a+bx (invert == 0) OR x=a+by (invert == 1)
