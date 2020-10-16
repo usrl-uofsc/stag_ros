@@ -25,7 +25,8 @@ SOFTWARE.
 #pragma once
 
 #include <vector>
-#include <cv.hpp>
+// #include <cv.hpp>
+#include <opencv4/opencv2/opencv.hpp>
 
 namespace stag_ros {
 

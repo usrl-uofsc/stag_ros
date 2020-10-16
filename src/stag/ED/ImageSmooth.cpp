@@ -1,6 +1,8 @@
 #include <stdlib.h>
-#include <opencv/cv.h>
-#include <opencv/cxcore.h>
+// #include <opencv/cv.h>
+// #include <opencv/cxcore.h>
+
+#include <opencv4/opencv2/opencv.hpp>
 
 #include "stag/ED/ImageSmooth.h"
 // #include "stag/ED/ImageSmoothCV.h"
@@ -40,30 +42,43 @@
 ///
 void SmoothImage(unsigned char *srcImg, unsigned char *smoothImg, int width,
                  int height, double sigma) {
-  IplImage *iplImg1, *iplImg2;
 
-  if (sigma <= 0) {
-    memcpy(smoothImg, srcImg, width * height);
-    return;
-  }  // end-if
-
-  iplImg1 = cvCreateImageHeader(cvSize(width, height), IPL_DEPTH_8U, 1);
-  iplImg1->imageData = (char *)srcImg;
-  iplImg1->widthStep = width;
-
-  iplImg2 = cvCreateImageHeader(cvSize(width, height), IPL_DEPTH_8U, 1);
-  iplImg2->imageData = (char *)smoothImg;
-  iplImg2->widthStep = width;
+  cv::Mat srcI(height, width, CV_8UC1, (char *)srcImg);
+  cv::Mat smtI(height, width, CV_8UC1, (char *)smoothImg);
 
   if (sigma == 1.0)
-    cvSmooth(iplImg1, iplImg2, CV_GAUSSIAN, 5, 5);
+    cv::GaussianBlur(srcI, smtI, cv::Size(5, 5), 0, 0);
   else if (sigma == 1.5)
-    cvSmooth(iplImg1, iplImg2, CV_GAUSSIAN, 7, 7);  // seems to be better?
+    cv::GaussianBlur(srcI, smtI, cv::Size(7, 7), 0, 0);
   else
-    cvSmooth(iplImg1, iplImg2, CV_GAUSSIAN, 0, 0, sigma);
+    cv::GaussianBlur(srcI, smtI, cv::Size(0, 0), sigma, sigma);
+  
 
-  cvReleaseImageHeader(&iplImg1);
-  cvReleaseImageHeader(&iplImg2);
+
+  // IplImage *iplImg1, *iplImg2;
+
+  // if (sigma <= 0) {
+  //   memcpy(smoothImg, srcImg, width * height);
+  //   return;
+  // }  // end-if
+
+  // iplImg1 = cvCreateImageHeader(cvSize(width, height), IPL_DEPTH_8U, 1);
+  // iplImg1->imageData = (char *)srcImg;
+  // iplImg1->widthStep = width;
+
+  // iplImg2 = cvCreateImageHeader(cvSize(width, height), IPL_DEPTH_8U, 1);
+  // iplImg2->imageData = (char *)smoothImg;
+  // iplImg2->widthStep = width;
+
+  // if (sigma == 1.0)
+  //   cvSmooth(iplImg1, iplImg2, CV_GAUSSIAN, 5, 5);
+  // else if (sigma == 1.5)
+  //   cvSmooth(iplImg1, iplImg2, CV_GAUSSIAN, 7, 7);  // seems to be better?
+  // else
+  //   cvSmooth(iplImg1, iplImg2, CV_GAUSSIAN, 0, 0, sigma);
+
+  // cvReleaseImageHeader(&iplImg1);
+  // cvReleaseImageHeader(&iplImg2);
 }  // end-SmoothImage
 
 ///---------------------------------------------------------------------------------------------------------------------------------------
