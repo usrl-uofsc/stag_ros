@@ -3,9 +3,9 @@
 #include <math.h>
 #include <limits.h>
 
-#include <opencv/cv.h>
-#include <opencv/cxcore.h>
-#include <opencv/highgui.h>
+// #include <opencv/cv.h>
+// #include <opencv/cxcore.h>
+// #include <opencv/highgui.h>
 
 //#include "EDDLL.h"
 

@@ -2,8 +2,8 @@
 #include <math.h>
 
 #include "stag/ED/GradientOperators.h"
-#include "stag/ED/GradientOperatorsCV.h"
-#include "stag/ED/Utilities.h"
+// #include "stag/ED/GradientOperatorsCV.h"
+// #include "stag/ED/Utilities.h"
 
 /// Special defines
 #define EDGE_VERTICAL 1
