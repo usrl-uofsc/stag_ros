@@ -59,7 +59,7 @@ add_library(stag_core
   src/stag/ED/LineSegment.cpp
   src/stag/ED/MyMath.cpp
   src/stag/ED/NFA.cpp
-  src/stag/ED/Utilities.cpp
+#  src/stag/ED/Utilities.cpp
   src/stag/ED/ValidateEdgeSegments.cpp
         include/stag_ros/load_yaml_tags.h)
 
