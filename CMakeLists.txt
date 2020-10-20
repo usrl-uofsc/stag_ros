@@ -63,7 +63,7 @@ add_library(stag_core
   src/stag/ED/NFA.cpp
   src/stag/ED/Utilities.cpp
   src/stag/ED/ValidateEdgeSegments.cpp
-)
+        include/stag_ros/load_yaml_tags.h)
 
 add_library(stag_nodelet
         src/stag_ros/stag_nodelet.cpp

@@ -29,9 +29,8 @@ SOFTWARE.
 #endif
 
 #include "stag_ros/stag_node.h"
-#include "stag_ros/tag_json_loader.hpp"
 #include "stag_ros/utility.hpp"
-
+#include "stag_ros/load_yaml_tags.h"
 // Stag marker handle
 #include "stag/Marker.h"
 
@@ -91,15 +90,15 @@ void StagNode::loadParameters() {
   nh_lcl.param("publish_tf", publish_tf, false);
   nh_lcl.param("tag_tf_prefix", tag_tf_prefix, std::string("STag_"));
 
-  std::string tagJson;
-  nh_lcl.param("tag_config_json", tagJson, std::string());
-
-  if (tagJson.compare("") == 0) {
-    ROS_FATAL("No json specified");
-    ros::shutdown();
-  } else {
-    tag_json_loader::load(tagJson, tags, bundles);
+  XmlRpc::XmlRpcValue tag_xml,bundle_xml;
+  nh_lcl.param("tags",tag_xml);
+  if(! tag_xml.valid()) {
+    std::cout << "INVALID " << std::endl;
   }
+  nh_lcl.param("bundles",bundle_xml);
+  loadTags(tag_xml,tags);
+  loadBundles(bundle_xml,bundles);
+
 }
 
 bool StagNode::getTagIndex(const int id, int &tag_index) {
