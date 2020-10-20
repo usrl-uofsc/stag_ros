@@ -90,14 +90,7 @@ void StagNode::loadParameters() {
   nh_lcl.param("publish_tf", publish_tf, false);
   nh_lcl.param("tag_tf_prefix", tag_tf_prefix, std::string("STag_"));
 
-  XmlRpc::XmlRpcValue tag_xml,bundle_xml;
-  nh_lcl.param("tags",tag_xml);
-  if(! tag_xml.valid()) {
-    std::cout << "INVALID " << std::endl;
-  }
-  nh_lcl.param("bundles",bundle_xml);
-  loadTags(tag_xml,tags);
-  loadBundles(bundle_xml,bundles);
+  loadTagsBundles(nh_lcl,"tags","bundles",tags,bundles);
 
 }
 
