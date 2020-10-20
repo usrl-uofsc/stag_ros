@@ -29,7 +29,7 @@ SOFTWARE.
 #endif
 
 #include "stag_ros/stag_nodelet.h"
-#include "stag_ros/tag_json_loader.hpp"
+#include "stag_ros/load_yaml_tags.h"
 #include "stag_ros/utility.hpp"
 
 // Stag marker handle
@@ -97,15 +97,8 @@ void StagNodelet::loadParameters(const ros::NodeHandle &nh) {
   nh.param("publish_tf", publish_tf, false);
   nh.param("tag_tf_prefix", tag_tf_prefix, std::string("STag_"));
 
-  std::string tagJson;
-  nh.param("tag_config_json", tagJson, std::string());
+  loadTagsBundles(nh,"tags","bundles",tags,bundles);
 
-  if (tagJson.compare("") == 0) {
-    ROS_FATAL("No json specified");
-    ros::shutdown();
-  } else {
-    tag_json_loader::load(tagJson, tags, bundles);
-  }
 }
 
 bool StagNodelet::getTagIndex(const int id, int &tag_index) {
