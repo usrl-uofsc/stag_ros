@@ -82,5 +82,25 @@ struct Common {
     pub.publish(pose_msg);
   }
 
+  bool checkCoplanar(std::vector<cv::Point3d> worldP) {
+    cv::Mat M = cv::Mat::zeros(3, worldP.size(), CV_64F);
+
+    for (size_t i = 0; i < worldP.size(); ++i) {
+      M.at<double>(0, i) = worldP[i].x;
+      M.at<double>(1, i) = worldP[i].y;
+      M.at<double>(2, i) = worldP[i].z;
+    }
+
+    cv::Mat w;
+    cv::SVD::compute(M, w);
+    cv::Mat nonZeroValues = w > 0.0001;
+    int rank = countNonZero(nonZeroValues);
+
+    if (rank > 2)
+      return false;
+    else
+      return true;
+  }
+
 };  // namespace stag_ros
 }  // namespace stag_ros
