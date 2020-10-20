@@ -6,8 +6,9 @@
     <node name="stag_node" pkg="stag_ros" type="stag_node" output="screen" required="true">
         <!-- Place the correct yaml file here-->
         <rosparam command="load" file="$(find stag_ros)/cfg/single.yaml"/>
-        <!-- Place the correct json bundle file here-->
-        <param name="tag_config_json" value="$(find stag_ros)/cfg/single.json"/>
+        <!-- Place the correct bundle file here-->
+        <rosparam command="load" file="$(find stag_ros)/cfg/single_tag.yaml"/>
+
     </node>
 
     <!-- rviz -->
