@@ -1,6 +1,6 @@
 <launch>
     <!--Play ROSbag file-->
-    <node name="rosbag" pkg="rosbag" type="play" args="$(find stag_ros)/bags/bundle_2.bag"  required="true"/>
+    <node name="rosbag" pkg="rosbag" type="play" args="$(find stag_ros)/bags/bundle_2.bag -r .1"  required="true"/>
 
     <!--Start Stag Node-->
     <node name="stag_node" pkg="stag_ros" type="stag_node" output="screen" required="true">
@@ -11,5 +11,5 @@
     </node>
 
     <!-- rviz -->
-    <!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find stag_ros)/cfg/bundle_2.rviz" required="true"/-->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find stag_ros)/cfg/bundle_2.rviz" required="true"/>
 </launch>
