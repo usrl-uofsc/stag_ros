@@ -11,12 +11,3 @@ is_compressed: true
 tag_tf_prefix: STag_
 show_markers: true
 publish_tf: true
-
-# Tag corner order in JSON file:
-# 1          2
-#  HD########
-#  #ID#  ####
-#  ##  ##  ##
-#  ####  ####
-#  ##########
-# 4          3

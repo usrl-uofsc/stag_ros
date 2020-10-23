@@ -1,10 +1,14 @@
 # STag ROS: A ROS package for the Stable Fiducial Marker System
 
-This package is developed independently from the creators of STag.  
+This package is developed independently from the creators of STag. The master branch supports ROS Kinetic and Melodic. For ROS Noetic switch to noetic-devel
 
 [Original STag source and marker generation script](https://github.com/bbenligiray/stag)
 
-[Original publication](https://www.sciencedirect.com/science/article/abs/pii/S0262885619300903)
+## Papers
+[STag](https://www.sciencedirect.com/science/article/abs/pii/S0262885619300903)
+
+[STag ROS](https://ieeexplore.ieee.org/document/9213977)
+
 
 ## Installation
 Follow these steps to install
@@ -53,8 +57,8 @@ To use the package you need to edit the node config file (**e.g. cfg/single.yaml
 ### Config file
 In the configuration file you can specify information about the STag configuration, the camera topic and the marker configuration
 
-### Marker config JSON file
-STag ROS allows the detection of multiple markers and marker bundles as long as they all are from the same HD family. You can specify the individual markers and the marker bundles in a JSON file
+### Marker config Yaml file
+STag ROS allows the detection of multiple markers and marker bundles as long as they all are from the same HD family. You can specify the individual markers and the marker bundles in a yaml file
 
 ## Examples
 Three examples are available through the bags included with LFS. 
