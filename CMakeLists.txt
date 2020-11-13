@@ -3,7 +3,7 @@ project(stag_ros)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++14)
-set(CMAKE_BUILD_TYPE RelWithDebInfo)
+set(CMAKE_BUILD_TYPE Release)
 
 find_package(OpenCV REQUIRED)
 find_package(PkgConfig REQUIRED)
@@ -98,4 +98,24 @@ target_link_libraries(stag_node
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
   stag_core
+)
+
+###########
+# INSTALL #
+###########
+
+install(FILES nodelet_plugins.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+install(DIRECTORY cfg launch bags
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+install(TARGETS
+  stag_node
+  stag_nodelet_runnable
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 )
