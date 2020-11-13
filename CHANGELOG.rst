@@ -2,6 +2,11 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* changed version to 0.3.1
+* Contributors: Brennan Cain
+
 0.0.1 (2020-11-13)
 ------------------
 * added swri_nodelet to package.xml
