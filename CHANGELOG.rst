@@ -2,8 +2,8 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.1 (2020-11-13)
+------------------
 * added swri_nodelet to package.xml
 * Merge remote-tracking branch 'origin/noetic-devel' into noetic-devel
 * Changed files to match Yaml changes
