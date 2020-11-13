@@ -4,6 +4,10 @@ Changelog for package stag_ros
 
 Forthcoming
 -----------
+* Updated changelog
+* changed version to 0.3.1
+* Contributors: Brennan Cain
+
 * changed version to 0.3.1
 * Contributors: Brennan Cain
 
