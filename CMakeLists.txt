@@ -7,8 +7,6 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 find_package(OpenCV REQUIRED)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(JSONCPP jsoncpp)
-link_libraries(${JSONCPP_LIBRARIES})
 
 ################
 # Dependencies #
@@ -88,12 +86,9 @@ target_link_libraries(stag_core
   ${OpenCV_LIBS}
 )
 
-message(STATUS "JSON lib : ${JSONCPP_LIBRARIES}")
-
 target_link_libraries(stag_nodelet
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
-  ${JSONCPP_LIBRARIES}
   stag_core
 )
 swri_nodelet_add_node(stag_nodelet_runnable stag_ros StagNodelet)

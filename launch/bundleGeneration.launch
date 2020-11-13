@@ -1,9 +1,0 @@
-<launch>
-    <!--Start Stag Node-->
-    <node name="bundle_generator" pkg="stag_ros" type="bundle_generator" output="screen" required="true">
-        <!-- Place the correct yaml file here-->
-        <rosparam command="load" file="$(find stag_ros)/cfg/bundle_gen.yaml"/>
-        <!-- Place the correct output json bundle file here-->
-        <param name="tag_config_json" value="$(find stag_ros)/cfg/generated.json"/>
-    </node>
-</launch>
