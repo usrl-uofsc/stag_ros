@@ -52,7 +52,7 @@ catkin_make -DCMAKE_BUILD_TYPE=Debug
 ```
 
 ## Package configuration
-To use the package you need to edit the node config file (**e.g. cfg/single.yaml**) that loads all the parameters and the marker config file (**e.g. cfg/single.json**).
+To use the package you need to edit the node config file (**e.g. cfg/single.yaml**) that loads all the parameters and the marker config file (**e.g. cfg/single_config.yaml**).
 
 ### Config file
 In the configuration file you can specify information about the STag configuration, the camera topic and the marker configuration
