@@ -2,8 +2,8 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.2 (2020-11-13)
+------------------
 * Updated changelog
 * changed version to 0.3.1
 * Contributors: Brennan Cain
