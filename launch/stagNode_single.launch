@@ -8,7 +8,7 @@
         <rosparam command="load" file="$(find stag_ros)/cfg/single.yaml"/>
         <!-- Place the correct bundle file here-->
         <rosparam command="load" file="$(find stag_ros)/cfg/single_config.yaml"/>
-    </node>
+        </node>
 
     <!-- rviz -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find stag_ros)/cfg/single.rviz" required="true"/>
