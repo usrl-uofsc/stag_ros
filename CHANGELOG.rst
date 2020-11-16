@@ -2,6 +2,12 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'melodic-devel' into noetic-devel
+* removed dependence on swri_nodelet
+* Contributors: Brennan Cain
+
 0.3.2 (2020-11-13)
 ------------------
 * Updated changelog
