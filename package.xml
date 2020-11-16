@@ -39,6 +39,6 @@
   <exec_depend>nodelet</exec_depend>
 
   <export>
-    <nodelet plugin="${prefix}/nodelet_plugins.xml" />
+    <nodelet plugin="${prefix}/stag_nodelet.xml" />
   </export>
 </package>

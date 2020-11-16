@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 #pragma once
+#include <pluginlib/class_list_macros.h>
 
 #include <nodelet/nodelet.h>
 
@@ -43,10 +44,12 @@ namespace stag_ros {
 
 class StagNodelet : public nodelet::Nodelet {
  public:
+  StagNodelet() {}
   virtual ~StagNodelet();
-  virtual void onInit();
 
  private:
+  virtual void onInit();
+
   // Callbacks
   void imageCallback(const sensor_msgs::ImageConstPtr &msg);
   void cameraInfoCallback(const sensor_msgs::CameraInfoConstPtr &msg);
@@ -88,4 +91,7 @@ class StagNodelet : public nodelet::Nodelet {
   std::vector<Tag> tags;
 };
 
+PLUGINLIB_EXPORT_CLASS(stag_ros::StagNodelet,nodelet::Nodelet);
+
 }  // namespace stag_ros
+
