@@ -16,17 +16,17 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   geometry_msgs
   image_transport
+  nodelet
   roscpp
   sensor_msgs
   std_msgs
-  swri_nodelet
   tf
 )
 
 catkin_package(
   INCLUDE_DIRS include src/stag
   LIBRARIES stag_ros
-  CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport roscpp sensor_msgs std_msgs
+  CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport nodelet roscpp sensor_msgs std_msgs
 )
 
 include_directories(
@@ -71,6 +71,9 @@ add_executable(stag_node
         src/stag_ros/stag_node.cpp
 )
 
+add_executable(stag_nodelet_runnable
+        src/stag_ros/stag_nodelet_main.cpp)
+
 ## Dependencies
 add_dependencies(stag_nodelet
   ${catkin_EXPORTED_TARGETS}
@@ -91,8 +94,9 @@ target_link_libraries(stag_nodelet
   ${OpenCV_LIBS}
   stag_core
 )
-swri_nodelet_add_node(stag_nodelet_runnable stag_ros StagNodelet)
-target_link_libraries(stag_nodelet_runnable stag_nodelet)
+
+target_link_libraries(stag_nodelet_runnable
+  stag_nodelet)
 
 target_link_libraries(stag_node
   ${catkin_LIBRARIES}
@@ -104,7 +108,7 @@ target_link_libraries(stag_node
 # INSTALL #
 ###########
 
-install(FILES nodelet_plugins.xml
+install(FILES stag_nodelet.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 

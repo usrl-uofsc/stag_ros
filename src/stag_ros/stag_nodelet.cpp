@@ -43,10 +43,7 @@ SOFTWARE.
 
 #include <iostream>
 #include <future>
-#include <swri_nodelet/class_list_macros.h>
 #include <stag_ros/common.hpp>
-
-SWRI_NODELET_EXPORT_CLASS(stag_ros, StagNodelet)
 
 namespace stag_ros {
 
