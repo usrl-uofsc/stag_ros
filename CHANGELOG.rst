@@ -2,8 +2,8 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.4 (2020-11-17)
+------------------
 * Merge branch 'melodic-devel' into noetic-devel
 * removed bags and added download script
 * Contributors: Brennan Cain
