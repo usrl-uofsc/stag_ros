@@ -16,27 +16,12 @@ Follow these steps to install
 ### Prerequisites
 This assumes you already have ros installed on your device.
 
-### Install Git LFS
-You may need to install git LFS to download the example bag files. For Ubuntu 18.04 or later:
-```
-sudo apt-get install git-lfs
-```
-For earlier versions follow [these instructions](https://packagecloud.io/github/git-lfs/install)
-
 ### Install STag ROS
 ```
 mkdir -p /path/to/catkin_ws/src
 cd /path/to/catkin_ws/src
-```
-To download bag files during the clone use this command.
-```
-git lfs clone git@github.com:usrl-uofsc/stag_ros.git
-```
-Otherwise use this to download the plain repo without the bag files.
-```
 git clone git@github.com:usrl-uofsc/stag_ros.git
 ```
-You can always pull the bags later with ```git lfs pull```.
 
 ### Build STag ROS
 ```
@@ -58,11 +43,14 @@ In the configuration file you can specify information about the STag configurati
 STag ROS allows the detection of multiple markers and marker bundles as long as they all are from the same HD family. You can specify the individual markers and the marker bundles in a yaml file
 
 ## Examples
-Three examples are available through the bags included with LFS. 
-
 First source the workspace.
 ```
 source /path/to/catkin_ws/devel/setup.bash (or your shell ex. sh, zsh)
+```
+
+Next, download the example bags. If you want to install, be sure to `catkin_make`, then run the following command, then `catkin_make install`. If the script fails, please go into the `scripts/download_bags.sh` file and download the bags yourself. Place them into a folder in the root of the stag_ros directory called bags.
+```
+roslaunch stag_ros download_examples.launch
 ```
 
 Then run any of the following launch commands.
