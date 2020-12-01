@@ -2,7 +2,7 @@
 // #include <opencv/cv.h>
 // #include <opencv/cxcore.h>
 
-#include <opencv4/opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
 
 #include "stag/ED/ImageSmooth.h"
 // #include "stag/ED/ImageSmoothCV.h"
