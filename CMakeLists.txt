@@ -112,7 +112,7 @@ install(FILES stag_nodelet.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
-install(DIRECTORY cfg launch bags
+install(DIRECTORY cfg launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 

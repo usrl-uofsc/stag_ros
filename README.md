@@ -1,6 +1,8 @@
 # STag ROS: A ROS package for the Stable Fiducial Marker System
 
-This package is developed independently from the creators of STag. The master branch supports ROS Kinetic and Melodic. For ROS Noetic switch to noetic-devel
+Currently supporting ROS Kinetic, Melodic and Noetic. Select the branch that matches your ROS distribution.
+
+This package is developed independently from the creators of STag
 
 [Original STag source and marker generation script](https://github.com/bbenligiray/stag)
 
@@ -14,7 +16,7 @@ This package is developed independently from the creators of STag. The master br
 Follow these steps to install
 
 ### Prerequisites
-This assumes you already have ros installed on your device.
+This assumes you already have ROS installed on your device.
 
 ### Install STag ROS
 ```
@@ -36,8 +38,8 @@ catkin_make -DCMAKE_BUILD_TYPE=Debug
 ## Package configuration
 To use the package you need to edit the node config file (**e.g. cfg/single.yaml**) that loads all the parameters and the marker config file (**e.g. cfg/single_config.yaml**).
 
-### Config file
-In the configuration file you can specify information about the STag configuration, the camera topic and the marker configuration
+### STag config file
+In the configuration file you can specify information about the STag configuration, the camera topics and the stag_ros node.
 
 ### Marker config Yaml file
 STag ROS allows the detection of multiple markers and marker bundles as long as they all are from the same HD family. You can specify the individual markers and the marker bundles in a yaml file
@@ -48,12 +50,12 @@ First source the workspace.
 source /path/to/catkin_ws/devel/setup.bash (or your shell ex. sh, zsh)
 ```
 
-Next, download the example bags. If you want to install, be sure to `catkin_make`, then run the following command, then `catkin_make install`. If the script fails, please go into the `scripts/download_bags.sh` file and download the bags yourself. Place them into a folder in the root of the stag_ros directory called bags.
+Next, download the example bags. If you want to install, be sure to `catkin_make`, then run the following command, then `catkin_make install`. If the script fails, please go into the `scripts/download_bags.sh` file and download the bags manually. Place them into a folder in the root of the stag_ros directory called bags.
 ```
 roslaunch stag_ros download_examples.launch
 ```
 
-Then run any of the following launch commands.
+Run any of the following launch commands.
 ```
 roslaunch stag_ros rosNode_single.launch
 roslaunch stag_ros rosNode_bundle_2.launch
