@@ -2,6 +2,17 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge branch 'melodic-devel' into noetic-devel
+* removed installation of bags directory, requires downloading bags first which is bad on the build farm
+* added checking that the output folder is not empty, bad to save to root (if someone wants that, that's their problem)
+* removed dependence on opencv4.2, should now work with 3.2 and 4.2
+* Updated READMe
+* Fixed download_examples.launch
+* Fixed download_examples.launch
+* Contributors: Brennan Cain, MikeK4y
+
 0.3.4 (2020-11-17)
 ------------------
 * Merge branch 'melodic-devel' into noetic-devel
