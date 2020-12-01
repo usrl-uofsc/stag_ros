@@ -2,6 +2,9 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.3.5 (2020-12-01)
 ------------------
 * Merge branch 'melodic-devel' into noetic-devel
