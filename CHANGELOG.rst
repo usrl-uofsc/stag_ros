@@ -2,8 +2,8 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.5 (2020-12-01)
+------------------
 * Merge branch 'melodic-devel' into noetic-devel
 * removed installation of bags directory, requires downloading bags first which is bad on the build farm
 * added checking that the output folder is not empty, bad to save to root (if someone wants that, that's their problem)
