@@ -4,6 +4,10 @@
   <version>0.0.0</version>
   <description>The stag_ros package</description>
 
+  <url type="repository">https://github.com/usrl-uofsc/stag_ros</url>
+  <url type="bugtracker">https://github.com/usrl-uofsc/stag_ros/issues</url>
+  <url type="website">http://wiki.ros.org/stag_ros</url>
+
   <maintainer email="bscain@email.sc.edu">Brennan Cain</maintainer>
   <maintainer email="michailk@email.sc.edu">Michail Kalaitzakis</maintainer>
 
