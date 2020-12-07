@@ -23,7 +23,6 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>tf</build_depend>
   <build_depend>nodelet</build_depend>
-  <build_depend>swri_nodelet</build_depend>
   <build_export_depend>camera_info_manager</build_export_depend>
   <build_export_depend>cv_bridge</build_export_depend>
   <build_export_depend>geometry_msgs</build_export_depend>

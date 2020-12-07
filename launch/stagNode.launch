@@ -4,7 +4,7 @@
         <!-- Place the correct yaml file here-->
         <rosparam command="load" file="$(find stag_ros)/cfg/single.yaml"/>
         <!-- Place the correct bundle file here-->
-        <rosparam command="load" file="$(find stag_ros)/cfg/bundle_config_single.yaml"/>
+        <rosparam command="load" file="$(find stag_ros)/cfg/single_config.yaml"/>
 
     </node>
 </launch>
