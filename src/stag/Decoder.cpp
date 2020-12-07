@@ -1,5 +1,6 @@
 #include "stag/Decoder.h"
 
+#include <stdexcept>
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -31,6 +32,8 @@ Decoder::Decoder(int hd) {
   } else if (hd == 23) {
     rawCodewords = HD23;
     noOfCodewords = 6;
+  } else {
+    throw std::invalid_argument("Invalid library HD. Possible values are 11, 13, 15, 17, 19, 21, or 23");
   }
 
   for (unsigned int i = 0; i < noOfCodewords * 4; i++)

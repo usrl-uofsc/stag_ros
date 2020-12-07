@@ -40,6 +40,7 @@ SOFTWARE.
 #include <tf/transform_broadcaster.h>
 #include <geometry_msgs/PoseStamped.h>
 
+#include <stdexcept>
 #include <iostream>
 #include <stag_ros/common.hpp>
 
@@ -49,6 +50,14 @@ StagNode::StagNode(ros::NodeHandle &nh,
                    image_transport::ImageTransport &imageT) {
   // Load Parameters
   loadParameters();
+
+  // Initialize Stag
+  try {
+    stag = new Stag(stag_library, error_correction, false);
+  } catch (const std::invalid_argument &e) {
+    std::cout << e.what() << std::endl;
+    exit(-1);
+  }
 
   // Set Subscribers
   imageSub = imageT.subscribe(
@@ -63,8 +72,6 @@ StagNode::StagNode(ros::NodeHandle &nh,
   bundlePub = nh.advertise<geometry_msgs::PoseStamped>("stag_ros/bundles", 1);
   markersPub = nh.advertise<geometry_msgs::PoseStamped>("stag_ros/markers", 1);
 
-  // Initialize Stag
-  stag = new Stag(stag_library, error_correction, false);
 
   // Initialize camera info
   got_camera_info = false;
