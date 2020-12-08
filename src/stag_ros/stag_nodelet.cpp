@@ -41,6 +41,7 @@ SOFTWARE.
 #include <tf/transform_broadcaster.h>
 #include <geometry_msgs/PoseStamped.h>
 
+#include <stdexcept>
 #include <iostream>
 #include <future>
 #include <stag_ros/common.hpp>
@@ -55,6 +56,14 @@ void StagNodelet::onInit() {
   // Load Parameters
   loadParameters(nh_lcl);
 
+  // Initialize Stag
+  try {
+    stag = new Stag(stag_library, error_correction, false);
+  } catch (const std::invalid_argument &e) {
+    std::cout << e.what() << std::endl;
+    exit(-1);
+  }
+
   // Set Subscribers
   imageSub = imageT.subscribe(
       image_topic, 1, &StagNodelet::imageCallback, this,
@@ -67,9 +76,6 @@ void StagNodelet::onInit() {
     imageDebugPub = imageT.advertise("stag_ros/image_markers", 1);
   bundlePub = nh.advertise<geometry_msgs::PoseStamped>("stag_ros/bundles", 1);
   markersPub = nh.advertise<geometry_msgs::PoseStamped>("stag_ros/markers", 1);
-
-  // Initialize Stag
-  stag = new Stag(stag_library, error_correction, false);
 
   // Initialize camera info
   got_camera_info = false;
