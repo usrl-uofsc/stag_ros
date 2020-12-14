@@ -2,8 +2,8 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.7 (2020-12-14)
+------------------
 * increased cmake version
 * removed reference to nodelet implementation in runnable. fixed nodelet namespacing warning
 * removed old tag configuration
