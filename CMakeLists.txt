@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.0)
 project(stag_ros)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -77,11 +77,9 @@ add_executable(stag_nodelet_runnable
 ## Dependencies
 add_dependencies(stag_nodelet
   ${catkin_EXPORTED_TARGETS}
-  ${PROJECT_NAME}_generate_messages_cpp
 )
 add_dependencies(stag_node
   ${catkin_EXPORTED_TARGETS}
-  ${PROJECT_NAME}_generate_messages_cpp
 )
 
 ## Links
