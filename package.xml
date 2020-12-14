@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>stag_ros</name>
-  <version>0.3.7</version>
+  <version>0.2.1</version>
   <description>The stag_ros package</description>
 
   <url type="repository">https://github.com/usrl-uofsc/stag_ros</url>
