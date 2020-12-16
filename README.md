@@ -1,5 +1,7 @@
 # STag ROS: A ROS package for the Stable Fiducial Marker System
 
+[![Build Status](http://build.ros.org/job/Mbin_uB64__stag_ros__ubuntu_bionic_amd64__binary/badge/icon)](http://build.ros.org/job/Mbin_uB64__stag_ros__ubuntu_bionic_amd64__binary/)
+
 Currently supporting ROS Kinetic, Melodic and Noetic. Select the branch that matches your ROS distribution.
 
 This package is developed independently from the creators of STag
