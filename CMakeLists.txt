@@ -16,11 +16,25 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   geometry_msgs
   image_transport
+  message_generation
   nodelet
   roscpp
   sensor_msgs
   std_msgs
   tf
+)
+
+## Custom message files to be created
+add_message_files(DIRECTORY msg
+  FILES
+  STagMarker.msg
+  STagMarkerArray.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs
 )
 
 catkin_package(

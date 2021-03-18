@@ -2,6 +2,6 @@ setup.bash
 .vscode
 .idea
 build
-data/*
+bags/*
 scripts/launch_bundle.sh
 cmake-*

@@ -29,7 +29,6 @@ SOFTWARE.
 #include <opencv2/opencv.hpp>
 
 namespace stag_ros {
-
 struct Common {
   static void solvePnpSingle(const std::vector<cv::Point2d> &img,
                              const std::vector<cv::Point3d> &world,
@@ -58,28 +57,36 @@ struct Common {
     tVec.convertTo(output.col(3), CV_64F);
   }
 
-  static void publishTransform(const tf::Transform &tf,
+  static void publishTransform(const vector<tf::Transform> &tf,
                                const ros::Publisher &pub,
                                const std_msgs::Header &hdr,
                                const string &tag_tf_prefix,
-                               const string &frame_id, const bool &pub_tf) {
-    if (pub_tf) {
-      static tf::TransformBroadcaster br;
-      br.sendTransform(tf::StampedTransform(tf, hdr.stamp, hdr.frame_id,
-                                            tag_tf_prefix + frame_id));
-    }
+                               const vector<string> &frame_id,
+                               const vector<int> &marker_id,
+                               const bool &pub_tf) {
+    stag_ros::STagMarkerArray d_array;
 
-    geometry_msgs::PoseStamped pose_msg;
-    pose_msg.header.frame_id = frame_id;
-    pose_msg.header.stamp = hdr.stamp;
-    pose_msg.pose.position.x = tf.getOrigin().x();
-    pose_msg.pose.position.y = tf.getOrigin().y();
-    pose_msg.pose.position.z = tf.getOrigin().z();
-    pose_msg.pose.orientation.x = tf.getRotation().x();
-    pose_msg.pose.orientation.y = tf.getRotation().y();
-    pose_msg.pose.orientation.z = tf.getRotation().z();
-    pose_msg.pose.orientation.w = tf.getRotation().w();
-    pub.publish(pose_msg);
+    for (size_t di = 0; di < tf.size(); ++di) {
+      if (pub_tf) {
+        static tf::TransformBroadcaster br;
+        br.sendTransform(tf::StampedTransform(tf[di], hdr.stamp, hdr.frame_id,
+                                              tag_tf_prefix + frame_id[di]));
+      }
+
+      stag_ros::STagMarker marker_msg;
+      marker_msg.id.data = marker_id[di];
+      marker_msg.header.stamp = hdr.stamp;
+      marker_msg.header.frame_id = frame_id[di];
+      marker_msg.pose.position.x = tf[di].getOrigin().x();
+      marker_msg.pose.position.y = tf[di].getOrigin().y();
+      marker_msg.pose.position.z = tf[di].getOrigin().z();
+      marker_msg.pose.orientation.x = tf[di].getRotation().x();
+      marker_msg.pose.orientation.y = tf[di].getRotation().y();
+      marker_msg.pose.orientation.z = tf[di].getRotation().z();
+      marker_msg.pose.orientation.w = tf[di].getRotation().w();
+      d_array.stag_array.push_back(marker_msg);
+    }
+    pub.publish(d_array);
   }
 
   bool checkCoplanar(std::vector<cv::Point3d> worldP) {
