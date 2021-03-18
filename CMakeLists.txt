@@ -40,7 +40,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include src/stag
   LIBRARIES stag_ros
-  CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport message_generation nodelet roscpp sensor_msgs std_msgs
+  CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport message_generation message_runtime nodelet roscpp sensor_msgs std_msgs
 )
 
 include_directories(
