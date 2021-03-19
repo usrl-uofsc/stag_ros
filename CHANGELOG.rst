@@ -2,6 +2,15 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added message_runtime dependency
+* Added message_generation dependency
+* Added custom messages and publishing results as an array
+* Update README.md
+* Added ros buildfarm status
+* Contributors: Brennan Cain, MikeK4y
+
 0.3.7 (2020-12-14)
 ------------------
 * increased cmake version
