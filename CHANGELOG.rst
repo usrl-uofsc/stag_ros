@@ -2,8 +2,8 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.8 (2021-03-19)
+------------------
 * Added message_runtime dependency
 * Added message_generation dependency
 * Added custom messages and publishing results as an array
