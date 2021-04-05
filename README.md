@@ -18,7 +18,7 @@ If you find this library useful, please cite our paper:
 @article{Kalaitzakis2021JINT,
   title = {Fiducial Markers for Pose Estimation},
   author = {Michail Kalaitzakis and Brennan Cain and Sabrina Carroll and Anand Ambrosi and Camden Whitehead and Nikolaos Vitzilaios},
-  journal = {Journal of Intelligent {\&} Robotic Systems}
+  journal = {Journal of Intelligent {\&} Robotic Systems},
   volume = {101},
   doi = {10.1007/s10846-020-01307-9},
   year = {2021},
