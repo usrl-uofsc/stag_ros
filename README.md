@@ -74,10 +74,10 @@ roslaunch stag_ros download_examples.launch
 
 Run any of the following launch commands.
 ```
-roslaunch stag_ros rosNode_single.launch
-roslaunch stag_ros rosNode_bundle_2.launch
-roslaunch stag_ros rosNode_bundle_4.launch
-roslaunch stag_ros rosNodelet_single.launch
-roslaunch stag_ros rosNodelet_bundle_2.launch
-roslaunch stag_ros rosNodelet_bundle_4.launch
+roslaunch stag_ros stagNode_single.launch
+roslaunch stag_ros stagNode_bundle_2.launch
+roslaunch stag_ros stagNode_bundle_4.launch
+roslaunch stag_ros stagNodelet_single.launch
+roslaunch stag_ros stagNodelet_bundle_2.launch
+roslaunch stag_ros stagNodelet_bundle_4.launch
 ```
