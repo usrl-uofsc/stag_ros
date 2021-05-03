@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>stag_ros</name>
-  <version>0.1.0</version>
+  <version>0.3.7</version>
   <description>The stag_ros package</description>
 
   <url type="repository">https://github.com/usrl-uofsc/stag_ros</url>
@@ -18,11 +18,11 @@
   <build_depend>cv_bridge</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>image_transport</build_depend>
+  <build_depend>nodelet</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>sensor_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>tf</build_depend>
-  <build_depend>nodelet</build_depend>
   <build_export_depend>camera_info_manager</build_export_depend>
   <build_export_depend>cv_bridge</build_export_depend>
   <build_export_depend>geometry_msgs</build_export_depend>
@@ -35,11 +35,11 @@
   <exec_depend>cv_bridge</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>image_transport</exec_depend>
+  <exec_depend>nodelet</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>tf</exec_depend>
-  <exec_depend>nodelet</exec_depend>
 
   <export>
     <nodelet plugin="${prefix}/stag_nodelet.xml" />
