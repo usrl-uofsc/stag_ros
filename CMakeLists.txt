@@ -40,7 +40,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include src/stag
   LIBRARIES stag_ros
-  CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport nodelet roscpp sensor_msgs std_msgs
+  CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport message_generation message_runtime nodelet roscpp sensor_msgs std_msgs
 )
 
 include_directories(
@@ -73,26 +73,27 @@ add_library(stag_core
   src/stag/ED/LineSegment.cpp
   src/stag/ED/MyMath.cpp
   src/stag/ED/NFA.cpp
-#  src/stag/ED/Utilities.cpp
   src/stag/ED/ValidateEdgeSegments.cpp
-        include/stag_ros/load_yaml_tags.h)
+)
 
 add_library(stag_nodelet
-        src/stag_ros/stag_nodelet.cpp
+  src/stag_ros/stag_nodelet.cpp
 )
 
 add_executable(stag_node
-        src/stag_ros/stag_node.cpp
+  src/stag_ros/stag_node.cpp
 )
 
 add_executable(stag_nodelet_runnable
-        src/stag_ros/stag_nodelet_main.cpp)
+  src/stag_ros/stag_nodelet_main.cpp)
 
 ## Dependencies
 add_dependencies(stag_nodelet
+  stag_ros_generate_messages_cpp
   ${catkin_EXPORTED_TARGETS}
 )
 add_dependencies(stag_node
+  stag_ros_generate_messages_cpp
   ${catkin_EXPORTED_TARGETS}
 )
 
@@ -108,7 +109,8 @@ target_link_libraries(stag_nodelet
 )
 
 target_link_libraries(stag_nodelet_runnable
-  stag_nodelet)
+  stag_nodelet
+)
 
 target_link_libraries(stag_node
   ${catkin_LIBRARIES}
