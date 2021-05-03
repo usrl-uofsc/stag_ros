@@ -2,6 +2,18 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#11 <https://github.com/usrl-uofsc/stag_ros/issues/11>`_ from janfelixklein/patch-1
+  Update README.md
+* added dependency on generated type to node(let)
+* Update README.md
+* Updated readme
+* Updated readme 2
+* Updated readme
+* Updated package.xml
+* Contributors: Brennan Cain, Mike Kalaitzakis, MikeK4y, janfelixklein
+
 0.3.8 (2021-03-19)
 ------------------
 * Added message_runtime dependency
