@@ -2,8 +2,8 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.2 (2021-05-03)
+------------------
 * Merged noetic into kinetic
 * Merge branch 'kinetic-devel' of github.com:usrl-uofsc/stag_ros into kinetic-devel
 * Fixed GHANGELOG.rst
