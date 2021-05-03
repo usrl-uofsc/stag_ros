@@ -2,8 +2,8 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.2 (2021-05-03)
+------------------
 * Merge noetic to melodic
 * Merge branch 'melodic-devel' of github.com:usrl-uofsc/stag_ros into melodic-devel
 * Fixed GHANGELOG.rst
