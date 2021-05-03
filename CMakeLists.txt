@@ -89,9 +89,11 @@ add_executable(stag_nodelet_runnable
 
 ## Dependencies
 add_dependencies(stag_nodelet
+  stag_ros_generate_messages_cpp
   ${catkin_EXPORTED_TARGETS}
 )
 add_dependencies(stag_node
+  stag_ros_generate_messages_cpp
   ${catkin_EXPORTED_TARGETS}
 )
 
