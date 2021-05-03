@@ -2,8 +2,8 @@
 Changelog for package stag_ros
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.9 (2021-05-03)
+------------------
 * Merge pull request `#11 <https://github.com/usrl-uofsc/stag_ros/issues/11>`_ from janfelixklein/patch-1
   Update README.md
 * added dependency on generated type to node(let)
