@@ -28,18 +28,20 @@ SOFTWARE.
 #include "stag_ros/instrument.hpp"
 #endif
 
+// STag marker handle
+#include "stag/Marker.h"
+
+// STag ROS
 #include "stag_ros/stag_nodelet.h"
 #include "stag_ros/load_yaml_tags.h"
 #include "stag_ros/utility.hpp"
-
-// Stag marker handle
-#include "stag/Marker.h"
 
 // ROS includes
 #include <tf/tf.h>
 #include <tf/transform_datatypes.h>
 #include <tf/transform_broadcaster.h>
-#include <geometry_msgs/PoseStamped.h>
+#include <stag_ros/STagMarker.h>
+#include <stag_ros/STagMarkerArray.h>
 
 #include <stdexcept>
 #include <iostream>
@@ -74,8 +76,8 @@ void StagNodelet::onInit() {
   // Set Publishers
   if (debug_images)
     imageDebugPub = imageT.advertise("stag_ros/image_markers", 1);
-  bundlePub = nh.advertise<geometry_msgs::PoseStamped>("stag_ros/bundles", 1);
-  markersPub = nh.advertise<geometry_msgs::PoseStamped>("stag_ros/markers", 1);
+  bundlePub = nh.advertise<stag_ros::STagMarkerArray>("stag_ros/bundles", 1);
+  markersPub = nh.advertise<stag_ros::STagMarkerArray>("stag_ros/markers", 1);
 
   // Initialize camera info
   got_camera_info = false;
@@ -205,6 +207,10 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
         }
       }
 
+      // Bundles
+      std::vector<tf::Transform> bundle_transforms;
+      std::vector<string> bundle_frame_ids;
+      std::vector<int> bundle_ids;
       for (size_t bi = 0; bi < bundles.size(); ++bi) {
         if (bundle_pose[bi].empty()) continue;
 
@@ -221,10 +227,21 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                           bundle_pose[bi].at<double>(1, 3),
                           bundle_pose[bi].at<double>(2, 3));
         auto bundle_tf = tf::Transform(rotQ, tfVec);
-        Common::publishTransform(bundle_tf, bundlePub, msg->header,
-                                 tag_tf_prefix, bundles[bi].frame_id,
-                                 publish_tf);
+
+        bundle_transforms.push_back(bundle_tf);
+        bundle_frame_ids.push_back(bundles[bi].frame_id);
+        bundle_ids.push_back(-1);
       }
+
+      if (bundle_ids.size() > 0)
+        Common::publishTransform(bundle_transforms, bundlePub, msg->header,
+                                 tag_tf_prefix, bundle_frame_ids, bundle_ids,
+                                 publish_tf);
+
+      // Markers
+      std::vector<tf::Transform> marker_transforms;
+      std::vector<string> marker_frame_ids;
+      std::vector<int> marker_ids;
       for (size_t ti = 0; ti < tags.size(); ++ti) {
         if (tag_pose[ti].empty()) continue;
 
@@ -241,9 +258,17 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
                           tag_pose[ti].at<double>(1, 3),
                           tag_pose[ti].at<double>(2, 3));
         auto marker_tf = tf::Transform(rotQ, tfVec);
-        Common::publishTransform(marker_tf, markersPub, msg->header,
-                                 tag_tf_prefix, tags[ti].frame_id, publish_tf);
+
+        marker_transforms.push_back(marker_tf);
+        marker_frame_ids.push_back(tags[ti].frame_id);
+        marker_ids.push_back(tags[ti].id);
       }
+
+      if (marker_ids.size() > 0)
+        Common::publishTransform(marker_transforms, markersPub, msg->header,
+                                 tag_tf_prefix, marker_frame_ids, marker_ids,
+                                 publish_tf);
+
     } else
       ROS_WARN("No markers detected");
   }
