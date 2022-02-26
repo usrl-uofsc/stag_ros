@@ -289,11 +289,10 @@ void StagNodelet::cameraInfoCallback(
     cameraMatrix.at<double>(2, 2) = msg->K[8];
 
     // Get distortion Matrix
-    distortionMat.at<double>(0, 0) = msg->D[0];
-    distortionMat.at<double>(0, 1) = msg->D[1];
-    distortionMat.at<double>(0, 2) = msg->D[2];
-    distortionMat.at<double>(0, 3) = msg->D[3];
-    distortionMat.at<double>(0, 4) = msg->D[4];
+    distortionMat = cv::Mat::zeros(1, msg->D.size(), CV_64F);
+    for (size_t i = 0; i < msg->D.size(); i++)
+      distortionMat.at<double>(0, i) = msg->D[i];
+
     // Get rectification Matrix
     rectificationMat.at<double>(0, 0) = msg->R[0];
     rectificationMat.at<double>(0, 1) = msg->R[1];
@@ -304,6 +303,7 @@ void StagNodelet::cameraInfoCallback(
     rectificationMat.at<double>(2, 0) = msg->R[6];
     rectificationMat.at<double>(2, 1) = msg->R[7];
     rectificationMat.at<double>(2, 2) = msg->R[8];
+
     // Get projection Matrix
     projectionMat.at<double>(0, 0) = msg->P[0];
     projectionMat.at<double>(0, 1) = msg->P[1];
