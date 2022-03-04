@@ -1,0 +1,9 @@
+<launch>
+    <!--Start Nodelet-->
+    <node name="stag_ros_nodelet" pkg="stag_ros" type="stag_nodelet_runnable" output="screen" required="true" >
+        <!-- Place the correct yaml file here-->
+        <rosparam command="load" file="$(find stag_ros)/cfg/fisheye.yaml"/>
+        <!-- Place the correct bundle file here-->
+        <rosparam command="load" file="$(find stag_ros)/cfg/fisheye_config.yaml"/>
+    </node>
+</launch>

@@ -44,6 +44,27 @@ struct Common {
     tVec.convertTo(output.col(3), CV_64F);
   }
 
+  static void solvePnpSingleFisheye(const std::vector<cv::Point2d> &img,
+                                    const std::vector<cv::Point3d> &world,
+                                    cv::Mat &output,
+                                    const cv::Mat &cameraMatrix,
+                                    const cv::Mat &distortionMatrix) {
+    if (img.empty() or world.empty()) return;
+
+    // std::vector<cv::Point2d> img_undistorted;
+    // cv::fisheye::undistortPoints(img, img_undistorted, cameraMatrix,
+    //                              distortionMatrix);
+
+    cv::Mat rVec, rMat, tVec;
+    // optimize for 5 planar points
+    // possibly choose to reduce to the 4 for use with advanced algos
+    cv::solvePnP(world, img, cameraMatrix, cv::Mat::zeros(1, 5, CV_64F), rVec,
+                 tVec);
+    cv::Rodrigues(rVec, rMat);
+    rMat.convertTo(output.colRange(0, 3), CV_64F);
+    tVec.convertTo(output.col(3), CV_64F);
+  }
+
   static void solvePnpBundle(const std::vector<cv::Point2d> &img,
                              const std::vector<cv::Point3d> &world,
                              cv::Mat &output, const cv::Mat &cameraMatrix,
@@ -52,6 +73,22 @@ struct Common {
     cv::Mat rVec, rMat, tVec;
     // optimize for many points
     cv::solvePnP(world, img, cameraMatrix, distortionMatrix, rVec, tVec);
+    cv::Rodrigues(rVec, rMat);
+    rMat.convertTo(output.colRange(0, 3), CV_64F);
+    tVec.convertTo(output.col(3), CV_64F);
+  }
+
+  static void solvePnpBundleFisheye(const std::vector<cv::Point2d> &img,
+                                    const std::vector<cv::Point3d> &world,
+                                    cv::Mat &output,
+                                    const cv::Mat &cameraMatrix,
+                                    const cv::Mat &distortionMatrix) {
+    if (img.empty() or world.empty()) return;
+
+    cv::Mat rVec, rMat, tVec;
+    // optimize for many points
+    cv::solvePnP(world, img, cameraMatrix, cv::Mat::zeros(1, 5, CV_64F), rVec,
+                 tVec);
     cv::Rodrigues(rVec, rMat);
     rMat.convertTo(output.colRange(0, 3), CV_64F);
     tVec.convertTo(output.col(3), CV_64F);

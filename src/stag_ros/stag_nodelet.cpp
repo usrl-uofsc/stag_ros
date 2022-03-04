@@ -137,8 +137,13 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
     cv::Mat gray;
     msgToGray(msg, gray);
 
+    // Undistort image so that STag can find markers even if they are distorted
+    cv::Mat gray_undistorted;
+    cv::fisheye::undistortImage(gray, gray_undistorted, cameraMatrix,
+                                 distortionMat, cameraMatrix, gray.size());
+
     // Process the image to find the markers
-    stag->detectMarkers(gray);
+    stag->detectMarkers(gray_undistorted);
     std::vector<Marker> markers = stag->getMarkerList();
 
     // Publish debug image
@@ -181,8 +186,8 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
           }
 
           cv::Mat marker_pose = cv::Mat::zeros(3, 4, CV_64F);
-          Common::solvePnpSingle(tag_image, tag_world, marker_pose,
-                                 cameraMatrix, distortionMat);
+          Common::solvePnpSingleFisheye(tag_image, tag_world, marker_pose,
+                                        cameraMatrix, distortionMat);
           tag_pose[tag_index] = marker_pose;
 
         } else if (getBundleIndex(markers[i].id, bundle_index, tag_index)) {
@@ -201,8 +206,8 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
       for (size_t bi = 0; bi < bundles.size(); ++bi) {
         if (bundle_image[bi].size() > 0) {
           cv::Mat b_pose = cv::Mat::zeros(3, 4, CV_64F);
-          Common::solvePnpBundle(bundle_image[bi], bundle_world[bi], b_pose,
-                                 cameraMatrix, distortionMat);
+          Common::solvePnpBundleFisheye(bundle_image[bi], bundle_world[bi],
+                                        b_pose, cameraMatrix, distortionMat);
           bundle_pose[bi] = b_pose;
         }
       }
