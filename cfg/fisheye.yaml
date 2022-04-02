@@ -5,9 +5,9 @@ errorCorrection: 7
 # Camera configuration
 camera_info_topic: /camera/fisheye1/camera_info
 raw_image_topic: /camera/fisheye1/image_raw
-is_compressed: true
+is_compressed: false
 
 # Node configuration
 tag_tf_prefix: STag_
 show_markers: true
-publish_tf: true
+publish_tf: false
