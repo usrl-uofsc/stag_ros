@@ -157,9 +157,8 @@ void StagNodelet::imageCallback(const sensor_msgs::ImageConstPtr &msg) {
     // For each marker in the list
     if (markers.size() > 0) {
       // Create markers msg
-      std::vector<cv::Mat> tag_pose(tags.size(), cv::Mat::zeros(3, 4, CV_64F));
-      std::vector<cv::Mat> bundle_pose(bundles.size(),
-                                       cv::Mat::zeros(3, 4, CV_64F));
+      std::vector<cv::Mat> tag_pose(tags.size());
+      std::vector<cv::Mat> bundle_pose(bundles.size());
       std::vector<std::vector<cv::Point2d>> bundle_image(bundles.size());
       std::vector<std::vector<cv::Point3d>> bundle_world(bundles.size());
 
