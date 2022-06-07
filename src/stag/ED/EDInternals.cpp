@@ -37,12 +37,21 @@ struct StackNode {
 
 // Used during Edge Linking
 struct Chain {
-  short dir;           // Direction of the chain
-  unsigned short len;  // # of pixels in the chain
-  short parent;        // Parent of this node (-1 if no parent)
-  short children[2];   // Children of this node (-1 if no children)
+  int dir;           // Direction of the chain
+  unsigned int len;  // # of pixels in the chain
+  int parent;        // Parent of this node (-1 if no parent)
+  int children[2];   // Children of this node (-1 if no children)
   Pixel *pixels;       // Pointer to the beginning of the pixels array
 };
+
+// // Used during Edge Linking
+// struct Chain {
+//   short dir;           // Direction of the chain
+//   unsigned short len;  // # of pixels in the chain
+//   short parent;        // Parent of this node (-1 if no parent)
+//   short children[2];   // Children of this node (-1 if no children)
+//   Pixel *pixels;       // Pointer to the beginning of the pixels array
+// };
 
 ///-----------------------------------------------------------------------------------
 /// Compute anchor points
