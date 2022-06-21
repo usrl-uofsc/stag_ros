@@ -21,7 +21,10 @@ class DummyNode : public rclcpp::Node {
   ~DummyNode();
 
  private:
+  // Functions
   void loadParameters();
+  bool getBundleIndex(const int id, int &bundle_index, int &tag_index);
+  bool getTagIndex(const int id, int &tag_index);
 
   // STag handle
   Stag *stag;

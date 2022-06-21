@@ -27,6 +27,29 @@ void DummyNode::loadParameters() {
   this->get_parameter("tag_tf_prefix", this->tag_tf_prefix);
   loadTagsBundles(this->shared_from_this(), "tags", "bundles", this->tags, this->bundles);
 }
+
+bool DummyNode::getTagIndex(const int id, int &tag_index) {
+  for (int i = 0; i < tags.size(); ++i) {
+    if (tags[i].id == id) {
+      tag_index = i;
+      return true;
+    }
+  }
+  return false;  // not found
+}
+
+bool DummyNode::getBundleIndex(const int id, int &bundle_index, int &tag_index) {
+  for (int bi = 0; bi < bundles.size(); ++bi) {
+    for (int ti = 0; ti < bundles[bi].tags.size(); ++ti) {
+      if (bundles[bi].tags[ti].id == id) {
+        bundle_index = bi;
+        tag_index = ti;
+        return true;
+      }
+    }
+  }
+  return false;  // not found
+}
 }  // namespace stag_ros
 
 int main(int argc, char* argv[]) {
