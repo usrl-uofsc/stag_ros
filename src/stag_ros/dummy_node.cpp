@@ -224,8 +224,52 @@ void DummyNode::imageCallback(
 }
 
 void DummyNode::cameraInfoCallback(
-    const sensor_msgs::msg::CameraInfo::ConstSharedPtr &msg) {}
+    const sensor_msgs::msg::CameraInfo::ConstSharedPtr &msg) {
+  if (!got_camera_info) {
+    // Get camera Matrix
+    cameraMatrix.at<double>(0, 0) = msg->k[0];
+    cameraMatrix.at<double>(0, 1) = msg->k[1];
+    cameraMatrix.at<double>(0, 2) = msg->k[2];
+    cameraMatrix.at<double>(1, 0) = msg->k[3];
+    cameraMatrix.at<double>(1, 1) = msg->k[4];
+    cameraMatrix.at<double>(1, 2) = msg->k[5];
+    cameraMatrix.at<double>(2, 0) = msg->k[6];
+    cameraMatrix.at<double>(2, 1) = msg->k[7];
+    cameraMatrix.at<double>(2, 2) = msg->k[8];
 
+    // Get distortion Matrix
+    distortionMat = cv::Mat::zeros(1, msg->d.size(), CV_64F);
+    for (size_t i = 0; i < msg->d.size(); i++)
+      distortionMat.at<double>(0, i) = msg->d[i];
+
+    // Get rectification Matrix
+    rectificationMat.at<double>(0, 0) = msg->r[0];
+    rectificationMat.at<double>(0, 1) = msg->r[1];
+    rectificationMat.at<double>(0, 2) = msg->r[2];
+    rectificationMat.at<double>(1, 0) = msg->r[3];
+    rectificationMat.at<double>(1, 1) = msg->r[4];
+    rectificationMat.at<double>(1, 2) = msg->r[5];
+    rectificationMat.at<double>(2, 0) = msg->r[6];
+    rectificationMat.at<double>(2, 1) = msg->r[7];
+    rectificationMat.at<double>(2, 2) = msg->r[8];
+
+    // Get projection Matrix
+    projectionMat.at<double>(0, 0) = msg->p[0];
+    projectionMat.at<double>(0, 1) = msg->p[1];
+    projectionMat.at<double>(0, 2) = msg->p[2];
+    projectionMat.at<double>(1, 0) = msg->p[3];
+    projectionMat.at<double>(1, 1) = msg->p[4];
+    projectionMat.at<double>(1, 2) = msg->p[5];
+    projectionMat.at<double>(2, 0) = msg->p[6];
+    projectionMat.at<double>(2, 1) = msg->p[7];
+    projectionMat.at<double>(2, 2) = msg->p[8];
+    projectionMat.at<double>(2, 0) = msg->p[9];
+    projectionMat.at<double>(2, 1) = msg->p[10];
+    projectionMat.at<double>(2, 2) = msg->p[11];
+
+    got_camera_info = true;
+  }
+}
 }  // namespace stag_ros
 
 int main(int argc, char *argv[]) {
