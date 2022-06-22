@@ -18,20 +18,20 @@
 #include <stag_ros/msg/s_tag_marker_array.hpp>
 
 namespace stag_ros {
-class DummyNode : public rclcpp::Node {
+class StagNode : public rclcpp::Node {
  public:
-  explicit DummyNode();
-  ~DummyNode();
+  explicit StagNode();
+  ~StagNode() override;
 
  private:
   // Callbacks
   void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr &msg);
-  void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::SharedPtr msg);
+  void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::SharedPtr &msg);
 
   // Functions
   void loadParameters();
-  bool getBundleIndex(const int id, int &bundle_index, int &tag_index);
-  bool getTagIndex(const int id, int &tag_index);
+  bool getBundleIndex(int id, int &bundle_index, int &tag_index);
+  bool getTagIndex(int id, int &tag_index);
 
   // STag handle
   Stag *stag;

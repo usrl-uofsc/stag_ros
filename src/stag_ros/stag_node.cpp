@@ -1,4 +1,4 @@
-#include "stag_ros/dummy_node.hpp"
+#include "stag_ros/stag_node.hpp"
 
 #include <tf2/LinearMath/Matrix3x3.h>
 #include <tf2/LinearMath/Quaternion.h>
@@ -18,7 +18,7 @@
 #include "stag_ros/common.hpp"
 
 namespace stag_ros {
-DummyNode::DummyNode() : Node("dummy_node") {
+StagNode::StagNode() : Node("stag_node") {
   this->declare_parameter<int>("libraryHD", 15);
   this->declare_parameter<int>("errorCorrection", 7);
   this->declare_parameter<std::string>("raw_image_topic", "image_raw");
@@ -55,7 +55,7 @@ DummyNode::DummyNode() : Node("dummy_node") {
 
   cameraInfoSub = this->create_subscription<sensor_msgs::msg::CameraInfo>(
       camera_info_topic, 10,
-      [this](const sensor_msgs::msg::CameraInfo::SharedPtr msg) {
+      [this](sensor_msgs::msg::CameraInfo::SharedPtr msg) {
         this->cameraInfoCallback(msg);
       });
 
@@ -77,9 +77,9 @@ DummyNode::DummyNode() : Node("dummy_node") {
   projectionMat = cv::Mat::zeros(3, 4, CV_64F);
 }
 
-DummyNode::~DummyNode() { delete stag; }
+StagNode::~StagNode() { delete stag; }
 
-void DummyNode::loadParameters() {
+void StagNode::loadParameters() {
   this->get_parameter("libraryHD", this->stag_library);
   this->get_parameter("errorCorrection", this->error_correction);
   this->get_parameter("raw_image_topic", this->image_topic);
@@ -92,7 +92,7 @@ void DummyNode::loadParameters() {
                   this->bundles);
 }
 
-bool DummyNode::getTagIndex(const int id, int &tag_index) {
+bool StagNode::getTagIndex(int id, int &tag_index) {
   for (int i = 0; i < tags.size(); ++i) {
     if (tags[i].id == id) {
       tag_index = i;
@@ -102,7 +102,7 @@ bool DummyNode::getTagIndex(const int id, int &tag_index) {
   return false;  // not found
 }
 
-bool DummyNode::getBundleIndex(const int id, int &bundle_index,
+bool StagNode::getBundleIndex(int id, int &bundle_index,
                                int &tag_index) {
   for (int bi = 0; bi < bundles.size(); ++bi) {
     for (int ti = 0; ti < bundles[bi].tags.size(); ++ti) {
@@ -116,7 +116,7 @@ bool DummyNode::getBundleIndex(const int id, int &bundle_index,
   return false;  // not found
 }
 
-void DummyNode::imageCallback(
+void StagNode::imageCallback(
     const sensor_msgs::msg::Image::ConstSharedPtr &msg) {
 #ifndef NDEBUG
   INSTRUMENT;
@@ -266,8 +266,7 @@ void DummyNode::imageCallback(
   }
 }
 
-void DummyNode::cameraInfoCallback(
-    const sensor_msgs::msg::CameraInfo::SharedPtr msg) {
+void StagNode::cameraInfoCallback(const sensor_msgs::msg::CameraInfo::SharedPtr &msg) {
   if (!got_camera_info) {
     // Get camera Matrix
     cameraMatrix.at<double>(0, 0) = msg->k[0];
@@ -317,7 +316,7 @@ void DummyNode::cameraInfoCallback(
 
 int main(int argc, char *argv[]) {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<stag_ros::DummyNode>());
+  rclcpp::spin(std::make_shared<stag_ros::StagNode>());
   rclcpp::shutdown();
   return 0;
 }

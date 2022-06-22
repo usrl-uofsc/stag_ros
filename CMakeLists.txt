@@ -69,7 +69,7 @@ target_link_libraries(stag_core
   ${CPP_REQUIRED_LIBRARIES}
   )
 
-ament_auto_add_executable(stag_node ${PROJECT_SOURCE_DIR}/src/stag_ros/dummy_node.cpp)
+ament_auto_add_executable(stag_node ${PROJECT_SOURCE_DIR}/src/stag_ros/stag_node.cpp)
 
 get_available_rmw_implementations(rmw_implementations2)
 foreach(rmw_implementation ${rmw_implementations2})
