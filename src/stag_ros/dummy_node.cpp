@@ -31,7 +31,50 @@ DummyNode::DummyNode() : Node("dummy_node") {
   this->declare_parameter<std::string>("bundles", "");
 
   // Initialize the transform broadcaster
-  this->tf_broadcaster = std::make_shared<tf2_ros::TransformBroadcaster>(*this);
+  this->tf_broadcaster =
+      std::make_shared<tf2_ros::TransformBroadcaster>(this->shared_from_this());
+
+  // Load Parameters
+  loadParameters();
+
+  // Initialize Stag
+  try {
+    stag = new Stag(stag_library, error_correction, false);
+  } catch (const std::invalid_argument &e) {
+    std::cout << e.what() << std::endl;
+    exit(-1);
+  }
+
+  // Set Subscribers
+  imageSub = image_transport::create_subscription(
+      this, image_topic,
+      [this](const sensor_msgs::msg::Image::ConstSharedPtr &msg) {
+        this->imageCallback(msg);
+      },
+      is_compressed ? "compressed" : "raw", rmw_qos_profile_default);
+
+  cameraInfoSub = this->create_subscription<sensor_msgs::msg::CameraInfo>(
+      camera_info_topic, 10,
+      [this](const sensor_msgs::msg::CameraInfo::SharedPtr msg) {
+        this->cameraInfoCallback(msg);
+      });
+
+  // Set Publishers
+  if (debug_images) {
+    imageDebugPub = image_transport::create_publisher(
+        this, "stag_ros/image_markers", rmw_qos_profile_default);
+  }
+  bundlePub = this->create_publisher<stag_ros::msg::STagMarkerArray>(
+      "stag_ros/bundles", 10);
+  markersPub = this->create_publisher<stag_ros::msg::STagMarkerArray>(
+      "stag_ros/markers", 10);
+
+  // Initialize camera info
+  got_camera_info = false;
+  cameraMatrix = cv::Mat::zeros(3, 3, CV_64F);
+  distortionMat = cv::Mat::zeros(1, 5, CV_64F);
+  rectificationMat = cv::Mat::zeros(3, 3, CV_64F);
+  projectionMat = cv::Mat::zeros(3, 4, CV_64F);
 }
 
 DummyNode::~DummyNode() { delete stag; }
@@ -224,7 +267,7 @@ void DummyNode::imageCallback(
 }
 
 void DummyNode::cameraInfoCallback(
-    const sensor_msgs::msg::CameraInfo::ConstSharedPtr &msg) {
+    const sensor_msgs::msg::CameraInfo::SharedPtr msg) {
   if (!got_camera_info) {
     // Get camera Matrix
     cameraMatrix.at<double>(0, 0) = msg->k[0];

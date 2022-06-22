@@ -26,7 +26,7 @@ class DummyNode : public rclcpp::Node {
  private:
   // Callbacks
   void imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr &msg);
-  void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::ConstSharedPtr &msg);
+  void cameraInfoCallback(const sensor_msgs::msg::CameraInfo::SharedPtr msg);
 
   // Functions
   void loadParameters();
