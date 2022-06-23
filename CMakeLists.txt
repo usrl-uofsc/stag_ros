@@ -95,4 +95,10 @@ install(
   PROGRAMS scripts/download_bags.sh
   DESTINATION lib/${PROJECT_NAME})
 
+# install config files
+install(DIRECTORY
+  cfg
+  DESTINATION share/${PROJECT_NAME}
+  )
+
 ament_auto_package()
