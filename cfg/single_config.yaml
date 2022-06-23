@@ -12,8 +12,7 @@ stag_node:
           ]
         }
       ]"
-    bundles:
-      "[]"
+    bundles: "[]"
 
 # Marker corner order:
 # 1          2
