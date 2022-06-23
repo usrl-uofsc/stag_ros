@@ -6,7 +6,7 @@ stag_node:
     # Camera configuration
     camera_info_topic: /usb_cam/camera_info
     raw_image_topic: /usb_cam/image_raw
-    is_compressed: true
+    is_compressed: false
     # Node configuration
     tag_tf_prefix: STag_
     show_markers: true
