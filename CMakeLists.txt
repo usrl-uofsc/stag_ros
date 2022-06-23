@@ -72,16 +72,27 @@ target_link_libraries(stag_core
 ament_auto_add_executable(stag_node ${PROJECT_SOURCE_DIR}/src/stag_ros/stag_node.cpp)
 
 get_available_rmw_implementations(rmw_implementations2)
-foreach(rmw_implementation ${rmw_implementations2})
+foreach (rmw_implementation ${rmw_implementations2})
   find_package("${rmw_implementation}" REQUIRED)
   get_rmw_typesupport(typesupport_impls "${rmw_implementation}" LANGUAGE "cpp")
-  foreach(typesupport_impl ${typesupport_impls})
+  foreach (typesupport_impl ${typesupport_impls})
     rosidl_target_interfaces(stag_node
       ${PROJECT_NAME} ${typesupport_impl}
       )
-  endforeach()
-endforeach()
+  endforeach ()
+endforeach ()
 
 target_link_libraries(stag_node stag_core)
+
+# install the launch directory
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+  )
+
+# install the sh scripts
+install(
+  PROGRAMS scripts/download_bags.sh
+  DESTINATION lib/${PROJECT_NAME})
 
 ament_auto_package()
