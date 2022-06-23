@@ -1,4 +1,4 @@
 <launch>
     <!--download ROSbag file-->
-    <node name="download_bags" pkg="stag_ros" type="download_bags.sh" args="$(find stag_ros)/bags"  required="true"/>
+    <node pkg="stag_ros" exec="download_bags.sh" name="download_bags" args="$(find-pkg-share stag_ros)/bags"/>
 </launch>
