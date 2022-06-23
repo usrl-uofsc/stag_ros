@@ -45,32 +45,32 @@ inline std::vector<Bundle> parseBundles(const YAML::Node &bundles_yaml) {
   return bundles;
 }
 
-inline void loadTagsBundles(const rclcpp::Node::SharedPtr &node,
+inline void loadTagsBundles(const rclcpp::Node &node,
                             const std::string &tag_name,
                             const std::string &bundle_name,
                             std::vector<Tag> &tags,
                             std::vector<Bundle> &bundles) {
-  std::string tag_str = node->get_parameter(tag_name).as_string();
+  std::string tag_str = node.get_parameter(tag_name).as_string();
   if (tag_str.empty()) {
-    RCLCPP_WARN(node->get_logger(), "No tags specified");
+    RCLCPP_WARN(node.get_logger(), "No tags specified");
   }
   else {
     try {
       tags = parseTags(YAML::Load(tag_str));
     } catch (std::exception &e) {
-      RCLCPP_ERROR_STREAM(node->get_logger(),
+      RCLCPP_ERROR_STREAM(node.get_logger(),
                           "Error loading tag descriptions: " << e.what());
     }
   }
-  std::string bundle_str = node->get_parameter(bundle_name).as_string();
+  std::string bundle_str = node.get_parameter(bundle_name).as_string();
   if (bundle_str.empty()) {
-    RCLCPP_WARN(node->get_logger(), "No bundles specified");
+    RCLCPP_WARN(node.get_logger(), "No bundles specified");
   }
   else {
     try {
       bundles = parseBundles(YAML::Load(bundle_str));
     } catch (std::exception &e) {
-      RCLCPP_ERROR_STREAM(node->get_logger(),
+      RCLCPP_ERROR_STREAM(node.get_logger(),
                           "Error loading bundle descriptions: " << e.what());
     }
   }

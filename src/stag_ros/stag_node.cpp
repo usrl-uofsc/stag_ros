@@ -27,12 +27,12 @@ StagNode::StagNode() : Node("stag_node") {
   this->declare_parameter<bool>("show_markers", false);
   this->declare_parameter<bool>("publish_tf", false);
   this->declare_parameter<std::string>("tag_tf_prefix", "STag_");
-  this->declare_parameter<std::string>("tags", "");
-  this->declare_parameter<std::string>("bundles", "");
+  this->declare_parameter<std::string>("tags", "[]");
+  this->declare_parameter<std::string>("bundles", "[]");
 
   // Initialize the transform broadcaster
   this->tf_broadcaster =
-      std::make_shared<tf2_ros::TransformBroadcaster>(this->shared_from_this());
+      std::make_shared<tf2_ros::TransformBroadcaster>(*this);
 
   // Load Parameters
   loadParameters();
@@ -88,7 +88,7 @@ void StagNode::loadParameters() {
   this->get_parameter("show_markers", this->debug_images);
   this->get_parameter("publish_tf", this->publish_tf);
   this->get_parameter("tag_tf_prefix", this->tag_tf_prefix);
-  loadTagsBundles(this->shared_from_this(), "tags", "bundles", this->tags,
+  loadTagsBundles(*this, "tags", "bundles", this->tags,
                   this->bundles);
 }
 
