@@ -21,12 +21,20 @@ find_package(OpenCV REQUIRED)
 
 ament_auto_find_build_dependencies()
 
-# find library dependencies
-set(CPP_REQUIRED_LIBRARIES yaml-cpp)
+find_package(PkgConfig REQUIRED)
 
-foreach (REQUIRED_LIBRARY IN LISTS CPP_REQUIRED_LIBRARIES)
-  find_library(${REQUIRED_LIBRARY} REQUIRED)
-endforeach ()
+find_package(yaml-cpp 0.7.0 REQUIRED)
+# Resolve system dependency on yaml-cpp, which apparently does not
+# provide a CMake find_package() module.
+pkg_check_modules(YAML_CPP yaml-cpp)
+
+find_path(YAML_CPP_INCLUDE_DIR
+  NAMES yaml.h
+  PATHS ${YAML_CPP_INCLUDE_DIRS})
+
+find_library(YAML_CPP_LIBRARY
+  NAMES yaml-cpp
+  PATHS ${YAML_CPP_LIBRARY_DIRS})
 
 file(GLOB MSGS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} msg/*.msg)
 rosidl_generate_interfaces(${PROJECT_NAME} ${MSGS} DEPENDENCIES geometry_msgs)
@@ -34,6 +42,7 @@ rosidl_generate_interfaces(${PROJECT_NAME} ${MSGS} DEPENDENCIES geometry_msgs)
 include_directories(
   include
   ${OpenCV_INCLUDE_DIRS}
+  ${YAML_CPP_INCLUDE_DIRS}
 )
 
 ###########
@@ -67,6 +76,7 @@ ament_auto_add_library(stag_core SHARED
 target_link_libraries(stag_core
   ${OpenCV_LIBS}
   ${CPP_REQUIRED_LIBRARIES}
+  yaml-cpp
   )
 
 ament_auto_add_executable(stag_node ${PROJECT_SOURCE_DIR}/src/stag_ros/stag_node.cpp)
