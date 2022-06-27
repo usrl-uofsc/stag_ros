@@ -70,19 +70,9 @@ target_link_libraries(stag_core
   )
 
 ament_auto_add_executable(stag_node ${PROJECT_SOURCE_DIR}/src/stag_ros/stag_node.cpp)
-
-get_available_rmw_implementations(rmw_implementations2)
-foreach (rmw_implementation ${rmw_implementations2})
-  find_package("${rmw_implementation}" REQUIRED)
-  get_rmw_typesupport(typesupport_impls "${rmw_implementation}" LANGUAGE "cpp")
-  foreach (typesupport_impl ${typesupport_impls})
-    rosidl_target_interfaces(stag_node
-      ${PROJECT_NAME} ${typesupport_impl}
-      )
-  endforeach ()
-endforeach ()
-
-target_link_libraries(stag_node stag_core)
+# link messages
+rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(stag_node stag_core "${cpp_typesupport_target}")
 
 # install the launch directory
 install(DIRECTORY
