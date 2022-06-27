@@ -18,23 +18,9 @@ endif ()
 # find dependencies
 find_package(ament_cmake_auto REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(yaml-cpp 0.7.0 REQUIRED)
 
 ament_auto_find_build_dependencies()
-
-find_package(PkgConfig REQUIRED)
-
-find_package(yaml-cpp 0.7.0 REQUIRED)
-# Resolve system dependency on yaml-cpp, which apparently does not
-# provide a CMake find_package() module.
-pkg_check_modules(YAML_CPP yaml-cpp)
-
-find_path(YAML_CPP_INCLUDE_DIR
-  NAMES yaml.h
-  PATHS ${YAML_CPP_INCLUDE_DIRS})
-
-find_library(YAML_CPP_LIBRARY
-  NAMES yaml-cpp
-  PATHS ${YAML_CPP_LIBRARY_DIRS})
 
 file(GLOB MSGS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} msg/*.msg)
 rosidl_generate_interfaces(${PROJECT_NAME} ${MSGS} DEPENDENCIES geometry_msgs)
