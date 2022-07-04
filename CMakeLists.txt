@@ -1,52 +1,34 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.15)
 project(stag_ros)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++14)
-set(CMAKE_BUILD_TYPE Release)
+# default to C99
+if (NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif ()
 
+# default to C++17
+if (NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 17)
+endif ()
+
+if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif ()
+
+# find dependencies
+find_package(ament_cmake_auto REQUIRED)
 find_package(OpenCV REQUIRED)
-find_package(PkgConfig REQUIRED)
+find_package(yaml-cpp 0.7.0 REQUIRED)
 
-################
-# Dependencies #
-################
-find_package(catkin REQUIRED COMPONENTS
-  camera_info_manager
-  cv_bridge
-  geometry_msgs
-  image_transport
-  message_generation
-  nodelet
-  roscpp
-  sensor_msgs
-  std_msgs
-  tf
-)
+ament_auto_find_build_dependencies()
 
-## Custom message files to be created
-add_message_files(DIRECTORY msg
-  FILES
-  STagMarker.msg
-  STagMarkerArray.msg
-)
-
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-  geometry_msgs
-)
-
-catkin_package(
-  INCLUDE_DIRS include src/stag
-  LIBRARIES stag_ros
-  CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport message_generation message_runtime nodelet roscpp sensor_msgs std_msgs
-)
+file(GLOB MSGS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} msg/*.msg)
+rosidl_generate_interfaces(${PROJECT_NAME} ${MSGS} DEPENDENCIES geometry_msgs)
 
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+  ${YAML_CPP_INCLUDE_DIRS}
 )
 
 ###########
@@ -54,86 +36,55 @@ include_directories(
 ###########
 
 ## Runnables
-add_library(stag_core
-  src/stag/Decoder.cpp
-  src/stag/Drawer.cpp
-  src/stag/EDInterface.cpp
-  src/stag/Ellipse.cpp
-  src/stag/Marker.cpp
-  src/stag/PoseRefiner.cpp
-  src/stag/Quad.cpp
-  src/stag/QuadDetector.cpp
-  src/stag/Stag.cpp
-  src/stag/utility.cpp
-  src/stag/ED/ED.cpp
-  src/stag/ED/EDInternals.cpp
-  src/stag/ED/EDLines.cpp
-  src/stag/ED/GradientOperators.cpp
-  src/stag/ED/ImageSmooth.cpp
-  src/stag/ED/LineSegment.cpp
-  src/stag/ED/MyMath.cpp
-  src/stag/ED/NFA.cpp
-  src/stag/ED/ValidateEdgeSegments.cpp
-)
-
-add_library(stag_nodelet
-  src/stag_ros/stag_nodelet.cpp
-)
-
-add_executable(stag_node
-  src/stag_ros/stag_node.cpp
-)
-
-add_executable(stag_nodelet_runnable
-  src/stag_ros/stag_nodelet_main.cpp)
-
-## Dependencies
-add_dependencies(stag_nodelet
-  stag_ros_generate_messages_cpp
-  ${catkin_EXPORTED_TARGETS}
-)
-add_dependencies(stag_node
-  stag_ros_generate_messages_cpp
-  ${catkin_EXPORTED_TARGETS}
-)
+ament_auto_add_library(stag_core SHARED
+  ${PROJECT_SOURCE_DIR}/src/stag/Decoder.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/Drawer.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/EDInterface.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/Ellipse.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/Marker.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/PoseRefiner.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/Quad.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/QuadDetector.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/Stag.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/utility.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/ED/ED.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/ED/EDInternals.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/ED/EDLines.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/ED/GradientOperators.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/ED/ImageSmooth.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/ED/LineSegment.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/ED/MyMath.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/ED/NFA.cpp
+  ${PROJECT_SOURCE_DIR}/src/stag/ED/ValidateEdgeSegments.cpp
+  )
 
 ## Links
 target_link_libraries(stag_core
   ${OpenCV_LIBS}
-)
+  ${CPP_REQUIRED_LIBRARIES}
+  yaml-cpp
+  )
 
-target_link_libraries(stag_nodelet
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBS}
-  stag_core
-)
+ament_auto_add_executable(stag_node ${PROJECT_SOURCE_DIR}/src/stag_ros/stag_node.cpp)
+# link messages
+rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(stag_node stag_core "${cpp_typesupport_target}")
 
-target_link_libraries(stag_nodelet_runnable
-  stag_nodelet
-)
+# install the launch directory
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+  )
 
-target_link_libraries(stag_node
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBS}
-  stag_core
-)
+# install the sh scripts
+install(
+  PROGRAMS scripts/download_bags.sh
+  DESTINATION lib/${PROJECT_NAME})
 
-###########
-# INSTALL #
-###########
+# install config files
+install(DIRECTORY
+  cfg
+  DESTINATION share/${PROJECT_NAME}
+  )
 
-install(FILES stag_nodelet.xml
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
-
-install(DIRECTORY cfg launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
-
-install(TARGETS
-  stag_node
-  stag_nodelet_runnable
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-)
+ament_auto_package()

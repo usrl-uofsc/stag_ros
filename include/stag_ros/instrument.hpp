@@ -27,6 +27,7 @@ SOFTWARE.
 #include <numeric>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 #define INSTRUMENT                                                       \
   static Instrument instrument(__PRETTY_FUNCTION__, __FILE__, __LINE__); \
