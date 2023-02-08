@@ -122,6 +122,10 @@ target_link_libraries(stag_node
 # INSTALL #
 ###########
 
+install(DIRECTORY include/
+  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+)
+
 install(FILES stag_nodelet.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
