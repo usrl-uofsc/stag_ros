@@ -39,7 +39,7 @@ generate_messages(
 
 catkin_package(
   INCLUDE_DIRS include src/stag
-  LIBRARIES stag_ros
+  LIBRARIES stag_core
   CATKIN_DEPENDS camera_info_manager cv_bridge geometry_msgs image_transport message_generation message_runtime nodelet roscpp sensor_msgs std_msgs
 )
 
@@ -122,6 +122,10 @@ target_link_libraries(stag_node
 # INSTALL #
 ###########
 
+install(DIRECTORY include/
+  DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
+)
+
 install(FILES stag_nodelet.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
@@ -131,7 +135,9 @@ install(DIRECTORY cfg launch
 )
 
 install(TARGETS
+  stag_core
   stag_node
+  stag_nodelet
   stag_nodelet_runnable
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
