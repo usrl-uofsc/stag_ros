@@ -652,6 +652,7 @@ customEllipse::customEllipse(double *pX, double *pY, int noPnts) {
   delete[] d;
   DeallocateMatrix(V, 7);
   DeallocateMatrix(sol, 7);
+  free(fitPoints);
 }
 
 customEllipse::customEllipse(double coefs[6]) {
