@@ -1449,7 +1449,7 @@ void JoinAnchorPointsUsingSortedAnchors(short *gradImg, unsigned char *dirImg,
 
   map->noSegments = noSegments;
 
-  delete A;
+  delete[] A;
   delete[] chains;
   delete[] stack;
   delete[] pixels;
