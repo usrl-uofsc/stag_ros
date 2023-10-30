@@ -53,7 +53,7 @@
 //   for (int i = 0; i < maxGradValue; i++)
 //     H[i] = (double)grads[i] / ((double)size);
 
-//   delete grads;
+//   delete[] grads;
 //   return gradImg;
 // }  // end-ComputeLSD
 
@@ -512,7 +512,7 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //   for (int i = 0; i < maxGradValue; i++)
 //     H[i] = (double)grads[i] / ((double)size);
 
-//   delete grads;
+//   delete[] grads;
 
 //   // Compute np: # of segment pieces
 // #if 1
@@ -546,8 +546,8 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //   /// Extract the new edge segments after validation
 //   ExtractNewSegments(map);
 
-//   delete H;
-//   delete gradImg;
+//   delete[] H;
+//   delete[] gradImg;
 // }  // end-ValidateEdgeSegments2
 
 ///--------------------------------------------------------------------------------------------------------------------
@@ -606,8 +606,8 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //     }    // end-for
 //   }      // end-for
 
-//   delete H;
-//   delete gradImg;
+//   delete[] H;
+//   delete[] gradImg;
 
 //   return noMaps;
 // }  // end-for
@@ -695,7 +695,7 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //   for (int i = 0; i < maxGradValue; i++)
 //     H[i] = (double)grads[i] / ((double)size);
 
-//   delete grads;
+//   delete[] grads;
 
 //   // Compute np: # of segment pieces
 // #if 1
@@ -729,8 +729,8 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //   /// Extract the new edge segments after validation
 //   ExtractNewSegments(map);
 
-//   delete H;
-//   delete gradImg;
+//   delete[] H;
+//   delete[] gradImg;
 // }  // end-ValidateEdgeSegments
 
 // ///--------------------------------------------------------------------------------------------------------------------
@@ -849,7 +849,7 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //   for (int i = 0; i < maxGradValue; i++)
 //     H[i] = (double)grads[i] / ((double)size);
 
-//   delete grads;
+//   delete[] grads;
 
 //   // Compute np: # of segment pieces
 // #if 1
@@ -883,8 +883,8 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //   /// Extract the new edge segments after validation
 //   ExtractNewSegments(map);
 
-//   delete H;
-//   delete gradImg;
+//   delete[] H;
+//   delete[] gradImg;
 // }  // end-ValidateEdgeSegments2
 
 // ///--------------------------------------------------------------------------------------------------------------------
@@ -1008,7 +1008,7 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //   for (int i = 0; i < maxGradValue; i++)
 //     H[i] = (double)grads[i] / ((double)size);
 
-//   delete grads;
+//   delete[] grads;
 
 //   // Validate for different div values
 //   int index = 0;
@@ -1051,8 +1051,8 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //     }    // end-for
 //   }      // end-for
 
-//   delete H;
-//   delete gradImg;
+//   delete[] H;
+//   delete[] gradImg;
 
 //   return noMaps;
 // }  // end-ValidateEdgeSegmentsMultipleDiv
@@ -1089,7 +1089,7 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //   for (int i = 0; i < maxGradValue; i++)
 //     H[i] = (double)grads[i] / ((double)size);
 
-//   delete grads;
+//   delete[] grads;
 
 //   // Compute np: # of segment pieces
 //   int np = 0;
@@ -1107,7 +1107,7 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //   /// Extract the new edge segments after validation
 //   ExtractNewSegments(map);
 
-//   delete H;
+//   delete[] H;
 // }  // end-ValidateEdgeSegmentsWithGradientMap
 
 // ///----------------------------------------------------------------------------------
@@ -1143,7 +1143,7 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //   for (int i = 0; i < maxGradValue; i++)
 //     H[i] = (double)grads[i] / ((double)size);
 
-//   delete grads;
+//   delete[] grads;
 
 //   // Validate for different div values
 //   int index = 0;
@@ -1186,7 +1186,7 @@ void ValidateEdgeSegments(EdgeMap *map, unsigned char *srcImg,
 //     }    // end-for
 //   }      // end-for
 
-//   delete H;
+//   delete[] H;
 
 //   return noMaps;
 // }  // end-ValidateEdgeSegmentsWithGradientMapMultipleDiv
