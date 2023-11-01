@@ -17,7 +17,9 @@ struct NFALUT {
   NFALUT(int size, double prob, double logNT);
 
   // Destructor
-  ~NFALUT() { delete LUT; }  // end-~NFALUT
+  ~NFALUT() {
+    delete[] LUT;
+  }  // end-~NFALUT
 };
 
 ///-------------------------------------------

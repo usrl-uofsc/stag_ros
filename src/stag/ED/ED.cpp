@@ -67,9 +67,9 @@
 //                                    GRADIENT_THRESH, ANCHOR_THRESH);
 
 //   // Clean up
-//   delete gradImg;
-//   delete dirImg;
-//   delete smoothImg;
+//   delete[] gradImg;
+//   delete[] dirImg;
+//   delete[] smoothImg;
 
 //   return map;
 // }  // DetectEdgesByED
@@ -131,9 +131,9 @@
 // #endif
 
 //   // Clean up
-//   delete gradImg;
-//   delete dirImg;
-//   delete smoothImg;
+//   delete[] gradImg;
+//   delete[] dirImg;
+//   delete[] smoothImg;
 
 //   return map;
 // }  // DetectEdgesByEDV
@@ -277,9 +277,9 @@ EdgeMap *DetectEdgesByEDPF(unsigned char *srcImg, int width, int height,
 //                                           int MIN_PATH_LEN);
 //   JoinAnchorPointsUsingSortedAnchors(gradImg, dirImg, map, 1, 10);
 
-//   delete smoothImg;
-//   delete gradImg;
-//   delete dirImg;
+//   delete[] smoothImg;
+//   delete[] gradImg;
+//   delete[] dirImg;
 
 //   cvReleaseImage(&iplImg);
 //   cvReleaseImage(&edgeImg);
@@ -347,7 +347,7 @@ EdgeMap *DetectEdgesByEDPF(unsigned char *srcImg, int width, int height,
 //   cvReleaseImage(&iplImg);
 //   cvReleaseImage(&edgeImg);
 
-//   delete gradImg;
+//   delete[] gradImg;
 
 //   return map;
 // }  // end-DetectEdgesByCannySR2
@@ -368,7 +368,7 @@ EdgeMap *DetectEdgesByEDPF(unsigned char *srcImg, int width, int height,
 //   ValidateEdgeSegments(map, smoothImg, 2.25);  // With Prewitt
 //   //  ValidateEdgeSegments2(map, smoothImg, 2);  // With LSD
 
-//   delete smoothImg;
+//   delete[] smoothImg;
 
 //   return map;
 // }  // end-DetectEdgesByCannySRPF
@@ -454,11 +454,11 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 //   //  not give good response.
 
 //   // Clean up
-//   delete gradImg;
-//   delete dirImg;
-//   delete smoothCh3Img;
-//   delete smoothCh2Img;
-//   delete smoothCh1Img;
+//   delete[] gradImg;
+//   delete[] dirImg;
+//   delete[] smoothCh3Img;
+//   delete[] smoothCh2Img;
+//   delete[] smoothCh1Img;
 
 //   return map;
 // }  // end-DetectEdgesByED
@@ -545,11 +545,11 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 // #endif
 
 //   // Clean up
-//   delete gradImg;
-//   delete dirImg;
-//   delete smoothCh3Img;
-//   delete smoothCh2Img;
-//   delete smoothCh1Img;
+//   delete[] gradImg;
+//   delete[] dirImg;
+//   delete[] smoothCh3Img;
+//   delete[] smoothCh2Img;
+//   delete[] smoothCh1Img;
 
 //   return map;
 // }  // end-DetectEdgesByEDPF
@@ -589,7 +589,7 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 //     }  // end-for
 //   }    // end-for
 
-//   delete smoothContourImg;
+//   delete[] smoothContourImg;
 
 // #if 0
 //   memset(smoothImg, 0, width*height);
@@ -602,9 +602,9 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 //                                    GRADIENT_THRESH, ANCHOR_THRESH);
 
 //   // Clean up
-//   delete gradImg;
-//   delete dirImg;
-//   delete smoothImg;
+//   delete[] gradImg;
+//   delete[] dirImg;
+//   delete[] smoothImg;
 
 //   return map;
 // }  // end-DetectContourEdgeMapByED1
@@ -657,18 +657,18 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 //     }  // end-for
 //   }    // end-for
 
-//   delete smoothContourImg;
+//   delete[] smoothContourImg;
 
 //   // Now, detect the edges by ED
 //   EdgeMap *map = DoDetectEdgesByED(gradImg, dirImg, width, height,
 //                                    GRADIENT_THRESH, ANCHOR_THRESH);
 
 //   // Clean up
-//   delete gradImg;
-//   delete dirImg;
-//   delete smoothCh3Img;
-//   delete smoothCh2Img;
-//   delete smoothCh1Img;
+//   delete[] gradImg;
+//   delete[] dirImg;
+//   delete[] smoothCh3Img;
+//   delete[] smoothCh2Img;
+//   delete[] smoothCh1Img;
 
 //   return map;
 // }  // end-DetectContourEdgeMapByED1
@@ -695,7 +695,7 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 //     }  // end-for
 //   }    // end-for
 
-//   delete smoothImg;
+//   delete[] smoothImg;
 
 // #if 0
 //   DumpGradImage("OutputImages/gradImg.pgm", gradImg, width, height);
@@ -705,7 +705,7 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 //   EdgeMap *map = DoDetectEdgesByED(gradImg, width, height, 4);
 
 //   // Clean up
-//   delete gradImg;
+//   delete[] gradImg;
 
 //   return map;
 // }  // end-DetectContourEdgeMapByED2
@@ -775,10 +775,10 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 //   JoinAnchorPointsUsingSortedAnchors(gradImg, dirImg, map, 1, 10);
 
 //   // Clean up
-//   delete smoothImg;
-//   delete smoothContourImg;
-//   delete gradImg;
-//   delete dirImg;
+//   delete[] smoothImg;
+//   delete[] smoothContourImg;
+//   delete[] gradImg;
+//   delete[] dirImg;
 
 //   return map;
 // }  // end-DetectContourEdgeMapByED3
@@ -962,13 +962,13 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 // #endif
 
 //   // Clean up
-//   delete gradImg;
-//   delete gxImg;
-//   delete gyImg;
-//   delete dirImg;
-//   delete smoothCh1Img;
-//   delete smoothCh2Img;
-//   delete smoothCh3Img;
+//   delete[] gradImg;
+//   delete[] gxImg;
+//   delete[] gyImg;
+//   delete[] dirImg;
+//   delete[] smoothCh1Img;
+//   delete[] smoothCh2Img;
+//   delete[] smoothCh3Img;
 
 //   return map;
 // }  // end-DetectContourEdgeMapByED3
@@ -1018,9 +1018,9 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 // #endif
 
 //   // Clean up
-//   delete gradImg;
-//   delete dirImg;
-//   delete smoothImg;
+//   delete[] gradImg;
+//   delete[] dirImg;
+//   delete[] smoothImg;
 
 //   return map;
 // }  // DetectEdgesByED10
@@ -1103,11 +1103,11 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 // #endif
 
 //   // Clean up
-//   delete gradImg;
-//   delete dirImg;
-//   delete smoothCh3Img;
-//   delete smoothCh2Img;
-//   delete smoothCh1Img;
+//   delete[] gradImg;
+//   delete[] dirImg;
+//   delete[] smoothCh3Img;
+//   delete[] smoothCh2Img;
+//   delete[] smoothCh1Img;
 
 //   return map;
 // }  // end-DetectEdgesByED10
@@ -1211,11 +1211,11 @@ static void ScaleImage(unsigned char *srcImg, int width, int height) {
 // #endif
 
 //   // Clean up
-//   delete gradImg;
-//   delete dirImg;
-//   delete smoothCh3Img;
-//   delete smoothCh2Img;
-//   delete smoothCh1Img;
+//   delete[] gradImg;
+//   delete[] dirImg;
+//   delete[] smoothCh3Img;
+//   delete[] smoothCh2Img;
+//   delete[] smoothCh1Img;
 
 //   return map;
 // }  // end-DetectEdgesByED10V

@@ -42,9 +42,9 @@ struct EdgeMap {
 
   // Destructor
   ~EdgeMap() {
-    delete edgeImg;
-    delete pixels;
-    delete segments;
+    delete[] edgeImg;
+    delete[] pixels;
+    delete[] segments;
   }  // end-~EdgeMap
 
   void ConvertEdgeSegments2EdgeImg() {
