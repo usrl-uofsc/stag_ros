@@ -1,5 +1,6 @@
 #include "stag/Decoder.h"
 
+#include <climits>
 #include <stdexcept>
 #include <fstream>
 #include <string>
@@ -43,14 +44,16 @@ Decoder::Decoder(int hd) {
 }
 
 bool Decoder::decode(const Codeword& c, int errCorr, int& id, int& shift) {
+  int bestError = INT_MAX;
   for (unsigned int i = 0; i < codewords.size(); i++) {
-    Codeword xorResult = c ^ codewords[i];  // XOR
+    const Codeword xorResult = c ^ codewords[i];  // XOR
+    const int error = xorResult.count();
 
-    if (xorResult.count() <= errCorr) {
+    if ((error <= errCorr) && (error < bestError)) {
       id = i % noOfCodewords;
       shift = i / noOfCodewords;
-      return true;
+      bestError = error;
     }
   }
-  return false;
+  return (bestError != INT_MAX);
 }
